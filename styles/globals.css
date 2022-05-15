@@ -1,0 +1,98 @@
+/** @format */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply p-0 m-0 font-main bg-gray-200;
+  }
+
+  a {
+    @apply text-inherit no-underline cursor-pointer;
+  }
+
+  h1 {
+    @apply text-xl xs:text-2xl sm:text-4xl;
+  }
+
+  h2 {
+    @apply text-lg xs:text-xl sm:text-3xl;
+  }
+
+  h3 {
+    @apply text-base xs:text-lg sm:text-2xl;
+  }
+
+  p {
+    @apply text-sm xs:text-base sm:text-lg;
+  }
+
+  span {
+    @apply text-sm xs:text-base sm:text-lg;
+  }
+
+  input,
+  textarea,
+  select {
+    @apply focus:!ring-main focus:border-none focus:!ring-2;
+  }
+
+  [type='checkbox']:checked,
+  [type='radio']:checked {
+    @apply bg-main focus:bg-main hover:bg-main;
+  }
+
+  ::selection {
+    background-color: #14b8a6;
+    color: white;
+  }
+}
+
+@layer components {
+  .link {
+    @apply cursor-pointer hover:text-main duration-200 transition-all;
+  }
+
+  .link--outline {
+    @apply relative cursor-pointer p-0 pb-1 hover:text-main before:content-[""] before:inline before:w-0 before:h-1 before:absolute before:bottom-0 before:bg-main before:transition-[width] before:duration-200 before:ease-in hover:before:w-full;
+  }
+
+  .icon-btn {
+    @apply h-10 w-10 text-sm no-underline p-1 rounded-lg text-black cursor-pointer hover:text-main focus:text-main transition-all duration-200 ease-in-out sm:text-base outline-none;
+  }
+
+  .btn {
+    @apply px-5 py-3 w-full flex cursor-pointer font-medium text-base capitalize transition-transform duration-200 ease-in-out justify-center items-center rounded-lg;
+  }
+
+  .btn--outline {
+    @apply text-primary-orange border-2 border-solid border-primary-orange relative overflow-hidden z-[1] hover:text-white before:content-[""] before:absolute before:bg-primary-orange before:bottom-0 before:top-0 before:-z-[1] before:duration-200 before:ease-in-out;
+  }
+
+  .outline-r {
+    @apply before:left-0 before:right-full before:hover:right-0 before:transition-[right];
+  }
+
+  .outline-l {
+    @apply before:right-0  before:left-full before:hover:left-0 before:transition-[left];
+  }
+
+  .link-btn {
+    @apply py-1 w-32 bg-gray-100 rounded-lg justify-center flex cursor-pointer hover:bg-main hover:text-white focus:bg-main focus:text-white transition-all duration-200 ease-in-out outline-none;
+  }
+
+  .select {
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-main focus:border-main block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-main dark:focus:border-main;
+  }
+
+  .form-check-input {
+    @apply appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-main checked:border-main focus:outline-none transition duration-200 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer;
+  }
+}
