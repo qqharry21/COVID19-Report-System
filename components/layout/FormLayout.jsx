@@ -9,6 +9,7 @@ import { initialSchema } from '../../utils/validate';
 import AddForm from '../form/AddForm';
 import Success from '../form/Success';
 import moment from 'moment';
+import toast from 'react-hot-toast';
 
 const FormLayout = ({ children }) => {
   const router = useRouter();
@@ -124,6 +125,7 @@ const FormLayout = ({ children }) => {
       `${car && hospital ? `由${car}送${hospital}` : hospital ? '送' + hospital : ''}`;
     setCopyTest(text);
     navigator.clipboard.writeText(text);
+    toast.success('已複製到剪貼簿');
   }
 
   return (
@@ -198,13 +200,13 @@ const FormLayout = ({ children }) => {
                           onClick={() => {
                             handleCopy(formik);
                             // if (!(formik.dirty && formik.isValid)) {
-                            //   alert('請先填寫表單'); // change to toast error
+                            // toast.error('請先填寫表單', { icon: '‼️' });
                             // } else {
                             //   formik.validateForm().then(res => {
                             //     if (Object.keys(res).length === 0) {
                             //       handleCopy(formik);
                             //     }else{
-                            //       alert('請更正表單內容'); // change to toast error
+                            // toast.error('請更正表單內容', { icon: '‼️' });
                             // }
                             //   });
                             // }
