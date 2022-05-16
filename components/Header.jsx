@@ -20,7 +20,7 @@ const Header = () => {
       {/* Left */}
       <div className='flex'>
         {/* Logo */}
-        <div className='mx-1 text-black items-center flex'>
+        <div className='mx-1 text-main items-center flex'>
           <Link href='/' passHref>
             <div className='relative w-48 h-16 link'>
               <Image src='/logo.gif' alt='logo' layout='fill' objectFit='contain' />
@@ -36,7 +36,7 @@ const Header = () => {
       {/* Right */}
       <div className='md:flex'>
         {/* Navbar */}
-        <ul className='hidden md:flex items-center space-x-4 font-bold'>
+        <ul className='hidden md:flex items-center space-x-4 font-bold '>
           {/* <Link href='/news'>
             <a className='link--outline link py-2 text-sm md:text-base'>最新消息</a>
           </Link> */}
@@ -47,7 +47,7 @@ const Header = () => {
             <a className='link link--outline py-2 items-center group flex'>
               <p className='text-sm md:text-base'>新增案例</p>
               <svg
-                className='h-4 md:h-5 w-4 md:w-5 text-black ml-1 md:ml-2 group-hover:text-main'
+                className='h-4 md:h-5 w-4 md:w-5  ml-1 md:ml-2 group-hover:text-teal-500'
                 viewBox='0 0 24 24'
                 fill='none'
                 stroke='currentColor'

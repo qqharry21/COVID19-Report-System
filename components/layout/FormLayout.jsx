@@ -3,14 +3,17 @@
 import { Form, Formik } from 'formik';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { Children, useState } from 'react';
-import { sleep } from '../../utils/CommonUtils';
+import React, { useState } from 'react';
+import { getAge, sleep } from '../../utils/CommonUtils';
 import { initialSchema } from '../../utils/validate';
-import CustomForm from '../form/CustomForm';
+import AddForm from '../form/AddForm';
 import Success from '../form/Success';
+import moment from 'moment';
 
 const FormLayout = ({ children }) => {
   const router = useRouter();
+
+  const [copyText, setCopyTest] = useState('');
 
   async function submitForm(values, actions) {
     console.log('_submitForm');
@@ -40,6 +43,89 @@ const FormLayout = ({ children }) => {
     submitForm(values, actions); //提交表單
   }
 
+  async function handleCopy(formik) {
+    const {
+      reportId,
+      method,
+      category,
+      date,
+      time,
+      address,
+      preReport,
+      patients,
+      accompany,
+      car,
+      hospital,
+      detail,
+      member,
+      caption,
+    } = formik.values;
+    const text =
+      '報告局長：\n\n' +
+      '消防局受理防疫案件通報\n' +
+      '受理日期：' +
+      date +
+      ' ' +
+      time +
+      '\n' +
+      '受理方式：' +
+      method +
+      '\n' +
+      '個案類別：' +
+      category +
+      '\n' +
+      '地址：' +
+      address +
+      '\n' +
+      '----------------\n' +
+      patients
+        .map(
+          patient =>
+            '患者姓名：' +
+            patient?.name +
+            '\n' +
+            '出生日期：' +
+            patient?.birth +
+            '\n' +
+            '性別：' +
+            patient?.sex +
+            '\n' +
+            '年齡：' +
+            getAge(patient?.birth) +
+            '歲' +
+            '\n' +
+            '出現症狀：' +
+            patient?.symptom +
+            '\n' +
+            '身分證字號：' +
+            patient?.id +
+            '\n' +
+            '電話：' +
+            patient?.phone +
+            '\n'
+        )
+        .join('\n') +
+      `${accompany.length > 0 ? '\n' : ''}` +
+      accompany
+        .map(
+          person =>
+            '陪同者姓名：' +
+            person?.name +
+            `(${person?.relation})` +
+            '\n' +
+            `${person.birth ? '出生日期：' + person.birth + '\n' : ''}` +
+            `${person.sex ? '性別：' + person.sex + '\n' : ''}` +
+            `${person.birth ? '年齡：' + getAge(person.birth) + '歲\n' : ''}` +
+            `${person.id ? '身分證字號：' + person.id + '\n' : ''}` +
+            `${person.phone ? '電話：' + person.phone + '\n' : ''}`
+        )
+        .join('\n') +
+      '----------------\n' +
+      `${car && hospital ? `由${car}送${hospital}` : hospital ? '送' + hospital : ''}`;
+    setCopyTest(text);
+    navigator.clipboard.writeText(text);
+  }
+
   return (
     <section className='w-full items-center justify-center'>
       <div className='px-4 py-10 sm:px-6 lg:px-8'>
@@ -52,7 +138,7 @@ const FormLayout = ({ children }) => {
             <div className='bg-white rounded-lg shadow-lg h-fit p-8 sm:p-12'>
               <div className='pb-4'>
                 <div className='flex items-center justify-center pb-4 space-x-2'>
-                  <h3 className='text-primary-orange font-semibold text-center'>
+                  <h3 className='text-teal-500 font-semibold text-center'>
                     消防局受理防疫案件通報
                   </h3>
                 </div>
@@ -60,28 +146,48 @@ const FormLayout = ({ children }) => {
               </div>
               <Formik
                 initialValues={{
-                  reportId: '',
+                  reportId: '1500',
                   method: '',
                   category: '',
-                  date: '',
-                  time: '',
-                  address: '',
+                  date: moment().format('YYYY-MM-DD'),
+                  time: moment().format('HH:mm'),
+                  address: '新竹市',
+                  preReport: '',
                   patients: [
-                    { name: '', birth: '', age: '', sex: '', symptom: '', id: '', phone: '' },
+                    {
+                      emergency: false,
+                      name: '',
+                      birth: '1999-01-01',
+                      age: getAge('1999-01-01'),
+                      sex: '',
+                      symptom: '',
+                      id: '',
+                      phone: '',
+                    },
                   ],
-                  accompany: [{ name: '', birth: '', age: '', sex: '', id: '', phone: '' }],
+                  accompany: [
+                    {
+                      name: '',
+                      relation: '',
+                      birth: '1999-01-01',
+                      age: getAge('1999-01-01'),
+                      sex: '',
+                      id: '',
+                      phone: '',
+                    },
+                  ],
                   car: '',
                   hospital: '',
                   detail: '',
                   member: '',
-                  captain: '',
+                  caption: '',
                 }}
                 validationSchema={initialSchema} //這裡還要再改，須根據每個分頁來做表單驗證
                 onSubmit={handleSubmit}>
                 {formik => {
                   return (
                     <Form autoComplete='off' className='flex flex-col justify-between h-full'>
-                      <CustomForm {...formik} />
+                      <AddForm formik={formik} copyText={copyText} setCopyTest={setCopyTest} />
                       <div
                         className={`mt-10 flex space-y-4 sm:space-y-0 space-x-0 sm:space-x-4 flex-col sm:flex-row ${
                           1 ? 'justify-center' : 'justify-end'
@@ -89,7 +195,20 @@ const FormLayout = ({ children }) => {
                         <button
                           type='button'
                           className='inline-flex btn sm:w-auto btn--outline outline-l'
-                          onClick={() => setStep(s => s - 1)}>
+                          onClick={() => {
+                            handleCopy(formik);
+                            // if (!(formik.dirty && formik.isValid)) {
+                            //   alert('請先填寫表單'); // change to toast error
+                            // } else {
+                            //   formik.validateForm().then(res => {
+                            //     if (Object.keys(res).length === 0) {
+                            //       handleCopy(formik);
+                            //     }else{
+                            //       alert('請更正表單內容'); // change to toast error
+                            // }
+                            //   });
+                            // }
+                          }}>
                           <p className='sm:text-base'>複製</p>
                           <svg
                             className='h-5 w-5 ml-3'
@@ -106,7 +225,8 @@ const FormLayout = ({ children }) => {
                         </button>
                         <button
                           type='submit'
-                          className='inline-flex btn sm:w-auto btn--outline outline-r items-center '>
+                          className='inline-flex btn sm:w-auto btn--outline outline-r items-center '
+                          disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}>
                           <p className='sm:text-base'>送出</p>
                           {formik.isSubmitting ? (
                             <div className='relative w-6 h-6'>

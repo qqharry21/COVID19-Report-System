@@ -41,12 +41,12 @@
   input,
   textarea,
   select {
-    @apply focus:!ring-main focus:border-none focus:!ring-2;
+    @apply focus:!ring-teal-500 focus:border-none focus:!ring-2;
   }
 
   [type='checkbox']:checked,
   [type='radio']:checked {
-    @apply bg-main focus:bg-main hover:bg-main;
+    @apply bg-teal-500 focus:bg-teal-500 hover:bg-teal-500;
   }
 
   ::selection {
@@ -57,15 +57,15 @@
 
 @layer components {
   .link {
-    @apply cursor-pointer hover:text-main duration-200 transition-all;
+    @apply cursor-pointer hover:text-teal-500 duration-200 transition-all;
   }
 
   .link--outline {
-    @apply relative cursor-pointer p-0 pb-1 hover:text-main before:content-[""] before:inline before:w-0 before:h-1 before:absolute before:bottom-0 before:bg-main before:transition-[width] before:duration-200 before:ease-in hover:before:w-full;
+    @apply relative cursor-pointer p-0 pb-1 hover:text-teal-500 before:content-[""] before:inline before:w-0 before:h-1 before:absolute before:bottom-0 before:bg-teal-500 before:transition-[width] before:duration-200 before:ease-in hover:before:w-full;
   }
 
   .icon-btn {
-    @apply h-10 w-10 text-sm no-underline p-1 rounded-lg text-black cursor-pointer hover:text-main focus:text-main transition-all duration-200 ease-in-out sm:text-base outline-none;
+    @apply h-10 w-10 text-sm no-underline p-1 rounded-lg text-black cursor-pointer hover:text-teal-500 focus:text-teal-500 transition-all duration-200 ease-in-out sm:text-base outline-none;
   }
 
   .btn {
@@ -73,7 +73,7 @@
   }
 
   .btn--outline {
-    @apply text-primary-orange border-2 border-solid border-primary-orange relative overflow-hidden z-[1] hover:text-white before:content-[""] before:absolute before:bg-primary-orange before:bottom-0 before:top-0 before:-z-[1] before:duration-200 before:ease-in-out;
+    @apply text-teal-500 border-2 border-solid border-teal-500 relative overflow-hidden z-[1] hover:text-white before:content-[""] before:absolute before:bg-teal-500 before:bottom-0 before:top-0 before:-z-[1] before:duration-200 before:ease-in-out;
   }
 
   .outline-r {
@@ -85,14 +85,14 @@
   }
 
   .link-btn {
-    @apply py-1 w-32 bg-gray-100 rounded-lg justify-center flex cursor-pointer hover:bg-main hover:text-white focus:bg-main focus:text-white transition-all duration-200 ease-in-out outline-none;
+    @apply py-1 w-32 bg-gray-100 rounded-lg justify-center flex cursor-pointer hover:bg-teal-500 hover:text-white focus:bg-teal-500 focus:text-white transition-all duration-200 ease-in-out outline-none;
   }
 
   .select {
-    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-main focus:border-main block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-main dark:focus:border-main;
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-teal-500 focus:border-teal-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-teal-500 dark:focus:border-teal-500;
   }
 
   .form-check-input {
-    @apply appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-main checked:border-main focus:outline-none transition duration-200 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer;
+    @apply appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-teal-500 checked:border-teal-500 focus:outline-none transition duration-200 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer;
   }
 }

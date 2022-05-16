@@ -1,21 +1,23 @@
 /** @format */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { getAge } from '../../../utils/CommonUtils';
 import { getErrorMessage, getErrors } from '../../../utils/validate';
 
 const Input = ({ field, label, placeholder, id, name, type, formik, isRequired, disabled }) => {
   const showErrors = getErrors(formik, field);
   const error = getErrorMessage(formik, field);
+
   return (
     <div>
       <label className='text-sm font-medium' htmlFor={id}>
         {label}
-        {isRequired && <span className='text-red-500 font-medium text-lg ml-1'>*</span>}
+        {isRequired && <span className='text-red-500 font-medium text-base ml-1'>*</span>}
       </label>
       <input
-        className={`w-full p-3 text-sm border-gray-200 rounded-lg ${disabled && 'bg-gray-100'}  ${
-          showErrors && 'border-red-500 border-2'
-        }`}
+        className={`w-full p-3 text-sm border-gray-200 rounded-lg ${
+          disabled ? 'bg-gray-100' : ''
+        }  ${showErrors ? 'border-red-500 border-2' : ''}`}
         placeholder={placeholder}
         type={type}
         id={id}

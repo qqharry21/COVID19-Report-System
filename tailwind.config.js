@@ -20,10 +20,10 @@ module.exports = {
     },
     colors: {
       ...colors,
-      main: '#951901',
+      main: '#4472c4',
       primary: {
         orange: '#fd8907',
-        yellow: '#fef5d2',
+        red: '#951901',
       },
     },
     extend: {},

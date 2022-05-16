@@ -53,7 +53,6 @@ const MutiCheckbox = element => {
 
   const showErrors = getErrors(formik, field);
   const error = getErrorMessage(formik, field);
-  console.log('formik', formik);
 
   useEffect(() => {
     var updatedCheckedState = [];

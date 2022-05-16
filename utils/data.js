@@ -5,6 +5,7 @@ export const initialData = {
 };
 
 export const table_column = [
+  { name: 'emergency', title: '危及個案' },
   { name: 'reportId', title: '受理編號' },
   { name: 'method', title: '受理方式' },
   { name: 'category', title: '個案類別' },
@@ -25,56 +26,6 @@ export const table_column = [
   { name: 'total', title: '總人數' },
 ];
 
-export const personal_protection = {
-  title: '個人資料保護說明',
-  description:
-    '亞德諾股份有限公司將依據個人資料保護法使用登記報名資訊。活動報名前請詳閱個人資料保護聲明。',
-  content: [
-    {
-      title: 1,
-      text: '個人資料蒐集目的',
-      children: [{ title: 1, text: '上述之相關業務或其他符合營業項目所定義之工作範圍。' }],
-    },
-    {
-      title: 2,
-      text: '個人資料蒐集類別',
-      children: [
-        {
-          title: 1,
-          text: '識別類（例如：中、英文姓名、聯絡電話號碼、地址、性別、電子郵遞地址）、特徵類（例如：出生年月日）、社會情況類（例如：職業、學經歷）等。',
-        },
-      ],
-    },
-    {
-      title: 3,
-      text: '個人資料利用之期間、地區、對象及方式',
-      children: [
-        { title: 1, text: '期間：利用期間為本單位或業務所必須之保存期間。' },
-        {
-          title: 2,
-          text: '地區：您的個人資料將用於本單位提供服務之地區。',
-        },
-        {
-          title: 3,
-          text: '對象：本單位之共同行銷、交互運用客戶資料公司、合作推廣單位、業務往來機構、依法有調查權機關或金融監理機關。',
-        },
-        { title: 4, text: '方式：電子文件、紙本，或以自動化機器或其他非自動化之利用方式。' },
-        { title: 5, text: '其他：您的個人資料將同意提供予ADI原廠進行記錄、追蹤及後續推廣。' },
-      ],
-    },
-    {
-      title: 4,
-      text: '依據個資法第三條規定，您就本單位保有您的個人資料得行使下列權利',
-      children: [
-        {
-          title: 1,
-          text: '查詢、閱覽、複本、補充、更正、請求停止蒐集、請求停止處理、請求停止利用、請求刪除等權利。',
-        },
-      ],
-    },
-  ],
-};
-
 export const methodOptions = [
   {
     name: '1999轉報',
@@ -91,7 +42,7 @@ export const methodOptions = [
 ];
 
 export const categoryOptions = [
-  { name: '快篩陽性-送醫採檢', value: 'A1' },
+  { name: '快篩陽性 - 送醫採檢', value: 'A1' },
   { name: '快篩陽性 - 採檢後返家', value: 'A2' },
   { name: '居家檢疫 - 送醫', value: 'B1' },
   { name: '居家檢疫 - 送集中檢疫所', value: 'B2' },
@@ -111,23 +62,37 @@ export const sexOptions = [
   { name: '女', value: 2 },
 ];
 
-export const interestOptions = [
-  { text: 'Ultralow power micro controller', title: '超低功號微控器' },
-  { text: 'AI platform (MAX78000)', title: 'AI深度神經網路加速器' },
-  { text: 'ADI watch', title: '穿戴式生命監測系統' },
-  { text: 'Eagle eyes', title: '慧人數統計系統' },
-  { text: 'Water analysis (pH/ DO) ', title: '水質物聯網系統' },
-  { text: 'Wireless CbM platform', title: '無線振動監測系統' },
-  { text: 'Smoke detection', title: '煙霧和火災探測平台' },
-  { text: 'ToF platform', title: '深度感測開發平台' },
+export const captionOptions = [
+  {
+    name: '分隊長吳育昇0910594945',
+    value: '吳育昇',
+  },
+  {
+    name: '分隊長游坤哲0910594823',
+    value: '游坤哲',
+  },
+  {
+    name: '小隊長王明星0937895874',
+    value: '王明星',
+  },
+  {
+    name: '小隊長顏丞均0921878981',
+    value: '顏丞均',
+  },
+  {
+    name: '小隊長劉炫志0931080637',
+    value: '劉炫志',
+  },
+  {
+    name: '小隊長黃士豪0921278719',
+    value: '黃士豪',
+  },
+  {
+    name: '小隊長陳怡霖0912375167',
+    value: '吳育昇',
+  },
+  {
+    name: '小隊長潘裕淵0912231123',
+    value: '潘裕淵',
+  },
 ];
-// const sex = [
-//   {
-//     label: '男生',
-//     value: true,
-//   },
-//   {
-//     label: '女生',
-//     value: false,
-//   },
-// ];
