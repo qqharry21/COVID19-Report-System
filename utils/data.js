@@ -1,7 +1,61 @@
 /** @format */
 
+import moment from 'moment';
+import { getAge } from './CommonUtils';
+
 export const initialData = {
   title: '新竹市消防局確診通報系統',
+};
+
+export const initialAddValues = {
+  reportId: '1500',
+  method: '',
+  category: '',
+  date: moment().format('YYYY-MM-DD'),
+  time: moment().format('HH:mm'),
+  address: '新竹市',
+  emergency: false,
+  patients: [
+    {
+      name: '',
+      birth: '1999-01-01',
+      age: getAge('1999-01-01'),
+      sex: '',
+      symptom: '',
+      id: '',
+      phone: '',
+    },
+  ],
+  car: '',
+  hospital: '',
+  time1: '',
+  time2: '',
+  time3: '',
+  time4: '',
+  time5: '',
+  time6: '',
+  member: '',
+  caption: '',
+};
+
+export const patientData = {
+  name: '',
+  birth: '1999-01-01',
+  age: getAge('1999-01-01'),
+  sex: '',
+  symptom: '',
+  id: '',
+  phone: '',
+};
+
+export const accompanyData = {
+  name: '',
+  relation: '',
+  birth: '1999-01-01',
+  age: getAge('1999-01-01'),
+  sex: '',
+  id: '',
+  phone: '',
 };
 
 export const table_column = [

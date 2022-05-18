@@ -50,6 +50,19 @@ function getAge(date) {
   return duration.years().toString().replace('-', '');
 }
 
+function needPreReport(array) {
+  return (
+    array.find(data => {
+      let age = getAge(data.birth);
+      if (age <= 11 || age >= 65) return true;
+    }) !== undefined
+  );
+}
+
+function isEmergency(age) {
+  return age >= 65 || age <= 11;
+}
+
 export {
   sleep,
   getObjectValue,
@@ -57,5 +70,7 @@ export {
   checkProperties,
   compareObject,
   parseDateString,
+  needPreReport,
+  isEmergency,
   getAge,
 };

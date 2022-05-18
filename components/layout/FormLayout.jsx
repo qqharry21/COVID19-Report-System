@@ -1,24 +1,23 @@
 /** @format */
 
 import { Form, Formik } from 'formik';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
-import { getAge, sleep } from '../../utils/CommonUtils';
-import { initialSchema } from '../../utils/validate';
+import React, { useRef, useState } from 'react';
+import { getAge, needPreReport, sleep } from '../../utils/CommonUtils';
 import AddForm from '../form/AddForm';
 import Success from '../form/Success';
-import moment from 'moment';
 import toast from 'react-hot-toast';
+import { initialAddValues } from '../../utils/data';
+import { initialSchema } from '../../utils/validate';
+import { duration } from 'moment';
 
 const FormLayout = ({ children }) => {
-  const router = useRouter();
-
   const [copyText, setCopyTest] = useState('');
+  const router = useRouter();
+  const textareaRef = useRef();
 
   async function submitForm(values, actions) {
     console.log('_submitForm');
-    console.table(values);
 
     const response = await fetch('/api/submit', {
       method: 'POST',
@@ -32,11 +31,11 @@ const FormLayout = ({ children }) => {
 
     await sleep(1000);
     actions.setSubmitting(false);
-    //actions.resetForm();
+    // actions.resetForm();
   }
 
   const handleFinish = () => {
-    router.push('/events');
+    router.push('/');
   };
 
   function handleSubmit(values, actions) {
@@ -52,18 +51,24 @@ const FormLayout = ({ children }) => {
       date,
       time,
       address,
-      preReport,
       patients,
       accompany,
       car,
       hospital,
-      detail,
+      emergency,
       member,
       caption,
+      time1,
+      time2,
+      time3,
+      time4,
+      time5,
+      time6,
     } = formik.values;
+    const currentText = textareaRef.current.value;
     const text =
       '報告局長：\n\n' +
-      '消防局受理防疫案件通報\n' +
+      `消防局受理防疫案件通報${needPreReport(patients) || emergency ? '（初報）' : ''}\n` +
       '受理日期：' +
       date +
       ' ' +
@@ -80,7 +85,7 @@ const FormLayout = ({ children }) => {
       '\n' +
       '----------------\n' +
       patients
-        .map(
+        ?.map(
           patient =>
             '患者姓名：' +
             patient?.name +
@@ -106,26 +111,93 @@ const FormLayout = ({ children }) => {
             '\n'
         )
         .join('\n') +
-      `${accompany.length > 0 ? '\n' : ''}` +
-      accompany
-        .map(
-          person =>
-            '陪同者姓名：' +
-            person?.name +
-            `(${person?.relation})` +
-            '\n' +
-            `${person.birth ? '出生日期：' + person.birth + '\n' : ''}` +
-            `${person.sex ? '性別：' + person.sex + '\n' : ''}` +
-            `${person.birth ? '年齡：' + getAge(person.birth) + '歲\n' : ''}` +
-            `${person.id ? '身分證字號：' + person.id + '\n' : ''}` +
-            `${person.phone ? '電話：' + person.phone + '\n' : ''}`
-        )
-        .join('\n') +
+      `${
+        accompany?.length > 0
+          ? accompany
+              ?.map(
+                person =>
+                  '\n陪同者姓名：' +
+                  person?.name +
+                  `(${person?.relation})` +
+                  '\n' +
+                  `${person.birth ? '出生日期：' + person.birth + '\n' : ''}` +
+                  `${person.sex ? '性別：' + person.sex + '\n' : ''}` +
+                  `${person.birth ? '年齡：' + getAge(person.birth) + '歲\n' : ''}` +
+                  `${person.id ? '身分證字號：' + person.id + '\n' : ''}` +
+                  `${person.phone ? '電話：' + person.phone + '\n' : ''}`
+              )
+              .join('\n')
+          : ''
+      }` +
       '----------------\n' +
-      `${car && hospital ? `由${car}送${hospital}` : hospital ? '送' + hospital : ''}`;
-    setCopyTest(text);
-    navigator.clipboard.writeText(text);
-    toast.success('已複製到剪貼簿');
+      `${
+        car && hospital ? `由${car}送${hospital}\n\n` : hospital ? '送' + hospital + '\n\n' : ''
+      }` +
+      `${time1 ? time1 + car + '著裝出動\n' : ''}` +
+      `${time2 ? time2 + '到場\n' : ''}` +
+      `${time3 ? time3 + '離場送往\n' : ''}` +
+      `${time4 ? time4 + (hospital.includes('醫院') ? '到院\n' : '到達\n') : ''}` +
+      `${time5 ? time5 + car + '離開' + hospital + '\n' : ''}` +
+      `${time6 ? time6 + '返隊清消車輛\n' : ''}` +
+      '\n' +
+      '出勤人員：' +
+      member +
+      '\n' +
+      '督導人員：' +
+      caption +
+      '\n' +
+      '本案編號：' +
+      reportId +
+      '\n' +
+      '以下網址為本局協助衛生局疑似武漢肺炎病毒轉院之患者清單\nhttps://tinyurl.com/bdd8fnct	';
+
+    if (currentText !== text && currentText !== '') {
+      const confirm = toast.custom(
+        t => (
+          <div
+            className={`${
+              t.visible ? 'animate-enter' : 'animate-leave'
+            } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}>
+            <div className='flex-1 w-0 p-4'>
+              <div className='flex items-center'>
+                <p className='text-xl'>❓</p>
+                <div className='ml-3 flex-1'>
+                  <p className='text-base font-medium text-gray-900'>通報表資料有更動</p>
+                  <p className='mt-1 text-sm text-gray-500'>是否複製更改後的值</p>
+                </div>
+              </div>
+            </div>
+            <div className='flex border-l border-gray-200'>
+              <button
+                onClick={() => {
+                  toast.dismiss(t.id);
+                  setCopyTest(currentText);
+                  navigator.clipboard.writeText(currentText);
+                  toast.success('已複製變更到剪貼簿', { duration: 1000 });
+                }}
+                className='w-full border border-transparent rounded-none p-4 flex items-center justify-center text-sm font-medium text-main hover:text-main/50 focus:outline-none focus:ring-2 focus:ring-main/50'>
+                是
+              </button>
+              <button
+                onClick={() => {
+                  toast.dismiss(t.id);
+                  setCopyTest(text);
+                  navigator.clipboard.writeText(text);
+                  toast.success('已複製至剪貼簿', { duration: 1000 });
+                }}
+                className='w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-main hover:text-main/50 focus:outline-none focus:ring-2 focus:ring-main/50'>
+                否
+              </button>
+            </div>
+          </div>
+        ),
+        { duration: 10000 }
+      );
+    } else {
+      setCopyTest(text);
+      navigator.clipboard.writeText(text);
+      toast.success('已複製到剪貼簿', { duration: 1000 });
+    }
   }
 
   return (
@@ -147,49 +219,21 @@ const FormLayout = ({ children }) => {
                 <hr className='border-gray-200 w-full xs:w-[50%] mx-auto' />
               </div>
               <Formik
-                initialValues={{
-                  reportId: '1500',
-                  method: '',
-                  category: '',
-                  date: moment().format('YYYY-MM-DD'),
-                  time: moment().format('HH:mm'),
-                  address: '新竹市',
-                  preReport: '',
-                  patients: [
-                    {
-                      emergency: false,
-                      name: '',
-                      birth: '1999-01-01',
-                      age: getAge('1999-01-01'),
-                      sex: '',
-                      symptom: '',
-                      id: '',
-                      phone: '',
-                    },
-                  ],
-                  accompany: [
-                    {
-                      name: '',
-                      relation: '',
-                      birth: '1999-01-01',
-                      age: getAge('1999-01-01'),
-                      sex: '',
-                      id: '',
-                      phone: '',
-                    },
-                  ],
-                  car: '',
-                  hospital: '',
-                  detail: '',
-                  member: '',
-                  caption: '',
-                }}
-                validationSchema={initialSchema} //這裡還要再改，須根據每個分頁來做表單驗證
-                onSubmit={handleSubmit}>
+                initialValues={initialAddValues}
+                onSubmit={handleSubmit}
+                validationSchema={initialSchema}>
                 {formik => {
                   return (
-                    <Form autoComplete='off' className='flex flex-col justify-between h-full'>
-                      <AddForm formik={formik} copyText={copyText} setCopyTest={setCopyTest} />
+                    <Form
+                      autoComplete='off'
+                      className='flex flex-col justify-between h-full'
+                      noValidate>
+                      <AddForm
+                        formik={formik}
+                        copyText={copyText}
+                        setCopyTest={setCopyTest}
+                        reference={textareaRef}
+                      />
                       <div
                         className={`mt-10 flex space-y-4 sm:space-y-0 space-x-0 sm:space-x-4 flex-col sm:flex-row ${
                           1 ? 'justify-center' : 'justify-end'
@@ -199,17 +243,18 @@ const FormLayout = ({ children }) => {
                           className='inline-flex btn sm:w-auto btn--outline outline-l'
                           onClick={() => {
                             handleCopy(formik);
-                            // if (!(formik.dirty && formik.isValid)) {
-                            // toast.error('請先填寫表單', { icon: '‼️' });
-                            // } else {
-                            //   formik.validateForm().then(res => {
-                            //     if (Object.keys(res).length === 0) {
-                            //       handleCopy(formik);
-                            //     }else{
-                            // toast.error('請更正表單內容', { icon: '‼️' });
-                            // }
-                            //   });
-                            // }
+                            //  if (!(formik.dirty && formik.isValid)) {
+                            //    toast.error('請先填寫通報表', { icon: '‼️' });
+                            //    setTimeout(() => {}, []);
+                            //  } else {
+                            //    formik.validateForm().then(res => {
+                            //      if (Object.keys(res).length === 0) {
+                            //        handleCopy(formik);
+                            //      } else {
+                            //        toast.error('請更正表單內容', { icon: '‼️' });
+                            //      }
+                            //    });
+                            //  }
                           }}>
                           <p className='sm:text-base'>複製</p>
                           <svg
@@ -228,32 +273,44 @@ const FormLayout = ({ children }) => {
                         <button
                           type='submit'
                           className='inline-flex btn sm:w-auto btn--outline outline-r items-center '
+                          onClick={() => formik.resetForm()}>
+                          <p className='sm:text-base'>重設</p>
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            className='w-5 h-5 ml-3'
+                            fill='none'
+                            viewBox='0 0 24 24'
+                            stroke='currentColor'>
+                            <path
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              strokeWidth='2'
+                              d='M14 5l7 7m0 0l-7 7m7-7H3'
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          type='submit'
+                          className={`inline-flex btn sm:w-auto btn--outline outline-r items-center ${
+                            !(formik.dirty && formik.isValid) || formik.isSubmitting
+                              ? 'cursor-not-allowed'
+                              : 'cursor-pointer'
+                          }`}
                           disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}>
                           <p className='sm:text-base'>送出</p>
-                          {formik.isSubmitting ? (
-                            <div className='relative w-6 h-6'>
-                              <Image
-                                src='/loader.gif'
-                                alt='loader'
-                                layout='fill'
-                                objectFit='contain'
-                              />
-                            </div>
-                          ) : (
-                            <svg
-                              xmlns='http://www.w3.org/2000/svg'
-                              className='w-5 h-5 ml-3'
-                              fill='none'
-                              viewBox='0 0 24 24'
-                              stroke='currentColor'>
-                              <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth='2'
-                                d='M14 5l7 7m0 0l-7 7m7-7H3'
-                              />
-                            </svg>
-                          )}
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            className='w-5 h-5 ml-3'
+                            fill='none'
+                            viewBox='0 0 24 24'
+                            stroke='currentColor'>
+                            <path
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              strokeWidth='2'
+                              d='M14 5l7 7m0 0l-7 7m7-7H3'
+                            />
+                          </svg>
                         </button>
                       </div>
                     </Form>

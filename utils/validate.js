@@ -23,6 +23,7 @@ export const initialSchema = yup.object().shape({
   time: yup.string().matches(timeRegExp, '時間格式錯誤').required('受理時間 不得為空'),
   address: yup.string().required('地址 不得為空'),
   status: yup.string(),
+  emergency: yup.boolean(),
   patients: yup
     .array()
     .of(
@@ -56,6 +57,12 @@ export const initialSchema = yup.object().shape({
   detail: yup.string(),
   member: yup.string(),
   captain: yup.string(),
+  time1: yup.string().min(4, '時間格式錯誤').max(4, '時間格式錯誤'),
+  time2: yup.string().min(4, '時間格式錯誤').max(4, '時間格式錯誤'),
+  time3: yup.string().min(4, '時間格式錯誤').max(4, '時間格式錯誤'),
+  time4: yup.string().min(4, '時間格式錯誤').max(4, '時間格式錯誤'),
+  time5: yup.string().min(4, '時間格式錯誤').max(4, '時間格式錯誤'),
+  time6: yup.string().min(4, '時間格式錯誤').max(4, '時間格式錯誤'),
 });
 
 export const getErrors = (formik, field) => {
