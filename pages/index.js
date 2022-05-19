@@ -18,7 +18,7 @@ export async function getServerSideProps(context) {
   );
 
   const post = await fetch(
-    'https://script.google.com/macros/s/AKfycbxEyWoPL1juZWkkI0XFcgbRsH7Pk7RnD4I074f9H3NyqrMM4aoQTo1ccB2arsd9je11Cw/exec?reportId=123&date=tel&time=test',
+    'https://script.google.com/macros/s/AKfycbzlCxBi5kVlvqHDrbVVCnLIet9fw3Owpc5_oCryOjMAdwIy2ELwdE4kwtL7HUcORhFATQ/exec?reportId=123&date=tel&time=test',
     {
       method: 'POST',
       headers: {

@@ -3,7 +3,7 @@
 import React from 'react';
 import { getErrorMessage, getErrors } from '../../../utils/validate';
 
-const Select = ({ field, label, options, name, id, isRequired, formik }) => {
+const Select = ({ field, label, options, name, id, isRequired, formik, valueOption }) => {
   const showErrors = getErrors(formik, field) && isRequired;
 
   const error = getErrorMessage(formik, field);
@@ -25,7 +25,11 @@ const Select = ({ field, label, options, name, id, isRequired, formik }) => {
           請選擇{label}
         </option>
         {options.map((option, index) => {
-          return <option key={index}>{option.name}</option>;
+          return (
+            <option key={index} value={valueOption ? option.value : option.name}>
+              {option.name}
+            </option>
+          );
         })}
         {/* option 的 value 可加或不加 */}
       </select>

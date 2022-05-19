@@ -19,7 +19,6 @@ export const initialAddValues = {
     {
       name: '',
       birth: '1999-01-01',
-      age: getAge('1999-01-01'),
       sex: '',
       symptom: '',
       id: '',
@@ -41,7 +40,6 @@ export const initialAddValues = {
 export const patientData = {
   name: '',
   birth: '1999-01-01',
-  age: getAge('1999-01-01'),
   sex: '',
   symptom: '',
   id: '',
@@ -96,19 +94,19 @@ export const methodOptions = [
 ];
 
 export const categoryOptions = [
-  { name: '快篩陽性 - 送醫採檢', value: 'A1' },
-  { name: '快篩陽性 - 採檢後返家', value: 'A2' },
-  { name: '居家檢疫 - 送醫', value: 'B1' },
-  { name: '居家檢疫 - 送集中檢疫所', value: 'B2' },
-  { name: '居家檢疫 - 送防疫旅館', value: 'B3' },
-  { name: '居家檢疫 - 送返家', value: 'B4' },
-  { name: '居家隔離 - 送醫', value: 'C1' },
-  { name: '居家隔離 - 送採檢', value: 'C2' },
-  { name: '居家隔離 - 接返家', value: 'C3' },
-  { name: '確診個案 - 送醫', value: 'D1' },
-  { name: '確診個案 - 送集中檢疫所', value: 'D2' },
-  { name: '居家照護確診個案 - 送醫', value: 'E1' },
-  { name: '居家照護確診個案 - 接返家', value: 'E2' },
+  { name: '快篩陽性 - 送醫採檢', value: '快篩陽性(A1)' },
+  { name: '快篩陽性 - 採檢後返家', value: '快篩陽性(A2)' },
+  { name: '居家檢疫 - 送醫', value: '居家檢疫(B1)' },
+  { name: '居家檢疫 - 送集中檢疫所', value: '居家檢疫(B2)' },
+  { name: '居家檢疫 - 送防疫旅館', value: '居家檢疫(B3)' },
+  { name: '居家檢疫 - 送返家', value: '居家檢疫(B4)' },
+  { name: '居家隔離 - 送醫', value: '居家隔離(C1)' },
+  { name: '居家隔離 - 送採檢', value: '居家隔離(C2)' },
+  { name: '居家隔離 - 接返家', value: '居家隔離(C3)' },
+  { name: '確診個案 - 送醫', value: '確診個案(D1)' },
+  { name: '確診個案 - 送集中檢疫所', value: '確診個案(D2)' },
+  { name: '居家照護確診個案 - 送醫', value: '居家照護(E1)' },
+  { name: '居家照護確診個案 - 接返家', value: '居家照護(E2)' },
 ];
 
 export const sexOptions = [

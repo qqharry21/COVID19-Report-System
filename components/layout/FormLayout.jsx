@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import { initialAddValues } from '../../utils/data';
 import { initialSchema } from '../../utils/validate';
 import { duration } from 'moment';
+import { server } from '../../lib/config';
 
 const FormLayout = ({ children }) => {
   const [copyText, setCopyTest] = useState('');
@@ -17,17 +18,22 @@ const FormLayout = ({ children }) => {
   const textareaRef = useRef();
 
   async function submitForm(values, actions) {
-    console.log('_submitForm');
+    console.log('values', values);
 
-    const response = await fetch('/api/submit', {
-      method: 'POST',
-      body: JSON.stringify(values),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const result = await response.json();
-    console.log(result);
+    try {
+      const response = await fetch(`${server}/api/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+      const result = await response.json();
+      console.log(result);
+    } catch (error) {
+      console.error(error);
+    }
 
     await sleep(1000);
     actions.setSubmitting(false);
@@ -39,7 +45,6 @@ const FormLayout = ({ children }) => {
   };
 
   function handleSubmit(values, actions) {
-    console.log('_handleSubmit');
     submitForm(values, actions); //提交表單
   }
 
@@ -135,7 +140,7 @@ const FormLayout = ({ children }) => {
       }` +
       `${time1 ? time1 + car + '著裝出動\n' : ''}` +
       `${time2 ? time2 + '到場\n' : ''}` +
-      `${time3 ? time3 + '離場送往\n' : ''}` +
+      `${time3 ? time3 + '離場送往\n' + hospital : ''}` +
       `${time4 ? time4 + (hospital.includes('醫院') ? '到院\n' : '到達\n') : ''}` +
       `${time5 ? time5 + car + '離開' + hospital + '\n' : ''}` +
       `${time6 ? time6 + '返隊清消車輛\n' : ''}` +
@@ -157,35 +162,37 @@ const FormLayout = ({ children }) => {
           <div
             className={`${
               t.visible ? 'animate-enter' : 'animate-leave'
-            } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}>
-            <div className='flex-1 w-0 p-4'>
+            } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex flex-col ring-1 ring-black ring-opacity-5`}>
+            <div className='w-full p-4 flex justify-center border-b border-gray-200'>
               <div className='flex items-center'>
-                <p className='text-xl'>❓</p>
+                <p className='text-2xl'>❓</p>
                 <div className='ml-3 flex-1'>
                   <p className='text-base font-medium text-gray-900'>通報表資料有更動</p>
-                  <p className='mt-1 text-sm text-gray-500'>是否複製更改後的值</p>
+                  <p className='mt-1 text-sm text-gray-500'>
+                    是否取代舊有的值(輸入匡內即為舊有值）
+                  </p>
                 </div>
               </div>
             </div>
-            <div className='flex border-l border-gray-200'>
-              <button
-                onClick={() => {
-                  toast.dismiss(t.id);
-                  setCopyTest(currentText);
-                  navigator.clipboard.writeText(currentText);
-                  toast.success('已複製變更到剪貼簿', { duration: 1000 });
-                }}
-                className='w-full border border-transparent rounded-none p-4 flex items-center justify-center text-sm font-medium text-main hover:text-main/50 focus:outline-none focus:ring-2 focus:ring-main/50'>
-                是
-              </button>
+            <div className='flex'>
               <button
                 onClick={() => {
                   toast.dismiss(t.id);
                   setCopyTest(text);
                   navigator.clipboard.writeText(text);
-                  toast.success('已複製至剪貼簿', { duration: 1000 });
+                  toast.success('已複製至剪貼簿', { id: confirm, duration: 1000 });
                 }}
-                className='w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-main hover:text-main/50 focus:outline-none focus:ring-2 focus:ring-main/50'>
+                className='btn btn--outline outline-l w-full border border-transparent rounded-none rounded-l-lg p-4 flex items-center justify-center text-sm font-medium text-main hover:text-white focus:outline-none focus:ring-2 focus:ring-main/50'>
+                是
+              </button>
+              <button
+                onClick={() => {
+                  toast.dismiss(t.id);
+                  setCopyTest(currentText);
+                  navigator.clipboard.writeText(currentText);
+                  toast.success('已複製到剪貼簿', { id: confirm, duration: 1000 });
+                }}
+                className='btn btn--outline outline-r w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-main hover:text-white focus:outline-none focus:ring-2 focus:ring-main/50'>
                 否
               </button>
             </div>
@@ -196,7 +203,7 @@ const FormLayout = ({ children }) => {
     } else {
       setCopyTest(text);
       navigator.clipboard.writeText(text);
-      toast.success('已複製到剪貼簿', { duration: 1000 });
+      toast.success('已複製到剪貼簿', { id: confirm, duration: 1000 });
     }
   }
 
@@ -242,19 +249,19 @@ const FormLayout = ({ children }) => {
                           type='button'
                           className='inline-flex btn sm:w-auto btn--outline outline-l'
                           onClick={() => {
-                            handleCopy(formik);
-                            //  if (!(formik.dirty && formik.isValid)) {
-                            //    toast.error('請先填寫通報表', { icon: '‼️' });
-                            //    setTimeout(() => {}, []);
-                            //  } else {
-                            //    formik.validateForm().then(res => {
-                            //      if (Object.keys(res).length === 0) {
-                            //        handleCopy(formik);
-                            //      } else {
-                            //        toast.error('請更正表單內容', { icon: '‼️' });
-                            //      }
-                            //    });
-                            //  }
+                            // handleCopy(formik);
+                            if (!(formik.dirty && formik.isValid)) {
+                              toast.error('請先填寫通報表', { icon: '‼️' });
+                              setTimeout(() => {}, []);
+                            } else {
+                              formik.validateForm().then(res => {
+                                if (Object.keys(res).length === 0) {
+                                  handleCopy(formik);
+                                } else {
+                                  toast.error('請更正表單內容', { icon: '‼️' });
+                                }
+                              });
+                            }
                           }}>
                           <p className='sm:text-base'>複製</p>
                           <svg

@@ -69,13 +69,13 @@ const Collapse = ({ children, data, index, label, title, handleDelete }) => {
         </button>
       </div>
       {/* Alert */}
-      {isEmergency(getAge(data.birth)) && (
+      {label === 'patient' && isEmergency(getAge(data.birth)) ? (
         <div className='col-span-1 sm:col-span-2 space-y-4'>
           <p className='justify-center flex items-center bg-red-500 p-2 text-white rounded-lg w-full sm:w-fit text-xs mx-auto'>
             危急個案/65歲以上/11歲以下
           </p>
         </div>
-      )}
+      ) : null}
       {/* Content */}
       <animated.div
         className={`grid-cols-1 gap-6 gap-y-4 sm:grid-cols-2 `}

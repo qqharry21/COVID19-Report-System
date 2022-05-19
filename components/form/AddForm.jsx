@@ -17,22 +17,22 @@ const AddForm = ({ formik, copyText, setCopyTest, reference }) => {
   const patientLength = formik.values.patients?.length || 0;
   const accompanyLength = formik.values.accompany?.length || 0;
 
-  const handleDelete = (index, length, helpers) => {
-    if (length - 1 === 0) {
+  const handleDelete = (index, length, helpers, min) => {
+    if (length === min) {
       toast.error('至少要填寫一筆患者資料', { icon: '🚨' });
     } else {
       helpers.remove(index);
     }
   };
 
-  const handleAdd = (data, length, label, title, helpers, num) => {
-    if (length < num) {
+  const handleAdd = (data, length, label, title, helpers, max) => {
+    if (length < max) {
       helpers.push(data);
       setTimeout(() => {
         const element = document.getElementById(`${label}-${length + 1}`);
         element.scrollIntoView();
       }, 100);
-    } else toast.error(`最多只能填寫${num}筆${title}資料`, { icon: '🚨' });
+    } else toast.error(`最多只能填寫${max}筆${title}資料`, { icon: '🚨' });
   };
 
   return (
@@ -101,6 +101,7 @@ const AddForm = ({ formik, copyText, setCopyTest, reference }) => {
             id='category'
             component={Select}
             isRequired
+            valueOption
             formik={formik}
           />
           <Field
@@ -128,7 +129,7 @@ const AddForm = ({ formik, copyText, setCopyTest, reference }) => {
                   data={patient}
                   label='patient'
                   title='患者'
-                  handleDelete={() => handleDelete(index, patientLength, arrayHelpers)}>
+                  handleDelete={() => handleDelete(index, patientLength, arrayHelpers, 1)}>
                   <Field
                     label='患者姓名'
                     name={`patients[${index}].name`}
@@ -226,7 +227,7 @@ const AddForm = ({ formik, copyText, setCopyTest, reference }) => {
                   data={person}
                   label='accompany'
                   title='陪同者'
-                  handleDelete={() => handleDelete(index, accompanyLength, arrayHelpers)}>
+                  handleDelete={() => handleDelete(index, accompanyLength, arrayHelpers, 0)}>
                   <Field
                     label='陪同者姓名'
                     name={`accompany[${index}].name`}
@@ -341,6 +342,7 @@ const AddForm = ({ formik, copyText, setCopyTest, reference }) => {
           name='caption'
           options={captionOptions}
           id='caption'
+          valueOption
           component={Select}
           formik={formik}
         />
