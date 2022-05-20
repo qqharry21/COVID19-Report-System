@@ -63,6 +63,12 @@ function isEmergency(age) {
   return age >= 65 || age <= 11;
 }
 
+function onKeyDown(keyEvent) {
+  if ((keyEvent.charCode || keyEvent.keyCode) === 13) {
+    keyEvent.preventDefault();
+  }
+}
+
 export {
   sleep,
   getObjectValue,
@@ -73,4 +79,5 @@ export {
   needPreReport,
   isEmergency,
   getAge,
+  onKeyDown,
 };

@@ -11,12 +11,11 @@ import {
 } from '../../utils/data';
 import toast from 'react-hot-toast';
 import { needPreReport } from '../../utils/CommonUtils';
-import { Collapse } from '../';
+import { CollapseField } from '../';
 
 const AddForm = ({ formik, copyText, setCopyTest, reference }) => {
   const patientLength = formik.values.patients?.length || 0;
   const accompanyLength = formik.values.accompany?.length || 0;
-
   const handleDelete = (index, length, helpers, min) => {
     if (length === min) {
       toast.error('至少要填寫一筆患者資料', { icon: '🚨' });
@@ -123,7 +122,7 @@ const AddForm = ({ formik, copyText, setCopyTest, reference }) => {
           render={arrayHelpers => (
             <div className='col-span-1 sm:col-span-2 flex flex-col space-y-4' id='patient'>
               {formik.values.patients?.map((patient, index) => (
-                <Collapse
+                <CollapseField
                   key={index}
                   index={index}
                   data={patient}
@@ -189,7 +188,7 @@ const AddForm = ({ formik, copyText, setCopyTest, reference }) => {
                     isRequired
                     formik={formik}
                   />
-                </Collapse>
+                </CollapseField>
               ))}
               <button
                 type='button'
@@ -221,7 +220,7 @@ const AddForm = ({ formik, copyText, setCopyTest, reference }) => {
           render={arrayHelpers => (
             <div className='col-span-1 sm:col-span-2 flex flex-col space-y-4' id='accompany'>
               {formik.values.accompany?.map((person, index) => (
-                <Collapse
+                <CollapseField
                   key={index}
                   index={index}
                   data={person}
@@ -283,7 +282,7 @@ const AddForm = ({ formik, copyText, setCopyTest, reference }) => {
                     component={Input}
                     formik={formik}
                   />
-                </Collapse>
+                </CollapseField>
               ))}
               <button
                 type='button'

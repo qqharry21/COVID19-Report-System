@@ -67,7 +67,6 @@ const MutiCheckbox = element => {
     });
     setChecked(updatedList);
     setCheckedState(updatedCheckedState);
-    console.log(updatedCheckedState);
   }, []);
 
   const handleOnClick = (value, position) => {

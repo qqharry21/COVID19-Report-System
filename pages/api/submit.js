@@ -1,10 +1,11 @@
 /** @format */
 import { google } from 'googleapis';
 import { getAge, needPreReport } from '../../utils/CommonUtils';
-
+import { auth } from '../../lib/google';
+import { server } from '../../lib/config';
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).send('Only for POST requests');
+    return res.status(405).send({ message: 'Only for POST requests' });
   }
 
   const {
@@ -29,19 +30,22 @@ export default async function handler(req, res) {
     time6,
   } = req.body;
 
+  const response = await fetch(`${server}/api/getLatestId`);
+  const { max_report_id, max_patient_id } = await response.json();
+  const id = max_report_id !== reportId ? max_report_id : reportId;
   const patientData = Object.keys(patients)
     .map(data => {
       return patients[data]?.sex + getAge(patients[data]?.birth) + '歲';
     })
     .join('\n');
 
-  const accompanyData =
-    accompany &&
-    Object.keys(accompany)
-      ?.map(data => {
-        return accompany[data]?.sex + getAge(accompany[data]?.birth) + '歲(陪同)';
-      })
-      .join('\n');
+  const accompanyData = accompany
+    ? Object.keys(accompany)
+        ?.map(data => {
+          return accompany[data]?.sex + getAge(accompany[data]?.birth) + '歲(陪同)';
+        })
+        .join('\n')
+    : '';
 
   const remark =
     (time2 ? time2 : '') +
@@ -56,8 +60,8 @@ export default async function handler(req, res) {
     '離開';
 
   const data = [
-    reportId,
-    0,
+    id,
+    '未結案',
     date,
     time,
     needPreReport(patients) || emergency ? '是' : '否',
@@ -69,6 +73,7 @@ export default async function handler(req, res) {
     remark,
     patients?.length + (accompany?.length || 0),
     '',
+    address,
     caption,
     hospital,
     time1,
@@ -80,21 +85,9 @@ export default async function handler(req, res) {
   ];
 
   try {
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: process.env.GOOGLE_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-      },
-      scopes: [
-        'https://www.googleapis.com/auth/drive',
-        'https://www.googleapis.com/auth/drive.file',
-        'https://www.googleapis.com/auth/spreadsheets',
-      ],
-    });
-
     const sheets = google.sheets({ version: 'v4', auth });
 
-    const response = await sheets.spreadsheets.values.append({
+    const sheet1_response = await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.GOOGLE_SHEET_ID,
       range: 'A1:U1',
       valueInputOption: 'USER_ENTERED',
@@ -103,7 +96,32 @@ export default async function handler(req, res) {
       },
     });
 
-    return res.status(200).json({ data: response.data });
+    patients.forEach(async (patient, index) => {
+      await sheets.spreadsheets.values.append({
+        spreadsheetId: process.env.GOOGLE_SHEET_ID,
+        range: `患者資料!A${index + 1}`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: {
+          values: [
+            [
+              max_patient_id,
+              id,
+              patient?.name,
+              1,
+              patient?.sex,
+              patient?.birth,
+              getAge(patient?.birth) + '歲',
+              patient?.id,
+              patient?.phone,
+              patient?.symptom,
+              '',
+            ],
+          ],
+        },
+      });
+    });
+
+    return res.status(200).json({ 總表: sheet1_response.data });
   } catch (error) {
     return res.status(500).send({ message: error.message ?? 'Something went wrong' });
   }

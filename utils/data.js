@@ -112,6 +112,7 @@ export const categoryOptions = [
 export const sexOptions = [
   { name: '男', value: 1 },
   { name: '女', value: 2 },
+  { name: '其他', value: 3 },
 ];
 
 export const captionOptions = [

@@ -3,49 +3,64 @@
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import React, { useRef, useState } from 'react';
-import { getAge, needPreReport, sleep } from '../../utils/CommonUtils';
+import { getAge, needPreReport, onKeyDown, sleep } from '../../utils/CommonUtils';
 import AddForm from '../form/AddForm';
 import Success from '../form/Success';
 import toast from 'react-hot-toast';
 import { initialAddValues } from '../../utils/data';
 import { initialSchema } from '../../utils/validate';
-import { duration } from 'moment';
 import { server } from '../../lib/config';
+import axios from 'axios';
 
-const FormLayout = ({ children }) => {
+const FormLayout = ({ children, maxIds }) => {
+  const initialValues = { ...initialAddValues, reportId: maxIds.max_report_id };
   const [copyText, setCopyTest] = useState('');
   const router = useRouter();
   const textareaRef = useRef();
 
   async function submitForm(values, actions) {
-    console.log('values', values);
+    const addValues = { ...values, emergency: needPreReport(values.patients) || values.emergency };
 
-    try {
-      const response = await fetch(`${server}/api/submit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(values),
+    await fetch(`${server}/api/submit`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(addValues),
+    })
+      .then(async res => await res.json())
+      .catch(err => {
+        return err.message;
       });
-      const result = await response.json();
-      console.log(result);
-    } catch (error) {
-      console.error(error);
-    }
-
     await sleep(1000);
     actions.setSubmitting(false);
     // actions.resetForm();
   }
 
-  const handleFinish = () => {
-    router.push('/');
-  };
-
   function handleSubmit(values, actions) {
-    submitForm(values, actions); //提交表單
+    const addValues = { ...values, emergency: needPreReport(values.patients) || values.emergency };
+
+    //提交表單
+    toast.promise(
+      axios.post(`${server}/api/submit`, addValues).then(async res => {
+        console.log(res.status + ' ' + res.statusText);
+      }),
+      {
+        loading: '新增中...',
+        success: () => {
+          sleep(1000);
+          actions.setSubmitting(false);
+          actions.resetForm();
+          router.push('/');
+          return '新增成功';
+        },
+        error: err => {
+          console.error(err.response.data?.message);
+          return '新增失敗，請重整網頁後嘗試';
+        },
+      }
+    );
   }
 
   async function handleCopy(formik) {
@@ -226,7 +241,7 @@ const FormLayout = ({ children }) => {
                 <hr className='border-gray-200 w-full xs:w-[50%] mx-auto' />
               </div>
               <Formik
-                initialValues={initialAddValues}
+                initialValues={initialValues}
                 onSubmit={handleSubmit}
                 validationSchema={initialSchema}>
                 {formik => {
@@ -234,7 +249,8 @@ const FormLayout = ({ children }) => {
                     <Form
                       autoComplete='off'
                       className='flex flex-col justify-between h-full'
-                      noValidate>
+                      noValidate
+                      onKeyDown={onKeyDown}>
                       <AddForm
                         formik={formik}
                         copyText={copyText}
@@ -247,7 +263,7 @@ const FormLayout = ({ children }) => {
                         }`}>
                         <button
                           type='button'
-                          className='inline-flex btn sm:w-auto btn--outline outline-l'
+                          className='inline-flex btn sm:w-auto btn--outline outline-l group'
                           onClick={() => {
                             // handleCopy(formik);
                             if (!(formik.dirty && formik.isValid)) {
@@ -265,7 +281,7 @@ const FormLayout = ({ children }) => {
                           }}>
                           <p className='sm:text-base'>複製</p>
                           <svg
-                            className='h-5 w-5 ml-3'
+                            className='h-5 w-5 ml-3 group-hover:animate-bounce duration-300 ease-in-out transition-all'
                             fill='none'
                             viewBox='0 0 24 24'
                             stroke='currentColor'>
@@ -279,26 +295,30 @@ const FormLayout = ({ children }) => {
                         </button>
                         <button
                           type='submit'
-                          className='inline-flex btn sm:w-auto btn--outline outline-r items-center '
-                          onClick={() => formik.resetForm()}>
+                          className='inline-flex btn sm:w-auto btn--outline outline-r items-center group'
+                          onClick={() => {
+                            formik.resetForm();
+                            toast.success('已清除表單內容');
+                          }}>
                           <p className='sm:text-base'>重設</p>
                           <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            className='w-5 h-5 ml-3'
-                            fill='none'
+                            className='h-5 w-5 ml-3 group-hover:rotate-180 duration-300 ease-in-out transition-all'
+                            width='24'
+                            height='24'
                             viewBox='0 0 24 24'
-                            stroke='currentColor'>
-                            <path
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              strokeWidth='2'
-                              d='M14 5l7 7m0 0l-7 7m7-7H3'
-                            />
+                            strokeWidth='2'
+                            stroke='currentColor'
+                            fill='none'
+                            strokeLinecap='round'
+                            strokeLinejoin='round'>
+                            {' '}
+                            <path stroke='none' d='M0 0h24v24H0z' />{' '}
+                            <path d='M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5' />
                           </svg>
                         </button>
                         <button
                           type='submit'
-                          className={`inline-flex btn sm:w-auto btn--outline outline-r items-center ${
+                          className={`inline-flex btn sm:w-auto btn--outline outline-r items-center group ${
                             !(formik.dirty && formik.isValid) || formik.isSubmitting
                               ? 'cursor-not-allowed'
                               : 'cursor-pointer'
@@ -307,7 +327,7 @@ const FormLayout = ({ children }) => {
                           <p className='sm:text-base'>送出</p>
                           <svg
                             xmlns='http://www.w3.org/2000/svg'
-                            className='w-5 h-5 ml-3'
+                            className='w-5 h-5 ml-3 group-hover:translate-x-2 duration-300 ease-in-out transition-all'
                             fill='none'
                             viewBox='0 0 24 24'
                             stroke='currentColor'>

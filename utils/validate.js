@@ -30,7 +30,7 @@ export const initialSchema = yup.object().shape({
       yup.object().shape({
         emergency: yup.boolean(),
         name: yup.string().required('患者姓名 不得為空'),
-        age: yup.string().required('年齡 不得為空'),
+        age: yup.string(),
         sex: yup.string().required('性別 不得為空'),
         birth: yup.string().matches(dateRegExp, '日期格式錯誤').required('出生日期 不得為空'),
         symptom: yup.string().required('症狀 不得為空'),

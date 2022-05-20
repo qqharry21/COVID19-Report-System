@@ -1,13 +1,25 @@
 /** @format */
 import { Layout, FormLayout, ReportLayout } from '../components/layout';
+import { server } from '../lib/config';
 
-export default function AddReport() {
+export default function AddReport({ maxIds }) {
   return (
     <Layout title='新增案例'>
-      <FormLayout />
+      <FormLayout maxIds={maxIds} />
     </Layout>
   );
 }
 
 // export async function getStaticPaths() {}
 // export async function getStaticProps() {}
+
+export async function getServerSideProps() {
+  const response = await fetch(`${server}/api/getLatestId`);
+
+  const data = await response.json();
+  return {
+    props: {
+      maxIds: data,
+    },
+  };
+}
