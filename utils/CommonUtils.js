@@ -3,8 +3,8 @@
 import { parse, isDate } from 'date-fns';
 import moment from 'moment';
 
-function getObjectValue(object, target) {
-  return Object.keys(object).find(key => object[key] === target);
+function getOptionValue(object, target) {
+  return object[Object.keys(object).find(key => object[key].name === target)]?.value;
 }
 
 function getOptionName(object, target) {
@@ -69,9 +69,22 @@ function onKeyDown(keyEvent) {
   }
 }
 
+function getStatusColor(status) {
+  switch (status) {
+    case 1:
+      return 'bg-[#fce8b2] text-orange-700';
+    case 2:
+      return 'bg-[#b7e1cd] text-green-700';
+    case 3:
+      return 'bg-[#e5b8ae] text-red-700';
+    case 4:
+      return 'bg-[#d9d2e9] text-purple-700';
+  }
+}
+
 export {
   sleep,
-  getObjectValue,
+  getOptionValue,
   getOptionName,
   checkProperties,
   compareObject,
@@ -80,4 +93,5 @@ export {
   isEmergency,
   getAge,
   onKeyDown,
+  getStatusColor,
 };

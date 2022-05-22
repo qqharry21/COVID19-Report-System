@@ -3,6 +3,14 @@ import { google } from 'googleapis';
 import { getAge, needPreReport } from '../../utils/CommonUtils';
 import { auth } from '../../lib/google';
 import { server } from '../../lib/config';
+
+/**
+ * @param {*} req
+ * @param {*} res
+ * @description Post the new report to google sheet
+ * @returns
+ */
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).send({ message: 'Only for POST requests' });
@@ -107,7 +115,7 @@ export default async function handler(req, res) {
               max_patient_id,
               id,
               patient?.name,
-              1,
+              1, // 判別患者/陪同
               patient?.sex,
               patient?.birth,
               getAge(patient?.birth) + '歲',

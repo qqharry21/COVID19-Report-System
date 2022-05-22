@@ -13,30 +13,10 @@ import { server } from '../../lib/config';
 import axios from 'axios';
 
 const FormLayout = ({ children, maxIds }) => {
-  const initialValues = { ...initialAddValues, reportId: maxIds.max_report_id };
+  const initialValues = { ...initialAddValues, reportId: maxIds?.max_report_id };
   const [copyText, setCopyTest] = useState('');
   const router = useRouter();
   const textareaRef = useRef();
-
-  async function submitForm(values, actions) {
-    const addValues = { ...values, emergency: needPreReport(values.patients) || values.emergency };
-
-    await fetch(`${server}/api/submit`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify(addValues),
-    })
-      .then(async res => await res.json())
-      .catch(err => {
-        return err.message;
-      });
-    await sleep(1000);
-    actions.setSubmitting(false);
-    // actions.resetForm();
-  }
 
   function handleSubmit(values, actions) {
     const addValues = { ...values, emergency: needPreReport(values.patients) || values.emergency };
@@ -228,124 +208,118 @@ const FormLayout = ({ children, maxIds }) => {
         {/* Content */}
         <div className='flex flex-col space-y-4 items-center'>
           {/* Form */}
-          {0 ? (
-            <Success onFinish={handleFinish} type='報名表' />
-          ) : (
-            <div className='bg-white rounded-lg shadow-lg h-fit p-8 sm:p-12'>
-              <div className='pb-4'>
-                <div className='flex items-center justify-center pb-4 space-x-2'>
-                  <h3 className='text-teal-500 font-semibold text-center'>
-                    消防局受理防疫案件通報
-                  </h3>
-                </div>
-                <hr className='border-gray-200 w-full xs:w-[50%] mx-auto' />
+          <div className='bg-white rounded-lg shadow-lg h-fit p-8 sm:p-12'>
+            <div className='pb-4'>
+              <div className='flex items-center justify-center pb-4 space-x-2'>
+                <h3 className='text-teal-500 font-semibold text-center'>消防局受理防疫案件通報</h3>
               </div>
-              <Formik
-                initialValues={initialValues}
-                onSubmit={handleSubmit}
-                validationSchema={initialSchema}>
-                {formik => {
-                  return (
-                    <Form
-                      autoComplete='off'
-                      className='flex flex-col justify-between h-full'
-                      noValidate
-                      onKeyDown={onKeyDown}>
-                      <AddForm
-                        formik={formik}
-                        copyText={copyText}
-                        setCopyTest={setCopyTest}
-                        reference={textareaRef}
-                      />
-                      <div
-                        className={`mt-10 flex space-y-4 sm:space-y-0 space-x-0 sm:space-x-4 flex-col sm:flex-row ${
-                          1 ? 'justify-center' : 'justify-end'
-                        }`}>
-                        <button
-                          type='button'
-                          className='inline-flex btn sm:w-auto btn--outline outline-l group'
-                          onClick={() => {
-                            // handleCopy(formik);
-                            if (!(formik.dirty && formik.isValid)) {
-                              toast.error('請先填寫通報表', { icon: '‼️' });
-                              setTimeout(() => {}, []);
-                            } else {
-                              formik.validateForm().then(res => {
-                                if (Object.keys(res).length === 0) {
-                                  handleCopy(formik);
-                                } else {
-                                  toast.error('請更正表單內容', { icon: '‼️' });
-                                }
-                              });
-                            }
-                          }}>
-                          <p className='sm:text-base'>複製</p>
-                          <svg
-                            className='h-5 w-5 ml-3 group-hover:animate-bounce duration-300 ease-in-out transition-all'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                            stroke='currentColor'>
-                            <path
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              strokeWidth='2'
-                              d='M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2'
-                            />
-                          </svg>
-                        </button>
-                        <button
-                          type='submit'
-                          className='inline-flex btn sm:w-auto btn--outline outline-r items-center group'
-                          onClick={() => {
-                            formik.resetForm();
-                            toast.success('已清除表單內容');
-                          }}>
-                          <p className='sm:text-base'>重設</p>
-                          <svg
-                            className='h-5 w-5 ml-3 group-hover:rotate-180 duration-300 ease-in-out transition-all'
-                            width='24'
-                            height='24'
-                            viewBox='0 0 24 24'
-                            strokeWidth='2'
-                            stroke='currentColor'
-                            fill='none'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'>
-                            {' '}
-                            <path stroke='none' d='M0 0h24v24H0z' />{' '}
-                            <path d='M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5' />
-                          </svg>
-                        </button>
-                        <button
-                          type='submit'
-                          className={`inline-flex btn sm:w-auto btn--outline outline-r items-center group ${
-                            !(formik.dirty && formik.isValid) || formik.isSubmitting
-                              ? 'cursor-not-allowed'
-                              : 'cursor-pointer'
-                          }`}
-                          disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}>
-                          <p className='sm:text-base'>送出</p>
-                          <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            className='w-5 h-5 ml-3 group-hover:translate-x-2 duration-300 ease-in-out transition-all'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                            stroke='currentColor'>
-                            <path
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              strokeWidth='2'
-                              d='M14 5l7 7m0 0l-7 7m7-7H3'
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </Form>
-                  );
-                }}
-              </Formik>
+              <hr className='border-gray-200 w-full xs:w-[50%] mx-auto' />
             </div>
-          )}
+            <Formik
+              initialValues={initialValues}
+              onSubmit={handleSubmit}
+              validationSchema={initialSchema}>
+              {formik => {
+                return (
+                  <Form
+                    autoComplete='off'
+                    className='flex flex-col justify-between h-full'
+                    noValidate
+                    onKeyDown={onKeyDown}>
+                    <AddForm
+                      formik={formik}
+                      copyText={copyText}
+                      setCopyTest={setCopyTest}
+                      reference={textareaRef}
+                    />
+                    <div
+                      className={`mt-10 flex space-y-4 sm:space-y-0 space-x-0 sm:space-x-4 flex-col sm:flex-row ${
+                        1 ? 'justify-center' : 'justify-end'
+                      }`}>
+                      <button
+                        type='button'
+                        className='inline-flex btn sm:w-auto btn--outline outline-l group'
+                        onClick={() => {
+                          // handleCopy(formik);
+                          if (!(formik.dirty && formik.isValid)) {
+                            toast.error('請先填寫通報表', { icon: '‼️' });
+                            setTimeout(() => {}, []);
+                          } else {
+                            formik.validateForm().then(res => {
+                              if (Object.keys(res).length === 0) {
+                                handleCopy(formik);
+                              } else {
+                                toast.error('請更正表單內容', { icon: '‼️' });
+                              }
+                            });
+                          }
+                        }}>
+                        <p className='sm:text-base'>複製</p>
+                        <svg
+                          className='h-5 w-5 ml-2 group-hover:animate-bounce duration-300 ease-in-out transition-all'
+                          fill='none'
+                          viewBox='0 0 24 24'
+                          stroke='currentColor'>
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            strokeWidth='2'
+                            d='M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2'
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        type='submit'
+                        className='inline-flex btn sm:w-auto btn--outline outline-r items-center group'
+                        onClick={() => {
+                          formik.resetForm();
+                          toast.success('已清除表單內容');
+                        }}>
+                        <p className='sm:text-base'>重設</p>
+                        <svg
+                          className='h-5 w-5 ml-2 group-hover:rotate-180 duration-300 ease-in-out transition-all'
+                          width='24'
+                          height='24'
+                          viewBox='0 0 24 24'
+                          strokeWidth='2'
+                          stroke='currentColor'
+                          fill='none'
+                          strokeLinecap='round'
+                          strokeLinejoin='round'>
+                          {' '}
+                          <path stroke='none' d='M0 0h24v24H0z' />{' '}
+                          <path d='M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5' />
+                        </svg>
+                      </button>
+                      <button
+                        type='submit'
+                        className={`inline-flex btn sm:w-auto btn--outline outline-r items-center group ${
+                          !(formik.dirty && formik.isValid) || formik.isSubmitting
+                            ? 'cursor-not-allowed'
+                            : 'cursor-pointer'
+                        }`}
+                        disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}>
+                        <p className='sm:text-base'>送出</p>
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          className='w-5 h-5 ml-2 group-hover:translate-x-2 duration-300 ease-in-out transition-all'
+                          fill='none'
+                          viewBox='0 0 24 24'
+                          stroke='currentColor'>
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            strokeWidth='2'
+                            d='M14 5l7 7m0 0l-7 7m7-7H3'
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </Form>
+                );
+              }}
+            </Formik>
+          </div>
         </div>
       </div>
     </section>

@@ -1,5 +1,5 @@
 /** @format */
-import { Layout, FormLayout, ReportLayout } from '../components/layout';
+import { Layout, FormLayout } from '../components/layout';
 import { server } from '../lib/config';
 
 export default function AddReport({ maxIds }) {
@@ -9,9 +9,6 @@ export default function AddReport({ maxIds }) {
     </Layout>
   );
 }
-
-// export async function getStaticPaths() {}
-// export async function getStaticProps() {}
 
 export async function getServerSideProps() {
   const response = await fetch(`${server}/api/getLatestId`);

@@ -95,4 +95,20 @@
   .form-check-input {
     @apply appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-teal-500 checked:border-teal-500 focus:outline-none transition duration-200 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer;
   }
+
+  .status-1 {
+    @apply bg-[#fce8b2] text-orange-700;
+  }
+  .status-2 {
+    @apply bg-[#b7e1cd] text-green-700;
+  }
+  .status-3 {
+    @apply bg-[#e5b8ae] text-red-700;
+  }
+  .status-4 {
+    @apply bg-[#d9d2e9] text-purple-700;
+  }
+  .status-default {
+    @apply bg-[#fce8b2] text-orange-700;
+  }
 }

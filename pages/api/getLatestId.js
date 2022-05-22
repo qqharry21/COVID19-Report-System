@@ -1,6 +1,15 @@
 /** @format */
 import { google } from 'googleapis';
 import { auth } from '../../lib/google';
+
+/**
+ *
+ * @param {*} req
+ * @param {*} res
+ * @description Get the latest id from google sheet
+ * @returns
+ */
+
 const handler = async (req, res) => {
   if (req.method !== 'GET') {
     return res.status(405).send('Only for GET requests');

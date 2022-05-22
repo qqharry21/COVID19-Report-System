@@ -57,24 +57,17 @@ export const accompanyData = {
 };
 
 export const table_column = [
-  { name: 'emergency', title: '危及個案' },
-  { name: 'reportId', title: '受理編號' },
-  { name: 'method', title: '受理方式' },
-  { name: 'category', title: '個案類別' },
+  { name: 'status', title: '案件狀態' },
+  { name: 'reportId', title: '案件編號' },
   { name: 'date', title: '受理日期' },
   { name: 'time', title: '受理時間' },
-  { name: 'address', title: '地址' },
-  { name: 'name', title: '患者姓名' },
-  { name: 'age', title: '年齡' },
-  { name: 'sex', title: '性別' },
-  { name: 'symptom', title: '出現症狀' },
-  { name: 'id', title: '身分證字號' },
-  { name: 'phone', title: '聯絡電話' },
-  { name: 'car', title: '車號' },
-  { name: 'hospital', title: '送往醫院' },
-  { name: 'detail', title: '到院過程' },
-  { name: 'member', title: '隊員' },
-  { name: 'captain', title: '小隊長' },
+  { name: 'emergency', title: '危及個案' },
+  { name: 'age', title: '患者資料' },
+  { name: 'method', title: '受理方式' },
+  { name: 'category', title: '案件類別' },
+  { name: 'car', title: '出勤分隊救護車' },
+  { name: 'member', title: '出勤人員' },
+  { name: 'remark', title: '備註' },
   { name: 'total', title: '總人數' },
 ];
 
@@ -90,6 +83,25 @@ export const methodOptions = [
   {
     name: '衛生局通報',
     value: 3,
+  },
+];
+
+export const statusOptions = [
+  {
+    name: '未結案',
+    value: 1,
+  },
+  {
+    name: '已結案',
+    value: 2,
+  },
+  {
+    name: '待初報',
+    value: 3,
+  },
+  {
+    name: '已初報',
+    value: 4,
   },
 ];
 
@@ -113,6 +125,11 @@ export const sexOptions = [
   { name: '男', value: 1 },
   { name: '女', value: 2 },
   { name: '其他', value: 3 },
+];
+
+export const emergencyOptions = [
+  { name: '是', value: true },
+  { name: '否', value: false },
 ];
 
 export const captionOptions = [
