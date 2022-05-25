@@ -47,8 +47,7 @@ export default async function handler(req, res) {
     originPatients,
   } = req.body;
 
-  const allPatients = patients.concat(accompany);
-  console.log('allPatients', allPatients);
+  const allPatients = patients.concat(accompany).sort((a, b) => a.type - b.type);
 
   const data = [
     reportId,
@@ -89,32 +88,20 @@ export default async function handler(req, res) {
     const sheets = google.sheets({ version: 'v4', auth });
     const index = parseInt(reportId) + 1;
 
-    // update report
-    const sheet1_response = await sheets.spreadsheets.values.batchUpdate({
-      spreadsheetId: process.env.GOOGLE_SHEET_ID,
-      requestBody: {
-        valueInputOption: 'USER_ENTERED',
-        data: [
-          {
-            range: `A${index}:V${index}`,
-            majorDimension: 'ROWS',
-            values: [data],
-          },
-        ],
-      },
-    }).data;
-
     allPatients.forEach(async (person, index) => {
       // update patients
       if (person.patientId) {
-        const personIndex = parseInt(person.patientId) + 1;
+        const index_response = await axios.get(
+          `https://script.google.com/macros/s/AKfycbwuqTh7_8uOpXezQi1gM-8fQRjK4YP30M8rgN-pTYF4qqZYJ2kG5tbJzcrEwLsFnifwag/exec?id=${person.patientId}`
+        );
+        const { index } = await index_response.data;
         await sheets.spreadsheets.values.batchUpdate({
           spreadsheetId: process.env.GOOGLE_SHEET_ID,
           requestBody: {
             valueInputOption: 'USER_ENTERED',
             data: [
               {
-                range: `患者資料!A${personIndex}:L${personIndex}`,
+                range: `患者資料!A${index}:L${index}`,
                 values: [
                   [
                     person.patientId,
@@ -164,6 +151,21 @@ export default async function handler(req, res) {
         });
       }
     });
+
+    // update report
+    const sheet1_response = await sheets.spreadsheets.values.batchUpdate({
+      spreadsheetId: process.env.GOOGLE_SHEET_ID,
+      requestBody: {
+        valueInputOption: 'USER_ENTERED',
+        data: [
+          {
+            range: `A${index}:V${index}`,
+            majorDimension: 'ROWS',
+            values: [data],
+          },
+        ],
+      },
+    }).data;
 
     //delete
     for (let i = 0; i < deleteList.length; i++) {

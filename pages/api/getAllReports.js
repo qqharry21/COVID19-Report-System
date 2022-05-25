@@ -1,14 +1,12 @@
 /** @format */
 import { google } from 'googleapis';
-import { server } from '../../lib/config';
+import moment from 'moment';
 import { auth } from '../../lib/google';
-import { getOptionValue } from '../../utils/CommonUtils';
-import { statusOptions } from '../../utils/data';
 
 /**
  * @param {*} req
  * @param {*} res
- * @description Get All reports from google sheet for reportPage
+ * @description Get total length by date from google sheet
  * @returns
  */
 
@@ -18,41 +16,39 @@ const handler = async (req, res) => {
   }
 
   try {
-    const latest_response = await fetch(`${server}/api/getLatestId`);
-
-    const latest_data = await latest_response.json();
-
-    const { startIndex, endIndex } = latest_data;
-
     const sheets = google.sheets({ version: 'v4', auth });
     const sheet_response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEET_ID,
-      range: `A${startIndex}:L${endIndex}`,
+      range: 'A2:L',
       valueRenderOption: 'FORMATTED_VALUE',
     });
-
     const data = sheet_response?.data?.values;
 
-    const reportData = [];
-    data.forEach(item => {
-      reportData.push({
-        index: parseInt(item[0]) + 1,
-        id: item[0],
-        status: getOptionValue(statusOptions, item[1]),
-        date: item[2],
-        time: item[3],
-        emergency: { name: item[4], value: item[4] === '是' },
-        patients: item[5],
-        method: item[6],
-        category: item[7],
-        car: item[8],
-        member: item[9],
-        remark: item[10],
-        total: item[11],
-      });
-    });
+    // const todayTotal = data.filter(item => item[2] === moment().format('YYYY-MM-DD')).length;
 
-    return res.status(200).json(reportData);
+    // const yesterdayTotal = data.filter(
+    //   item => item[2] === moment().subtract(1, 'days').format('YYYY-MM-DD')
+    // ).length;
+
+    // const weekTotal = data.filter(item =>
+    //   moment(item[2]).isBetween(moment().subtract(6, 'days'), moment())
+    // ).length;
+
+    // const monthTotal = data.filter(item => item[2].includes(moment().format('YYYY-MM'))).length;
+
+    // const yearTotal = data.filter(item => item[2].includes(moment().format('YYYY'))).length;
+
+    // return res.status(200).json({
+    //   currentYear: moment().format('YYYY'),
+    //   currentMonth: moment().format('MM'),
+    //   currentDay: moment().format('DD'),
+    //   today: todayTotal,
+    //   yesterday: yesterdayTotal,
+    //   week: weekTotal,
+    //   month: monthTotal,
+    //   year: yearTotal,
+    // });
+    return res.status(200).json(data);
   } catch (error) {
     return res.status(500).send({ message: error.message ?? 'Something went wrong' });
   }

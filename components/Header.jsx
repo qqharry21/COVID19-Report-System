@@ -89,14 +89,14 @@ const Header = () => {
           <a className='btn btn--outline outline-r px-6 py-1'>最新消息</a>
         </Link> */}
         <div className='lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start  flex flex-col lg:h-auto font-bold'>
-          <Link href='/events'>
+          <Link href='/report'>
             <a className='lg:inline-flex lg:w-auto w-full justify-center flex text-black rounded hover:bg-main hover:text-white  px-3 py-2'>
-              活動議程
+              統計資料
             </a>
           </Link>
-          <Link href='/signup'>
+          <Link href='/add'>
             <a className='lg:inline-flex lg:w-auto w-full justify-center flex text-black rounded hover:bg-main hover:text-white  px-3 py-2'>
-              我要報名
+              新增案例
             </a>
           </Link>
         </div>

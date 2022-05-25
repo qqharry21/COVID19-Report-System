@@ -10,19 +10,22 @@ import { AddForm } from '../components/form';
 import { initialAddValues } from '../utils/data';
 import { initialSchema } from '../utils/validate';
 import { onKeyDown, sleep, generateCopyText, checkPatientAge } from '../utils/CommonUtils';
+import useSWR from 'swr';
+import { Error, Loading } from '../components';
 
-export default function AddReport({ maxIds }) {
-  const initialValues = { ...initialAddValues, reportId: parseInt(maxIds?.max_report_id) + 1 };
+export default function AddReport() {
+  const { data, error } = useSWR(`${server}/api/getLatestId`);
   const [copyText, setCopyText] = useState('');
   const router = useRouter();
   const textareaRef = useRef();
 
+  if (error) return <Error />;
+  if (!data) return <Loading />;
+
   function handleSubmit(values, actions) {
     const addValues = {
       ...values,
-      emergency:
-        checkPatientAge(values.patients) ||
-        values.emergency,
+      emergency: checkPatientAge(values.patients) || values.emergency,
     };
 
     //提交表單
@@ -33,7 +36,7 @@ export default function AddReport({ maxIds }) {
       {
         loading: '新增中...',
         success: () => {
-          sleep(1000);
+          sleep(500);
           actions.setSubmitting(false);
           actions.resetForm();
           router.push('/');
@@ -106,7 +109,7 @@ export default function AddReport({ maxIds }) {
     <Layout title='新增案例'>
       <FormLayout>
         <Formik
-          initialValues={initialValues}
+          initialValues={{ ...initialAddValues, reportId: parseInt(data?.max_report_id) + 1 }}
           onSubmit={handleSubmit}
           validationSchema={initialSchema}>
           {formik => {
@@ -211,15 +214,4 @@ export default function AddReport({ maxIds }) {
       </FormLayout>
     </Layout>
   );
-}
-
-export async function getServerSideProps() {
-  const response = await fetch(`${server}/api/getLatestId`);
-
-  const data = await response.json();
-  return {
-    props: {
-      maxIds: data,
-    },
-  };
 }

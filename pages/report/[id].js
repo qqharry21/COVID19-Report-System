@@ -17,13 +17,30 @@ import { EditForm } from '../../components/form';
 import { useRouter } from 'next/router';
 import { statusOptions } from '../../utils/data';
 import axios from 'axios';
-const ReportDetailPage = ({ data }) => {
-  const [copyText, setCopyText] = useState('');
+import useSWR from 'swr';
+import { Error, Loading } from '../../components';
+
+// const fetcher = async (url, id) => {
+
+//   return axios.get(url, { params: { reportId: id } }).then(res => res.data);
+// };
+
+const ReportDetailPage = ({ detail }) => {
   const router = useRouter();
+  // const { id } = router.query;
+
+  // const { data, error } = useSWR(id ? [`${server}/api/getReportDetail`, id] : null, fetcher);
+
+  const [copyText, setCopyText] = useState('');
   const textareaRef = useRef();
+
   const accompany = [];
   const patients = [];
-  data?.patients.forEach(item => {
+
+  // if (error) return <Error />;
+  // if (!data) return <Loading />;
+
+  detail[0]?.patients?.forEach(item => {
     if (item.type === 1) {
       patients.push({
         patientId: item.patientId,
@@ -51,15 +68,15 @@ const ReportDetailPage = ({ data }) => {
       });
     }
   });
+
   const initialValues = {
-    ...data,
+    ...detail[0],
     patients: [...patients],
     accompany: [...accompany],
-    status: getOptionName(statusOptions, data?.status),
+    status: getOptionName(statusOptions, detail[0]?.status),
   };
 
   const handleSubmit = async (values, actions) => {
-    console.log('handleSubmit', values);
     const updateValues = {
       ...values,
       emergency: checkPatientAge(values.patients) || values.emergency,
@@ -73,13 +90,13 @@ const ReportDetailPage = ({ data }) => {
       {
         loading: '更新中...',
         success: () => {
-          sleep(1000);
-          actions.setSubmitting(false);
           router.push('/report');
+          actions.setSubmitting(false);
           return '修改成功';
         },
         error: err => {
           console.log('err', err);
+          actions.setSubmitting(false);
           return '修改失敗，請重整網頁後嘗試';
         },
       }
@@ -140,9 +157,8 @@ const ReportDetailPage = ({ data }) => {
       toast.success('已複製到剪貼簿', { duration: 800 });
     }
   }
-
   return (
-    <Layout title={`案件${data.reportId}`}>
+    <Layout title={`案件${detail[0].reportId}`}>
       <FormLayout>
         <Formik
           initialValues={initialValues}
@@ -167,14 +183,33 @@ const ReportDetailPage = ({ data }) => {
                   }`}>
                   <button
                     type='button'
+                    className='inline-flex btn sm:w-auto btn--outline outline-r items-center group'
+                    onClick={() => {
+                      router.back();
+                    }}>
+                    <p className='sm:text-base'>回上頁</p>
+                    <svg
+                      className='h-5 w-5 ml-2 group-hover:rotate-180 duration-300 ease-in-out transition-all'
+                      width='24'
+                      height='24'
+                      viewBox='0 0 24 24'
+                      strokeWidth='2'
+                      stroke='currentColor'
+                      fill='none'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'>
+                      <path stroke='none' d='M0 0h24v24H0z' />
+                      <path d='M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5' />
+                    </svg>
+                  </button>
+                  <button
+                    type='button'
                     className='inline-flex btn sm:w-auto btn--outline outline-l group'
                     onClick={() => {
-                      // handleCopy(formik);
                       if (!formik.isValid) {
                         toast.error('請先填寫通報表', { icon: '‼️' });
                       } else {
                         formik.validateForm().then(res => {
-                          console.log('res', res);
                           if (Object.keys(res).length === 0) {
                             handleCopy(formik);
                           } else {
@@ -197,28 +232,7 @@ const ReportDetailPage = ({ data }) => {
                       />
                     </svg>
                   </button>
-                  <button
-                    type='submit'
-                    className='inline-flex btn sm:w-auto btn--outline outline-r items-center group'
-                    onClick={() => {
-                      formik.resetForm();
-                      toast.success('已清除表單內容');
-                    }}>
-                    <p className='sm:text-base'>重設</p>
-                    <svg
-                      className='h-5 w-5 ml-2 group-hover:rotate-180 duration-300 ease-in-out transition-all'
-                      width='24'
-                      height='24'
-                      viewBox='0 0 24 24'
-                      strokeWidth='2'
-                      stroke='currentColor'
-                      fill='none'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'>
-                      <path stroke='none' d='M0 0h24v24H0z' />
-                      <path d='M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5' />
-                    </svg>
-                  </button>
+
                   <button
                     type='submit'
                     className={`inline-flex btn sm:w-auto btn--outline outline-r items-center group ${
@@ -255,13 +269,13 @@ const ReportDetailPage = ({ data }) => {
 export default ReportDetailPage;
 
 export const getServerSideProps = async context => {
-  const { reportId } = context.query;
-  const response = await fetch(`${server}/api/getReport?reportId=${reportId}`);
+  const { id } = context.query;
+  const response = await fetch(`${server}/api/getReportDetail?reportId=${id}`);
 
   const data = await response.json();
   return {
     props: {
-      data: data[0],
+      detail: data,
     },
   };
 };
