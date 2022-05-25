@@ -2,24 +2,24 @@
 import { ReportLayout, Layout } from '../../components/layout';
 import { server } from '../../lib/config';
 
-export default function ReportPage({ data, lengths }) {
+export default function ReportPage({ data, total }) {
   return (
     <Layout title='總表'>
-      <ReportLayout data={data} lengths={lengths} />
+      <ReportLayout data={data} total={total} />
     </Layout>
   );
 }
 
 export async function getServerSideProps() {
-  const response = await fetch(`${server}/api/getAllReports`);
-  const response1 = await fetch(`${server}/api/getTotal`);
+  const report_response = await fetch(`${server}/api/getAllReports`);
+  const total_response = await fetch(`${server}/api/getTotal`);
 
-  const data = await response.json();
-  const lengths = await response1.json();
+  const reports = await report_response.json();
+  const total = await total_response.json();
   return {
     props: {
-      data: data,
-      lengths: lengths,
+      data: reports,
+      total: total,
     },
   };
 }

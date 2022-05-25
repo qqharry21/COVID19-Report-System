@@ -5,15 +5,16 @@ import moment from 'moment';
 import { useState, useEffect } from 'react';
 import { ReportTable } from '../report';
 import Image from 'next/image';
-const ReportLayout = ({ data, lengths }) => {
+const ReportLayout = ({ data, total }) => {
   const router = useRouter();
   const date = moment().format('MM/DD');
-  const [filterData, setFilterData] = useState(data);
+  const [reportData, setReportData] = useState(data);
   const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
     setTimeout(() => {
       setMounted(true);
-    }, 2000);
+    }, 1500);
   }, [mounted]);
 
   return (
@@ -38,20 +39,20 @@ const ReportLayout = ({ data, lengths }) => {
               <>
                 <p className=''>
                   今年確診數：
-                  <span className='text-teal-500'>{lengths?.year}</span>
+                  <span className='text-teal-500'>{total?.year}</span>
                 </p>
                 <p className=''>
                   當月確診數：
-                  <span className='text-teal-500'>{lengths?.month}</span>
+                  <span className='text-teal-500'>{total?.month}</span>
                 </p>
                 <p className=''>
-                  當周確診數：<span className='text-teal-500'>{lengths?.week}</span>
+                  當周確診數：<span className='text-teal-500'>{total?.week}</span>
                 </p>
                 <p className=''>
-                  昨日確診數：<span className='text-teal-500'>{lengths?.yesterday}</span>
+                  昨日確診數：<span className='text-teal-500'>{total?.yesterday}</span>
                 </p>
                 <p className='col-span-2 text-center'>
-                  今日確診數：<span className='text-teal-500'>{lengths?.today}</span>
+                  今日確診數：<span className='text-teal-500'>{total?.today}</span>
                 </p>
               </>
             ) : (
@@ -62,7 +63,7 @@ const ReportLayout = ({ data, lengths }) => {
       </div>
       <div className='flex w-full p-4 sm:p-8 justify-center'>
         {mounted || !data ? (
-          <ReportTable data={filterData} />
+          <ReportTable data={reportData} />
         ) : (
           <div className='relative w-full h-20'>
             <Image src='/loader.gif' alt='loading' layout='fill' objectFit='contain' />

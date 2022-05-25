@@ -1,6 +1,5 @@
 /** @format */
-import { google } from 'googleapis';
-import { auth } from '../../lib/google';
+import axios from 'axios';
 
 /**
  *
@@ -16,24 +15,12 @@ const handler = async (req, res) => {
   }
 
   try {
-    const sheets = google.sheets({ version: 'v4', auth });
-    const sheet_response = await sheets.spreadsheets.values.get({
-      spreadsheetId: process.env.GOOGLE_SHEET_ID,
-      range: 'A2:A',
-      valueRenderOption: 'UNFORMATTED_VALUE',
-    });
+    const response = await axios.get(
+      `https://script.google.com/macros/s/AKfycbzxxO7AeMXZBj10yXY4IfZRbCtUac48VXFP82co5qzpyPc2AOidn4hgn6lG60Ay2ded/exec`
+    );
+    const data = await response.data;
 
-    const maxId = sheet_response.data?.values?.flat().length + 1 || 1;
-
-    const sheet1_response = await sheets.spreadsheets.values.get({
-      spreadsheetId: process.env.GOOGLE_SHEET_ID,
-      range: '患者資料!A2:A',
-      valueRenderOption: 'UNFORMATTED_VALUE',
-    });
-
-    const patientMaxId = sheet1_response.data?.values?.flat().length + 1 || 1;
-
-    return res.status(200).json({ max_report_id: maxId, max_patient_id: patientMaxId });
+    return res.status(200).json(data);
   } catch (error) {
     return res.status(500).send({ message: error.message ?? 'Something went wrong' });
   }

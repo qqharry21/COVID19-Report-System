@@ -8,7 +8,7 @@ export const initialData = {
 };
 
 export const initialAddValues = {
-  reportId: '1500',
+  reportId: '',
   method: '',
   category: '',
   date: moment().format('YYYY-MM-DD'),
@@ -23,6 +23,7 @@ export const initialAddValues = {
       symptom: '',
       id: '',
       phone: '',
+      type: 1,
     },
   ],
   car: '',
@@ -44,16 +45,17 @@ export const patientData = {
   symptom: '',
   id: '',
   phone: '',
+  type: 1,
 };
 
 export const accompanyData = {
   name: '',
   relation: '',
   birth: '1999-01-01',
-  age: getAge('1999-01-01'),
   sex: '',
   id: '',
   phone: '',
+  type: 2,
 };
 
 export const table_column = [

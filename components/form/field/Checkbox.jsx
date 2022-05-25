@@ -9,11 +9,10 @@ const Checkbox = ({ field, label, name, id, disabled, isRequired, formik }) => {
       <input
         className='form-check-input'
         type='checkbox'
-        value={true}
         id={id}
         name={name}
+        checked={field.value}
         disabled={disabled}
-        required={isRequired}
         {...formik.getFieldProps(field.name)}
       />
       <label className='text-sm form-check-label inline-block text-gray-800' htmlFor={id}>

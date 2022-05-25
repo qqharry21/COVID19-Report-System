@@ -8,14 +8,16 @@ import {
   captionOptions,
   patientData,
   accompanyData,
+  statusOptions,
 } from '../../utils/data';
 import toast from 'react-hot-toast';
-import { checkPatientAge } from '../../utils/CommonUtils';
-import { CollapseField } from '../';
+import { CollapseField } from '..';
+import { checkPatientAge, getOptionValue } from '../../utils/CommonUtils';
 
 const AddForm = ({ formik, copyText, setCopyText, reference }) => {
   const patientLength = formik.values.patients?.length || 0;
   const accompanyLength = formik.values.accompany?.length || 0;
+  const status = getOptionValue(statusOptions, formik.values.status);
   const handleDelete = (index, length, helpers, min) => {
     if (length === min) {
       toast.error('至少要填寫一筆患者資料', { icon: '🚨' });
@@ -42,12 +44,25 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
             此案件需初報/結報
           </p>
         ))}
+      <strong
+        className={`justify-center flex items-center py-2 px-4 rounded-lg text-lg font-medium w-full sm:w-fit mx-auto ${
+          status === 1
+            ? 'bg-[#fce8b2] text-orange-700'
+            : status === 2
+            ? 'bg-[#b7e1cd] text-green-700'
+            : status === 3
+            ? 'bg-[#e5b8ae] text-red-700'
+            : status === 4
+            ? 'bg-[#d9d2e9] text-purple-700'
+            : ''
+        }`}>
+        {formik.values.status}
+      </strong>
       <div className='grid grid-cols-1 gap-6 gap-y-4 sm:grid-cols-2'>
         <Field
           label='是否為危急個案'
           name='emergency'
           id='emergency'
-          isRequired
           component={Checkbox}
           formik={formik}
         />
@@ -412,6 +427,20 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
               此案件需初報/結報
             </p>
           ))}
+        <strong
+          className={`justify-center flex items-center py-2 px-4 rounded-lg text-lg font-medium w-full sm:w-fit mx-auto ${
+            status === 1
+              ? 'bg-[#fce8b2] text-orange-700'
+              : status === 2
+              ? 'bg-[#b7e1cd] text-green-700'
+              : status === 3
+              ? 'bg-[#e5b8ae] text-red-700'
+              : status === 4
+              ? 'bg-[#d9d2e9] text-purple-700'
+              : ''
+          }`}>
+          {formik.values.status}
+        </strong>
         <p className='text-center font-semibold text-main'>通報表</p>
         <textarea
           className='w-full px-3 py-2 text-sm border-gray-200 rounded-lg'

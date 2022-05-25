@@ -8,7 +8,7 @@ import { statusOptions } from '../../utils/data';
 /**
  * @param {*} req
  * @param {*} res
- * @description Get All reports from google sheet
+ * @description Get All reports from google sheet for reportPage
  * @returns
  */
 
@@ -18,31 +18,31 @@ const handler = async (req, res) => {
   }
 
   try {
-    const response = await fetch(`${server}/api/getLatestId`);
-    const { max_report_id } = await response.json();
+    const latest_response = await fetch(`${server}/api/getLatestId`);
+
+    const latest_data = await latest_response.json();
+
+    const { startIndex, endIndex } = latest_data;
 
     const sheets = google.sheets({ version: 'v4', auth });
     const sheet_response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEET_ID,
-      range: 'A2:L',
+      range: `A${startIndex}:L${endIndex}`,
       valueRenderOption: 'FORMATTED_VALUE',
     });
 
-    const filterData = sheet_response?.data?.values.slice(
-      max_report_id < 11 ? 0 : max_report_id - 11,
-      max_report_id - 1
-    );
+    const data = sheet_response?.data?.values;
 
-    const data = [];
-    filterData.forEach(item => {
-      data.push({
+    const reportData = [];
+    data.forEach(item => {
+      reportData.push({
         index: parseInt(item[0]) + 1,
         id: item[0],
-        status: { name: item[1], value: getOptionValue(statusOptions, item[1]) },
+        status: getOptionValue(statusOptions, item[1]),
         date: item[2],
         time: item[3],
         emergency: { name: item[4], value: item[4] === '是' },
-        patient: item[5],
+        patients: item[5],
         method: item[6],
         category: item[7],
         car: item[8],
@@ -52,7 +52,7 @@ const handler = async (req, res) => {
       });
     });
 
-    return res.status(200).json(data);
+    return res.status(200).json(reportData);
   } catch (error) {
     return res.status(500).send({ message: error.message ?? 'Something went wrong' });
   }
