@@ -44,7 +44,7 @@ export default async function handler(req, res) {
   } = req.body;
 
   const latest_response = await fetch(`${server}/api/getLatestId`);
-  const { max_report_id, max_patient_id } = await latest_response.json();
+  let { max_report_id, max_patient_id } = await latest_response.json();
 
   max_report_id = parseInt(max_report_id) + 1;
   max_patient_id = parseInt(max_patient_id) + 1;
