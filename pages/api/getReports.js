@@ -1,7 +1,6 @@
 /** @format */
 import { google } from 'googleapis';
-import moment from 'moment';
-import { server } from '../../lib/config';
+
 import { auth } from '../../lib/google';
 import { getOptionValue } from '../../utils/CommonUtils';
 import { statusOptions } from '../../utils/data';
@@ -38,6 +37,8 @@ const handler = async (req, res) => {
       range: `A2:L`,
       valueRenderOption: 'FORMATTED_VALUE',
     });
+
+    console.log('sheet_response', sheet_response);
 
     const data = sheet_response?.data?.values;
 

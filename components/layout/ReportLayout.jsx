@@ -129,7 +129,8 @@ const ReportLayout = ({ data }) => {
         </p>
       </div>
       <div className='flex justify-center py-2'>
-        <Link href={`https://docs.google.com/spreadsheets/d/${process.env.GOOGLE_SHEET_ID}/export`}>
+        <Link
+          href={`https://docs.google.com/spreadsheets/d/1g6WrUURvJjMZxmtvPusysen9I2-bfAExnVdq1H63OCY/export`}>
           <button className='btn btn--outline outline-r inline-flex w-fit group' type='button'>
             <p className=''>產出Excel</p>
             <svg
