@@ -38,8 +38,6 @@ const handler = async (req, res) => {
       valueRenderOption: 'FORMATTED_VALUE',
     });
 
-    console.log('sheet_response', sheet_response);
-
     const data = sheet_response?.data?.values;
 
     const reportData = [];
