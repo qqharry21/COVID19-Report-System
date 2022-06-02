@@ -28,7 +28,7 @@ const Header = () => {
           </Link>
           <Link href='/' passHref>
             <h1 className='ml-1 text-2xl md:text-3xl link font-semibold hidden md:flex'>
-              新竹市消防局確診通報系統
+              新竹市消防局常用系統
             </h1>
           </Link>
         </div>
@@ -37,11 +37,43 @@ const Header = () => {
       <div className='md:flex'>
         {/* Navbar */}
         <ul className='hidden md:flex items-center space-x-4 font-bold '>
-          {/* <Link href='/news'>
-            <a className='link--outline link py-2 text-sm md:text-base'>最新消息</a>
-          </Link> */}
+          <Link href='/cans'>
+            <a className='link link--outline py-2 items-center group flex'>
+              <p className='text-sm md:text-base'>常用罐頭</p>
+              <svg
+                className='h-4 md:h-5 w-4 md:w-5  ml-1 md:ml-2 group-hover:text-teal-500'
+                width='24'
+                height='24'
+                viewBox='0 0 24 24'
+                strokeWidth='2'
+                stroke='currentColor'
+                fill='none'
+                strokeLinecap='round'
+                strokeLinejoin='round'>
+                <path stroke='none' d='M0 0h24v24H0z' />
+                <polyline points='12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3' />
+                <line x1='12' y1='12' x2='20' y2='7.5' /> <line x1='12' y1='12' x2='12' y2='21' />
+                <line x1='12' y1='12' x2='4' y2='7.5' />
+              </svg>
+            </a>
+          </Link>
           <Link href='/report'>
-            <a className='link--outline link py-2 text-sm md:text-base'>統計資料</a>
+            <a className='link link--outline py-2 items-center group flex'>
+              <p className='text-sm md:text-base'>統計資料</p>
+              <svg
+                className='h-4 md:h-5 w-4 md:w-5  ml-1 md:ml-2 group-hover:text-teal-500'
+                width='24'
+                height='24'
+                viewBox='0 0 24 24'
+                strokeWidth='2'
+                stroke='currentColor'
+                fill='none'
+                strokeLinecap='round'
+                strokeLinejoin='round'>
+                <path stroke='none' d='M0 0h24v24H0z' /> <line x1='4' y1='19' x2='20' y2='19' />
+                <polyline points='4 15 8 9 12 11 16 6 20 10' />
+              </svg>
+            </a>
           </Link>
           <Link href='/add'>
             <a className='link link--outline py-2 items-center group flex'>
@@ -89,6 +121,11 @@ const Header = () => {
           <a className='btn btn--outline outline-r px-6 py-1'>最新消息</a>
         </Link> */}
         <div className='lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start  flex flex-col lg:h-auto font-bold'>
+          <Link href='/cans'>
+            <a className='lg:inline-flex lg:w-auto w-full justify-center flex text-black rounded hover:bg-main hover:text-white  px-3 py-2'>
+              常用罐頭
+            </a>
+          </Link>
           <Link href='/report'>
             <a className='lg:inline-flex lg:w-auto w-full justify-center flex text-black rounded hover:bg-main hover:text-white  px-3 py-2'>
               統計資料

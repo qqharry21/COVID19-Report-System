@@ -26,7 +26,7 @@ export default function Home() {
 
             <div className='p-8 sm:p-16 lg:p-24'>
               <h1 className='font-bold'>
-                歡迎使用 <p className='text-2xl sm:text-3xl text-main'>確診通報管理系統</p>
+                歡迎使用 <p className='text-2xl sm:text-3xl text-main'>新竹市消防局常用系統</p>
               </h1>
 
               <p className='mt-4 text-gray-600'>

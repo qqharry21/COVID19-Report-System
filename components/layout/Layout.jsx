@@ -15,9 +15,7 @@ const Layout = ({ children, title, description, className }) => {
     <div className='h-screen'>
       <NextSeo
         title={
-          title.includes('首頁')
-            ? '新竹市消防局確診通報系統'
-            : title.concat(' | 新竹市消防局確診通報系統')
+          title.includes('首頁') ? '新竹市消防局常用系統' : title.concat(' | 新竹市消防局常用系統')
         }
         description={description}
         openGraph={{ title, description }}
