@@ -57,7 +57,7 @@ const ReportTable = ({ data }) => {
                   <strong
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium text-center ${
                       row?.status === 1
-                        ? 'bg-[#fce8b2] text-orange-700'
+                        ? 'bg-[#fce8b2] text-orange-600'
                         : row?.status === 2
                         ? 'bg-[#b7e1cd] text-green-700'
                         : row?.status === 3
@@ -79,9 +79,13 @@ const ReportTable = ({ data }) => {
                 <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row?.time}</td>
                 <td
                   className={`p-4 ${
-                    row?.emergency.value ? 'text-red-700' : 'text-gray-700'
+                    row?.emergency === '一般'
+                      ? 'text-gray-700'
+                      : row?.emergency === '嚴重'
+                      ? 'text-purple-700'
+                      : 'text-red-700'
                   } whitespace-nowrap text-center`}>
-                  {row?.emergency.name}
+                  {row?.emergency}
                 </td>
                 <td className='p-4 text-gray-700 text-center w-[135px] block justify-center'>
                   {row?.patients.split('\n').map((patient, index) => (

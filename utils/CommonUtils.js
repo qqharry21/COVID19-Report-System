@@ -60,7 +60,7 @@ function checkPatientAge(array) {
   );
 }
 
-function isEmergency(age) {
+function checkAge(age) {
   return age >= 65 || age <= 11;
 }
 
@@ -93,6 +93,7 @@ function generateCopyText(data) {
     address,
     patients,
     accompany,
+    emergency_detail,
     car,
     hospital,
     emergency,
@@ -107,10 +108,11 @@ function generateCopyText(data) {
   } = data;
   return (
     '報告局長：\n\n' +
+    `【${emergency}個案】:${emergency_detail}\n\n` +
     `消防局受理防疫案件通報${
       data?.status && getOptionValue(statusOptions, data?.status) === 4
         ? '（結報）'
-        : emergency || checkPatientAge(patients)
+        : emergency !== '一般'
         ? '（初報）'
         : ''
     }\n` +
@@ -235,9 +237,9 @@ function checkStatus(status, data) {
 function getPatientAndAccompanyData(mergeArray) {
   return Object.keys(mergeArray)
     .map(key => {
-      if (mergeArray[key].type === 1) {
+      if (mergeArray[key]?.type === 1) {
         return mergeArray[key]?.sex + getAge(mergeArray[key]?.birth) + '歲';
-      } else {
+      } else if (mergeArray[key]?.type === 2) {
         return mergeArray[key]?.sex + getAge(mergeArray[key]?.birth) + '歲（陪同）';
       }
     })
@@ -259,8 +261,6 @@ function generateRemark(time2, time3, time4, time5, hospital) {
   );
 }
 
-function countTotal() {}
-
 export {
   sleep,
   getOptionValue,
@@ -269,7 +269,7 @@ export {
   compareObject,
   parseDateString,
   checkPatientAge,
-  isEmergency,
+  checkAge,
   getAge,
   onKeyDown,
   getStatusColor,

@@ -7,7 +7,7 @@ import {
   generateRemark,
 } from '../../utils/CommonUtils';
 import { auth } from '../../lib/google';
-import { server } from '../../lib/config';
+import axios from '../../lib/axios';
 
 /**
  * @param {*} req
@@ -33,6 +33,7 @@ export default async function handler(req, res) {
     car,
     hospital,
     emergency,
+    emergency_detail,
     member,
     caption,
     time1,
@@ -43,11 +44,14 @@ export default async function handler(req, res) {
     time6,
   } = req.body;
 
-  const latest_response = await fetch(`${server}/api/getLatestId`);
-  let { max_report_id, max_patient_id } = await latest_response.json();
+  const latest_response = await axios(`/getLatestId`).then(res => res.data);
 
-  max_report_id = parseInt(max_report_id) + 1;
-  max_patient_id = parseInt(max_patient_id) + 1;
+  const max_report_id = latest_response.max_report_id
+    ? parseInt(latest_response.max_report_id) + 1
+    : 1;
+  const max_patient_id = latest_response.max_patient_id
+    ? parseInt(latest_response.max_patient_id) + 1
+    : 1;
 
   const currentId = max_report_id !== reportId ? max_report_id : reportId;
   const allPatients = patients.concat(accompany);
@@ -57,7 +61,8 @@ export default async function handler(req, res) {
     checkStatus('未結案', req.body),
     date,
     time,
-    emergency ? '是' : '否',
+    emergency,
+    emergency_detail,
     getPatientAndAccompanyData(allPatients),
     method,
     category,
@@ -82,7 +87,7 @@ export default async function handler(req, res) {
 
     const sheet1_response = await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.GOOGLE_SHEET_ID,
-      range: 'A1:V1',
+      range: 'A1:W1',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [data],
@@ -100,7 +105,7 @@ export default async function handler(req, res) {
               max_patient_id + index,
               currentId,
               person?.name,
-              person.type === 1 ? '患者' : '陪同者',
+              person?.type === 1 ? '患者' : '陪同者',
               person?.sex || '',
               person?.birth || '',
               getAge(person?.birth) || '',

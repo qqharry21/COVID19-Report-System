@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import 'animate.css';
 import '../styles/globals.css';
 import { SWRConfig } from 'swr';
-import axios from 'axios';
+import axios from '../lib/axios';
 
 const fetcher = async (...args) => {
   try {

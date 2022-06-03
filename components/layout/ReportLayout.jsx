@@ -155,4 +155,3 @@ const ReportLayout = ({ data }) => {
 };
 
 export default ReportLayout;
-// 之後 turn to event detail page

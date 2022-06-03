@@ -1,7 +1,6 @@
 /** @format */
 
 import moment from 'moment';
-import { getAge } from './CommonUtils';
 
 export const initialData = {
   title: '新竹市消防局確診通報系統',
@@ -14,7 +13,8 @@ export const initialAddValues = {
   date: moment().format('YYYY-MM-DD'),
   time: moment().format('HH:mm'),
   address: '新竹市',
-  emergency: false,
+  emergency: '一般',
+  emergency_detail: '',
   patients: [
     {
       name: '',
@@ -26,6 +26,7 @@ export const initialAddValues = {
       type: 1,
     },
   ],
+  accompany: [],
   car: '',
   hospital: '',
   time1: '',
@@ -130,8 +131,9 @@ export const sexOptions = [
 ];
 
 export const emergencyOptions = [
-  { name: '是', value: true },
-  { name: '否', value: false },
+  { name: '一般案件', value: '一般' },
+  { name: '嚴重個案', value: '嚴重' },
+  { name: '危急個案', value: '危急' },
 ];
 
 export const captionOptions = [

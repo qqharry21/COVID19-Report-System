@@ -1,17 +1,15 @@
 /** @format */
 
-import React from 'react';
+import React, { useId } from 'react';
 import { getErrorMessage, getErrors } from '../../../utils/validate';
 
-const Select = ({ field, label, options, name, id, isRequired, formik, valueOption }) => {
+const Select = ({ field, label, options, name, isRequired, formik, valueOption }) => {
   const showErrors = getErrors(formik, field) && isRequired;
-
   const error = getErrorMessage(formik, field);
+  const id = useId();
   return (
     <div>
-      <label
-        htmlFor={id}
-        className='block mb-1 text-sm font-medium text-gray-900 dark:text-gray-400'>
+      <label htmlFor={id} className='block text-sm font-medium text-gray-900 dark:text-gray-400'>
         {label}
         {isRequired && <span className='text-red-500 font-medium text-base ml-1'>*</span>}
       </label>

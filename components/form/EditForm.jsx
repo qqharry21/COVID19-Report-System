@@ -9,12 +9,13 @@ import {
   patientData,
   accompanyData,
   statusOptions,
+  emergencyOptions,
 } from '../../utils/data';
 import toast from 'react-hot-toast';
 import { CollapseField } from '..';
 import { checkPatientAge, getOptionValue } from '../../utils/CommonUtils';
 
-const AddForm = ({ formik, copyText, setCopyText, reference }) => {
+const EditForm = ({ formik, copyText, setCopyText, reference }) => {
   const patientLength = formik.values.patients?.length || 0;
   const accompanyLength = formik.values.accompany?.length || 0;
   const status = getOptionValue(statusOptions, formik.values.status);
@@ -47,7 +48,7 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
       <strong
         className={`justify-center flex items-center py-2 px-4 rounded-lg text-lg font-medium w-full sm:w-fit mx-auto ${
           status === 1
-            ? 'bg-[#fce8b2] text-orange-700'
+            ? 'bg-[#fce8b2] text-orange-600'
             : status === 2
             ? 'bg-[#b7e1cd] text-green-700'
             : status === 3
@@ -59,19 +60,36 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
         {formik.values.status}
       </strong>
       <div className='grid grid-cols-1 gap-6 gap-y-4 sm:grid-cols-2'>
-        <Field
-          label='是否為危急個案'
-          name='emergency'
-          id='emergency'
-          component={Checkbox}
-          formik={formik}
-        />
+        <div
+          className={`col-span-1 grid gap-x-2 ${
+            formik.values.emergency !== '一般' ? 'grid-cols-2' : 'grid-cols-1'
+          }`}>
+          <Field
+            label='案件緊急程度'
+            name='emergency'
+            isRequired
+            formik={formik}
+            options={emergencyOptions}
+            component={Select}
+            valueOption
+          />
+          {formik.values.emergency !== '一般' && (
+            <Field
+              label='症狀'
+              name='emergency_detail'
+              placeholder='請填寫'
+              type='text'
+              component={Input}
+              isRequired
+              formik={formik}
+            />
+          )}
+        </div>
         <Field
           label='本案編號'
           name='reportId'
           placeholder=''
           type='text'
-          id='reportId'
           disabled
           component={Input}
           isRequired
@@ -82,7 +100,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
           name='date'
           placeholder='填入日期'
           type='text'
-          id='date'
           component={Input}
           isRequired
           formik={formik}
@@ -92,7 +109,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
           name='time'
           placeholder='填入時間'
           type='text'
-          id='time'
           component={Input}
           isRequired
           formik={formik}
@@ -103,7 +119,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
             label='受理方式'
             name='method'
             options={methodOptions}
-            id='method'
             component={Select}
             isRequired
             formik={formik}
@@ -112,7 +127,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
             label='個案類別'
             options={categoryOptions}
             name='category'
-            id='category'
             component={Select}
             isRequired
             valueOption
@@ -123,7 +137,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
             name='address'
             placeholder='輸入地址'
             type='text'
-            id='address'
             component={Input}
             isRequired
             formik={formik}
@@ -149,7 +162,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
                     name={`patients[${index}].name`}
                     placeholder='輸入姓名'
                     type='text'
-                    id={`name-${index + 1}`}
                     component={Input}
                     isRequired
                     formik={formik}
@@ -158,7 +170,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
                     label='性別'
                     name={`patients[${index}].sex`}
                     options={sexOptions}
-                    id={`sex-${index + 1}`}
                     component={Select}
                     isRequired
                     formik={formik}
@@ -168,7 +179,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
                     name={`patients[${index}].birth`}
                     placeholder='ex : 1999-01-01'
                     type='text'
-                    id={`birth-${index + 1}`}
                     component={Input}
                     index={index}
                     isRequired
@@ -179,7 +189,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
                     name={`patients[${index}].id`}
                     placeholder='輸入身分證字號'
                     type='text'
-                    id={`id-${index + 1}`}
                     component={Input}
                     isRequired
                     formik={formik}
@@ -189,7 +198,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
                     name={`patients[${index}].phone`}
                     placeholder='輸入聯絡電話'
                     type='text'
-                    id={`phone-${index + 1}`}
                     component={Input}
                     formik={formik}
                   />
@@ -198,7 +206,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
                     name={`patients[${index}].symptom`}
                     placeholder='輸入症狀'
                     type='text'
-                    id={`symptom-${index + 1}`}
                     component={Input}
                     isRequired
                     formik={formik}
@@ -247,7 +254,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
                     name={`accompany[${index}].name`}
                     placeholder='輸入姓名'
                     type='text'
-                    id={`accompany-name-${index + 1}`}
                     component={Input}
                     isRequired
                     formik={formik}
@@ -257,7 +263,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
                     name={`accompany[${index}].relation`}
                     placeholder='ex : 兒子'
                     type='text'
-                    id={`accompany-relation-${index + 1}`}
                     component={Input}
                     isRequired
                     formik={formik}
@@ -267,7 +272,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
                     name={`accompany[${index}].birth`}
                     placeholder='ex : 1999-01-01'
                     type='text'
-                    id={`accompany-birth-${index + 1}`}
                     component={Input}
                     formik={formik}
                   />
@@ -275,7 +279,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
                     label='性別'
                     name={`accompany[${index}].sex`}
                     options={sexOptions}
-                    id={`accompany-sex-${index + 1}`}
                     component={Select}
                     formik={formik}
                   />
@@ -284,7 +287,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
                     name={`accompany[${index}].id`}
                     placeholder='輸入身分證字號'
                     type='text'
-                    id={`accompany-id-${index + 1}`}
                     component={Input}
                     formik={formik}
                   />
@@ -293,7 +295,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
                     name={`accompany[${index}].phone`}
                     placeholder='輸入聯絡電話'
                     type='text'
-                    id={`accompany-phone-${index + 1}`}
                     component={Input}
                     formik={formik}
                   />
@@ -328,7 +329,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
           name='car'
           placeholder='ex: 光復92'
           type='text'
-          id='car'
           component={Input}
           formik={formik}
         />
@@ -337,7 +337,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
           name='hospital'
           placeholder='ex: 台大醫院'
           type='text'
-          id='hospital'
           component={Input}
           isRequired
           formik={formik}
@@ -347,7 +346,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
           name='member'
           placeholder='填入傷亡清冊的出勤名單'
           type='text'
-          id='member'
           component={Input}
           formik={formik}
         />
@@ -355,7 +353,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
           label='督導人員'
           name='caption'
           options={captionOptions}
-          id='caption'
           valueOption
           component={Select}
           formik={formik}
@@ -368,7 +365,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
             name='time1'
             placeholder='填入4碼數字'
             type='text'
-            id='time1'
             component={Input}
             formik={formik}
           />
@@ -377,7 +373,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
             name='time2'
             placeholder='填入4碼數字'
             type='text'
-            id='time2'
             component={Input}
             formik={formik}
           />
@@ -386,7 +381,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
             name='time3'
             placeholder='填入4碼數字'
             type='text'
-            id='time3'
             component={Input}
             formik={formik}
           />
@@ -395,7 +389,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
             name='time4'
             placeholder='填入4碼數字'
             type='text'
-            id='time4'
             component={Input}
             formik={formik}
           />
@@ -404,7 +397,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
             name='time5'
             placeholder='填入4碼數字'
             type='text'
-            id='time5'
             component={Input}
             formik={formik}
           />
@@ -413,7 +405,6 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
             name='time6'
             placeholder='填入4碼數字'
             type='text'
-            id='time6'
             component={Input}
             formik={formik}
           />
@@ -455,4 +446,4 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
   );
 };
 
-export default AddForm;
+export default EditForm;

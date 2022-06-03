@@ -2,42 +2,38 @@
 import React, { useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
-import axios from 'axios';
-import { server } from '../lib/config';
+import axios from '../lib/axios';
 import { Layout, FormLayout } from '../components/layout';
 import { Form, Formik } from 'formik';
 import { AddForm } from '../components/form';
 import { initialAddValues } from '../utils/data';
 import { initialSchema } from '../utils/validate';
-import { onKeyDown, sleep, generateCopyText, checkPatientAge } from '../utils/CommonUtils';
-import useSWR from 'swr';
-import { Error, Loading } from '../components';
+import { onKeyDown, sleep, generateCopyText } from '../utils/CommonUtils';
 
-export default function AddReport() {
-  const { data, error } = useSWR(`${server}/api/getLatestId`);
+export default function AddReport({ data }) {
   const [copyText, setCopyText] = useState('');
   const router = useRouter();
   const textareaRef = useRef();
 
-  if (error) return <Error />;
-  if (!data) return <Loading />;
-
   function handleSubmit(values, actions) {
     const addValues = {
       ...values,
-      emergency: checkPatientAge(values.patients) || values.emergency,
+      emergency:
+        // checkPatientAge(values.patients) ||
+        values.emergency,
     };
+
+    console.log('addValues', addValues);
 
     //提交表單
     toast.promise(
-      axios.post(`${server}/api/submit`, addValues).then(async res => {
+      axios.post(`/submit`, addValues).then(async res => {
         console.log(res.status + ' ' + res.statusText);
       }),
       {
         loading: '新增中...',
         success: () => {
           sleep(500);
-          actions.setSubmitting(false);
           actions.resetForm();
           router.push('/');
           return '新增成功';
@@ -48,6 +44,7 @@ export default function AddReport() {
         },
       }
     );
+    actions.setSubmitting(false);
   }
 
   async function handleCopy(formik) {
@@ -109,7 +106,10 @@ export default function AddReport() {
     <Layout title='新增案例'>
       <FormLayout>
         <Formik
-          initialValues={{ ...initialAddValues, reportId: parseInt(data?.max_report_id) + 1 }}
+          initialValues={{
+            ...initialAddValues,
+            reportId: isNaN(data?.max_report_id) ? 1 : parseInt(data?.max_report_id) + 1,
+          }}
           onSubmit={handleSubmit}
           validationSchema={initialSchema}>
           {formik => {
@@ -215,3 +215,12 @@ export default function AddReport() {
     </Layout>
   );
 }
+
+export const getStaticProps = async () => {
+  const data = await axios.get('/getLatestId').then(res => res.data);
+  return {
+    props: {
+      data,
+    },
+  };
+};

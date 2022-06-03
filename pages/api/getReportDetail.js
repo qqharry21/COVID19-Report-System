@@ -3,7 +3,7 @@
 import { getOptionValue } from '../../utils/CommonUtils';
 
 import { statusOptions } from '../../utils/data';
-import axios from 'axios';
+import axios from '../../lib/axios';
 import moment from 'moment';
 
 /**
@@ -60,24 +60,25 @@ const handler = async (req, res) => {
         status: getOptionValue(statusOptions, report[1]),
         date: moment(report[2]).format('YYYY-MM-DD'),
         time: report[3],
-        emergency: report[4] === '是',
+        emergency: report[4],
+        emergency_detail: report[5],
         patients: patientList,
-        method: report[6],
-        category: report[7],
-        car: report[8],
-        member: report[9],
-        remark: report[10],
-        total: report[11],
-        followUp: report[12],
-        address: report[13],
-        caption: report[14],
-        hospital: report[15],
-        time1: report[16],
-        time2: report[17],
-        time3: report[18],
-        time4: report[19],
-        time5: report[20],
-        time6: report[21],
+        method: report[7],
+        category: report[8],
+        car: report[9],
+        member: report[10],
+        remark: report[11],
+        total: report[12],
+        followUp: report[13],
+        address: report[14],
+        caption: report[15],
+        hospital: report[16],
+        time1: report[17],
+        time2: report[18],
+        time3: report[19],
+        time4: report[20],
+        time5: report[21],
+        time6: report[22],
       });
     });
 

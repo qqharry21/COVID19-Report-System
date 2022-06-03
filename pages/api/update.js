@@ -8,7 +8,7 @@ import {
 } from '../../utils/CommonUtils';
 import { auth } from '../../lib/google';
 import { server } from '../../lib/config';
-import axios from 'axios';
+import axios from '../../lib/axios';
 
 /**
  * @param {*} req
@@ -35,6 +35,7 @@ export default async function handler(req, res) {
     car,
     hospital,
     emergency,
+    emergency_detail,
     member,
     caption,
     time1,
@@ -54,7 +55,8 @@ export default async function handler(req, res) {
     checkStatus(status, req.body),
     date,
     time,
-    emergency ? '是' : '否',
+    emergency,
+    emergency_detail,
     getPatientAndAccompanyData(allPatients),
     method,
     category,
@@ -107,7 +109,7 @@ export default async function handler(req, res) {
                     person.patientId,
                     reportId,
                     person?.name,
-                    person.type === 1 ? '患者' : '陪同者',
+                    person?.type === 1 ? '患者' : '陪同者',
                     person?.sex,
                     person?.birth,
                     getAge(person?.birth),
@@ -124,8 +126,7 @@ export default async function handler(req, res) {
         });
       } else {
         // insert patients
-        const latest_response = await fetch(`${server}/api/getLatestId`);
-        let { max_patient_id } = await latest_response.json();
+        const latest_response = await axios(`${server}/api/getLatestId`).then(res => res.data);
         await sheets.spreadsheets.values.append({
           spreadsheetId: process.env.GOOGLE_SHEET_ID,
           range: `患者資料!A1:L1`,
@@ -133,7 +134,7 @@ export default async function handler(req, res) {
           requestBody: {
             values: [
               [
-                max_patient_id + 1,
+                latest_response.max_patient_id + 1,
                 reportId,
                 person?.name,
                 person.type === 1 ? '患者' : '陪同者',
@@ -159,7 +160,7 @@ export default async function handler(req, res) {
         valueInputOption: 'USER_ENTERED',
         data: [
           {
-            range: `A${index}:V${index}`,
+            range: `A${index}:W${index}`,
             majorDimension: 'ROWS',
             values: [data],
           },

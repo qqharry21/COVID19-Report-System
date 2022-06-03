@@ -23,12 +23,12 @@ export const initialSchema = yup.object().shape({
   time: yup.string().matches(timeRegExp, '時間格式錯誤').required('受理時間 不得為空'),
   address: yup.string().required('地址 不得為空'),
   status: yup.string(),
-  emergency: yup.boolean(),
+  emergency: yup.string(),
+  emergency_detail: yup.string(),
   patients: yup
     .array()
     .of(
       yup.object().shape({
-        emergency: yup.boolean(),
         name: yup.string().required('患者姓名 不得為空'),
         age: yup.string(),
         sex: yup.string().required('性別 不得為空'),

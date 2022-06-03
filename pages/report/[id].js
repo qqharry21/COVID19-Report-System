@@ -16,7 +16,7 @@ import toast from 'react-hot-toast';
 import { EditForm } from '../../components/form';
 import { useRouter } from 'next/router';
 import { statusOptions } from '../../utils/data';
-import axios from 'axios';
+import axios from '../../lib/axios';
 import useSWR from 'swr';
 import { Error, Loading } from '../../components';
 
@@ -270,7 +270,7 @@ export default ReportDetailPage;
 
 export const getServerSideProps = async context => {
   const { id } = context.query;
-  const response = await fetch(`${server}/api/getReportDetail?reportId=${id}`);
+  const response = await axios(`/getReportDetail?reportId=${id}`);
 
   const data = await response.json();
   return {

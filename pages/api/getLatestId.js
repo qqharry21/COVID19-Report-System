@@ -1,5 +1,5 @@
 /** @format */
-import axios from 'axios';
+import axios from '../../lib/axios';
 
 /**
  *

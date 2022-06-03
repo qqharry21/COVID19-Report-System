@@ -34,7 +34,7 @@ const handler = async (req, res) => {
     const sheets = google.sheets({ version: 'v4', auth });
     const sheet_response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEET_ID,
-      range: `A2:L`,
+      range: `A2:M`,
       valueRenderOption: 'FORMATTED_VALUE',
     });
 
@@ -48,14 +48,15 @@ const handler = async (req, res) => {
         status: getOptionValue(statusOptions, item[1]),
         date: item[2],
         time: item[3],
-        emergency: { name: item[4], value: item[4] === '是' },
-        patients: item[5],
-        method: item[6],
-        category: item[7],
-        car: item[8],
-        member: item[9],
-        remark: item[10],
-        total: item[11],
+        emergency: item[4],
+        emergency_detail: item[5],
+        patients: item[6],
+        method: item[7],
+        category: item[8],
+        car: item[9],
+        member: item[10],
+        remark: item[11],
+        total: item[12],
       });
     });
 
