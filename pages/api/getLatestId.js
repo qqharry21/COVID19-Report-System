@@ -15,16 +15,17 @@ const handler = async (req, res) => {
   }
 
   try {
-    const response = await axios.get(
-      `https://script.google.com/macros/s/AKfycbzxxO7AeMXZBj10yXY4IfZRbCtUac48VXFP82co5qzpyPc2AOidn4hgn6lG60Ay2ded/exec`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-      }
-    );
-    const data = await response.data;
+    const data = await axios
+      .get(
+        `https://script.google.com/macros/s/AKfycbzxxO7AeMXZBj10yXY4IfZRbCtUac48VXFP82co5qzpyPc2AOidn4hgn6lG60Ay2ded/exec`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+        }
+      )
+      .then(res => res.data);
 
     return res.status(200).json(data);
   } catch (error) {

@@ -21,16 +21,16 @@ const handler = async (req, res) => {
   try {
     const { reportId } = req.query;
 
-    const response = await axios.get(
-      'https://script.google.com/macros/s/AKfycbzafDZ0xNYyOZ473BHwAnu6BC_UNZmTpQJ3WfryvB12hdb2aCIRFTjfbp9pczxXOAlbdw/exec',
-      {
-        params: {
-          reportId: reportId,
-        },
-      }
-    );
-
-    const data = await response.data;
+    const data = await axios
+      .get(
+        'https://script.google.com/macros/s/AKfycbzafDZ0xNYyOZ473BHwAnu6BC_UNZmTpQJ3WfryvB12hdb2aCIRFTjfbp9pczxXOAlbdw/exec',
+        {
+          params: {
+            reportId: reportId,
+          },
+        }
+      )
+      .then(res => res.data);
 
     const patientData = data.patientData.flat();
 

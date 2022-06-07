@@ -9,7 +9,7 @@ const Loading = () => {
     <Layout title='加載中..'>
       <div className='flex h-screen mx-auto items-center'>
         <div className='relative w-40 h-40'>
-          <Image src='/loader.gif' alt='loading' layout='fill' objectFit='contain' />
+          <Image src='/loader.gif' alt='loading' layout='fill' objectFit='contain' priority />
         </div>
       </div>
     </Layout>

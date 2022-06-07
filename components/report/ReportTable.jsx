@@ -87,6 +87,9 @@ const ReportTable = ({ data }) => {
                   } whitespace-nowrap text-center`}>
                   {row?.emergency}
                 </td>
+                <td className='p-4 text-gray-700 whitespace-nowrap text-center'>
+                  {row?.emergency_detail}
+                </td>
                 <td className='p-4 text-gray-700 text-center w-[135px] block justify-center'>
                   {row?.patients.split('\n').map((patient, index) => (
                     <p key={index} className='text-sm'>

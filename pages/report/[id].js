@@ -270,9 +270,8 @@ export default ReportDetailPage;
 
 export const getServerSideProps = async context => {
   const { id } = context.query;
-  const response = await axios(`/getReportDetail?reportId=${id}`);
+  const data = await axios(`/getReportDetail?reportId=${id}`).then(res => res.data);
 
-  const data = await response.json();
   return {
     props: {
       detail: data,
