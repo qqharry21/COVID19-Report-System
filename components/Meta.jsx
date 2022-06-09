@@ -19,6 +19,8 @@ const Meta = ({ keywords, description, image }) => {
       {/* <meta name='fb:app_id' content='' /> */}
 
       <link rel='icon' href='/logo.png' />
+      <link rel='preconnect' href='https://fonts.googleapis.com' />
+      <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin />
     </Head>
   );
 };

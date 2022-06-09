@@ -12,7 +12,7 @@ const Input = ({ field, label, placeholder, name, type, formik, isRequired, disa
     <div>
       <label className='text-sm font-medium' htmlFor={id}>
         {label}
-        {isRequired && <span className='text-red-500 font-medium text-base ml-1'>*</span>}
+        {isRequired && <span className='ml-1 text-base font-medium text-red-500'>*</span>}
       </label>
       <input
         className={`w-full p-3 text-sm border-gray-200 rounded-lg ${
@@ -26,7 +26,7 @@ const Input = ({ field, label, placeholder, name, type, formik, isRequired, disa
         disabled={disabled}
         {...formik.getFieldProps(field.name)}
       />
-      {showErrors ? <p className='text-red-500 text-xs mt-1 font-medium'>{error}</p> : null}
+      {showErrors ? <p className='mt-1 text-xs font-medium text-red-500'>{error}</p> : null}
     </div>
   );
 };
@@ -47,7 +47,7 @@ const Textarea = ({ label, name, placeholder, field, formik, size }) => {
         name={name}
         id={id}
         {...formik.getFieldProps(field.name)}></textarea>
-      {showErrors ? <p className='text-red-500 text-xs mt-1 font-medium'>{error}</p> : null}
+      {showErrors ? <p className='mt-1 text-xs font-medium text-red-500'>{error}</p> : null}
     </div>
   );
 };

@@ -6,6 +6,14 @@ export const initialData = {
   title: '新竹市消防局確診通報系統',
 };
 
+export const initialFilter = {
+  method: [],
+  emergency: [],
+  category: [],
+  age: { old: false, young: false },
+  option: 'all',
+};
+
 export const initialAddValues = {
   reportId: '',
   method: '',
@@ -81,12 +89,12 @@ export const methodOptions = [
     value: 1,
   },
   {
-    name: '消防局自行受理',
-    value: 2,
-  },
-  {
     name: '衛生局通報',
     value: 3,
+  },
+  {
+    name: '消防局自行受理',
+    value: 2,
   },
 ];
 

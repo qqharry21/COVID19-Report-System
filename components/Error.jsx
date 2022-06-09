@@ -7,12 +7,12 @@ import { Layout } from './layout';
 const Error = () => {
   return (
     <Layout title='錯誤'>
-      <div className='flex h-screen mx-auto items-center'>
-        <div className='relative py-8 px-20 text-center border bg-white border-gray-200 rounded-lg flex flex-col space-y-6'>
-          <h2 className='font-medium flex justify-center items-center '>
+      <div className='flex items-center h-screen mx-auto'>
+        <div className='relative flex flex-col px-20 py-8 text-center bg-white border border-gray-200 rounded-lg space-y-6'>
+          <h2 className='flex items-center justify-center font-medium '>
             <span className='mr-4'>
               <svg
-                className='h-10 w-10 text-teal-500'
+                className='w-10 h-10 text-teal-500'
                 width='24'
                 height='24'
                 viewBox='0 0 24 24'

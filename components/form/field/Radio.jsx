@@ -30,7 +30,7 @@ const RadioLarge = ({ title, name, id }) => {
       />
 
       <label
-        className='flex items-center justify-between p-4 text-sm font-medium transition-colors border border-gray-100 rounded-lg shadow-sm cursor-pointer peer-checked:border-main hover:bg-gray-50 peer-checked:ring-1 peer-checked:ring-main'
+        className='flex items-center justify-between p-4 text-sm font-medium border border-gray-100 rounded-lg cursor-pointer transition-colors shadow-sm peer-checked:border-main hover:bg-gray-50 peer-checked:ring-1 peer-checked:ring-main'
         htmlFor='standard'>
         <span> Standard </span>
 
@@ -52,7 +52,7 @@ const RadioCheck = ({ title, field, text, name, id, formik }) => {
       />
 
       <label
-        className='block p-4 text-sm font-medium transition-colors border border-gray-100 rounded-lg shadow-sm cursor-pointer peer-checked:border-main hover:bg-gray-50 peer-checked:ring-1 peer-checked:ring-main'
+        className='block p-4 text-sm font-medium border border-gray-100 rounded-lg cursor-pointer transition-colors shadow-sm peer-checked:border-main hover:bg-gray-50 peer-checked:ring-1 peer-checked:ring-main'
         htmlFor={id}>
         <span> {title} </span>
 
@@ -77,9 +77,9 @@ const RadioCheck = ({ title, field, text, name, id, formik }) => {
 const Radio = element => {
   return (
     <div className=''>
-      <p className='text-sm font-medium mb-1'>
+      <p className='mb-1 text-sm font-medium'>
         {element.label}
-        {element.isRequired && <span className='text-red-500 font-medium text-lg ml-1'>*</span>}
+        {element.isRequired && <span className='ml-1 text-lg font-medium text-red-500'>*</span>}
       </p>
 
       <div className='grid grid-cols-4 gap-4'>

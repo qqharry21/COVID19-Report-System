@@ -60,6 +60,12 @@ const handler = async (req, res) => {
       });
     });
 
+    reportData.sort((a, b) => {
+      if (parseInt(a.id) < parseInt(b.id)) return 1;
+      if (parseInt(a.id) > parseInt(b.id)) return -1;
+      return 0;
+    });
+
     return res.status(200).json(reportData);
   } catch (error) {
     return res.status(500).send({ message: error.message ?? 'Something went wrong' });

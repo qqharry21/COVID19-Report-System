@@ -16,18 +16,18 @@ const Header = () => {
     }
   }, [isBigScreen]);
   return (
-    <div className='p-4 flex-wrap justify-between flex items-center bg-white relative shadow-lg z-10'>
+    <div className='relative z-10 flex flex-wrap items-center justify-between p-4 bg-white shadow-lg'>
       {/* Left */}
       <div className='flex'>
         {/* Logo */}
-        <div className='mx-1 text-main items-center flex'>
+        <div className='flex items-center mx-1 text-main'>
           <Link href='/' passHref>
             <div className='relative w-48 h-16 link'>
               <Image src='/logo.gif' alt='logo' layout='fill' objectFit='contain' />
             </div>
           </Link>
           {/* <Link href='/' passHref>
-              <h1 className='ml-1 text-2xl md:text-3xl link font-semibold hidden md:flex'>
+              <h1 className='hidden ml-1 text-2xl font-semibold md:text-3xl link md:flex'>
               新竹市消防局常用系統
               </h1>
            </Link> */}
@@ -36,12 +36,12 @@ const Header = () => {
       {/* Right */}
       <div className='md:flex'>
         {/* Navbar */}
-        <ul className='hidden md:flex items-center space-x-4 font-bold '>
+        <ul className='items-center hidden font-bold md:flex space-x-4 '>
           <Link href='/cans'>
-            <a className='link link--outline py-2 items-center group flex'>
+            <a className='flex items-center py-2 link link--outline group'>
               <p className='text-sm md:text-base'>常用罐頭</p>
               <svg
-                className='h-4 md:h-5 w-4 md:w-5  ml-1 md:ml-2 group-hover:text-teal-500'
+                className='w-4 h-4 ml-1 md:h-5 md:w-5  md:ml-2 group-hover:text-teal-500'
                 width='24'
                 height='24'
                 viewBox='0 0 24 24'
@@ -58,10 +58,10 @@ const Header = () => {
             </a>
           </Link>
           <Link href='/report'>
-            <a className='link link--outline py-2 items-center group flex'>
+            <a className='flex items-center py-2 link link--outline group'>
               <p className='text-sm md:text-base'>統計資料</p>
               <svg
-                className='h-4 md:h-5 w-4 md:w-5  ml-1 md:ml-2 group-hover:text-teal-500'
+                className='w-4 h-4 ml-1 md:h-5 md:w-5  md:ml-2 group-hover:text-teal-500'
                 width='24'
                 height='24'
                 viewBox='0 0 24 24'
@@ -76,10 +76,10 @@ const Header = () => {
             </a>
           </Link>
           <Link href='/add'>
-            <a className='link link--outline py-2 items-center group flex'>
+            <a className='flex items-center py-2 link link--outline group'>
               <p className='text-sm md:text-base'>新增案例</p>
               <svg
-                className='h-4 md:h-5 w-4 md:w-5  ml-1 md:ml-2 group-hover:text-teal-500'
+                className='w-4 h-4 ml-1 md:h-5 md:w-5  md:ml-2 group-hover:text-teal-500'
                 viewBox='0 0 24 24'
                 fill='none'
                 stroke='currentColor'
@@ -93,7 +93,7 @@ const Header = () => {
             </a>
           </Link>
         </ul>
-        <button className='items-center flex md:hidden' onClick={() => setIsOpen(prev => !prev)}>
+        <button className='flex items-center md:hidden' onClick={() => setIsOpen(prev => !prev)}>
           {isOpen ? (
             <svg className='icon-btn' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
               <path
@@ -118,21 +118,21 @@ const Header = () => {
       {/* Dropdown */}
       <div className={`${isOpen ? '' : 'hidden'} w-full  lg:flex-grow lg:w-auto`}>
         {/* <Link href='/'>
-          <a className='btn btn--outline outline-r px-6 py-1'>最新消息</a>
+          <a className='px-6 py-1 btn btn--outline outline-r'>最新消息</a>
         </Link> */}
-        <div className='lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start  flex flex-col lg:h-auto font-bold'>
+        <div className='flex flex-col items-start w-full font-bold lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto lg:items-center  lg:h-auto'>
           <Link href='/cans'>
-            <a className='lg:inline-flex lg:w-auto w-full justify-center flex text-black rounded hover:bg-main hover:text-white  px-3 py-2'>
+            <a className='flex justify-center w-full px-3 py-2 text-black rounded lg:inline-flex lg:w-auto hover:bg-main hover:text-white '>
               常用罐頭
             </a>
           </Link>
           <Link href='/report'>
-            <a className='lg:inline-flex lg:w-auto w-full justify-center flex text-black rounded hover:bg-main hover:text-white  px-3 py-2'>
+            <a className='flex justify-center w-full px-3 py-2 text-black rounded lg:inline-flex lg:w-auto hover:bg-main hover:text-white '>
               統計資料
             </a>
           </Link>
           <Link href='/add'>
-            <a className='lg:inline-flex lg:w-auto w-full justify-center flex text-black rounded hover:bg-main hover:text-white  px-3 py-2'>
+            <a className='flex justify-center w-full px-3 py-2 text-black rounded lg:inline-flex lg:w-auto hover:bg-main hover:text-white '>
               新增案例
             </a>
           </Link>

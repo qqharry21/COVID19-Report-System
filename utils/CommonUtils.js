@@ -31,17 +31,29 @@ function checkProperties(obj) {
   return true;
 }
 
-function compareObject(object1, object2) {
-  const keys1 = Object.keys(object1);
-  const keys2 = Object.keys(object2);
-  if (keys1.length !== keys2.length) {
+function isObjectEqual(a, b) {
+  // Create arrays of property names
+  var aProps = Object.getOwnPropertyNames(a);
+  var bProps = Object.getOwnPropertyNames(b);
+
+  // If number of properties is different,
+  // objects are not equivalent
+  if (aProps.length != bProps.length) {
     return false;
   }
-  for (let key of keys1) {
-    if (object1[key] !== object2[key]) {
+
+  for (var i = 0; i < aProps.length; i++) {
+    var propName = aProps[i];
+
+    // If values of same property are not equal,
+    // objects are not equivalent
+    if (a[propName] !== b[propName]) {
       return false;
     }
   }
+
+  // If we made it this far, objects
+  // are considered equivalent
   return true;
 }
 
@@ -266,7 +278,7 @@ export {
   getOptionValue,
   getOptionName,
   checkProperties,
-  compareObject,
+  isObjectEqual,
   parseDateString,
   checkPatientAge,
   checkAge,

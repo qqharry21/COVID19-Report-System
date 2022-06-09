@@ -9,7 +9,7 @@ export default function Home() {
       <div className='px-4 py-4 mx-auto max-w-screen-2xl sm:px-6 lg:px-8'>
         <div className='grid grid-cols-1 lg:grid-cols-2 lg:h-screen'>
           <div className='relative z-10 lg:py-16'>
-            <div className='relative h-64 sm:h-80 lg:h-full shadow-lg'>
+            <div className='relative h-64 shadow-lg sm:h-80 lg:h-full'>
               <Image
                 className='absolute inset-0 object-cover w-full h-full rounded-t-lg lg:rounded-lg '
                 src='/home.jpg'
@@ -22,7 +22,7 @@ export default function Home() {
           </div>
 
           <div className='relative flex items-center bg-gray-100 rounded-b-lg lg:rounded-lg'>
-            <span className='hidden lg:inset-y-0 lg:absolute lg:w-16 lg:bg-gray-100 lg:block lg:-left-16 rounded-l-lg'></span>
+            <span className='hidden rounded-l-lg lg:inset-y-0 lg:absolute lg:w-16 lg:bg-gray-100 lg:block lg:-left-16'></span>
 
             <div className='p-8 sm:p-16 lg:p-24'>
               <h1 className='font-bold'>

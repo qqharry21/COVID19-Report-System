@@ -27,7 +27,7 @@ const CollapseField = ({ children, data, index, label, title, handleDelete }) =>
       id={`${label}-${index + 1}`}>
       {/* Title */}
       <div
-        className='justify-between flex items-center w-full cursor-pointer'
+        className='flex items-center justify-between w-full cursor-pointer'
         onClick={() => {
           setIsOpen(prev => !prev);
         }}>
@@ -46,15 +46,15 @@ const CollapseField = ({ children, data, index, label, title, handleDelete }) =>
             <polyline points='6 15 12 9 18 15' />
           </svg>
         </button>
-        <h3 className=' text-main font-extrabold'>
+        <h3 className='font-extrabold  text-main'>
           {title} {index + 1}
         </h3>
         <button
-          className=' col-span-1 sm:col-span-2 w-fit z-10'
+          className='z-10  col-span-1 sm:col-span-2 w-fit'
           type='button'
           onClick={handleDelete}>
           <svg
-            className='h-5 w-5 text-main hover:text-teal-500'
+            className='w-5 h-5 text-main hover:text-teal-500'
             viewBox='0 0 24 24'
             fill='none'
             stroke='currentColor'
@@ -71,7 +71,7 @@ const CollapseField = ({ children, data, index, label, title, handleDelete }) =>
       {/* Alert (患者才需要標記) */}
       {label === 'patient' && checkAge(getAge(data.birth)) ? (
         <div className='col-span-1 sm:col-span-2 space-y-4'>
-          <p className='justify-center flex items-center bg-red-500 p-2 text-white rounded-lg w-full sm:w-fit text-xs mx-auto'>
+          <p className='flex items-center justify-center w-full p-2 mx-auto text-xs text-white bg-red-500 rounded-lg sm:w-fit'>
             65歲以上/11歲以下
           </p>
         </div>

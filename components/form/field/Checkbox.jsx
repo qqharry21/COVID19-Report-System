@@ -1,11 +1,11 @@
 /** @format */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useId, useState } from 'react';
 import { getErrorMessage, getErrors } from '../../../utils/validate';
 
 const Checkbox = ({ field, label, name, id, disabled, isRequired, formik }) => {
   return (
-    <div className='items-center flex'>
+    <div className='flex items-center'>
       <input
         className='form-check-input'
         type='checkbox'
@@ -15,7 +15,7 @@ const Checkbox = ({ field, label, name, id, disabled, isRequired, formik }) => {
         disabled={disabled}
         {...formik.getFieldProps(field.name)}
       />
-      <label className='text-sm form-check-label inline-block text-gray-800' htmlFor={id}>
+      <label className='inline-block text-sm text-gray-800 form-check-label' htmlFor={id}>
         {label}
       </label>
     </div>
@@ -25,13 +25,13 @@ const Checkbox = ({ field, label, name, id, disabled, isRequired, formik }) => {
 const CheckboxElement = ({ title, text }) => {
   return (
     <>
-      <label className='block p-4 text-sm font-medium transition-colors border border-gray-100 rounded-lg shadow-sm cursor-pointer peer-checked:border-main hover:bg-gray-50 peer-checked:ring-1 peer-checked:ring-main h-full'>
+      <label className='block h-full p-4 text-sm font-medium transition-colors border border-gray-100 rounded-lg shadow-sm cursor-pointer peer-checked:border-main hover:bg-gray-50 peer-checked:ring-1 peer-checked:ring-main'>
         <span> {title} </span>
 
         <span className='block mt-1 text-xs text-gray-500'>{text}</span>
       </label>
       <svg
-        className='absolute w-5 h-5 text-main opacity-0 bottom-4 right-4 peer-checked:opacity-100 z-10'
+        className='absolute z-10 w-5 h-5 opacity-0 text-main bottom-4 right-4 peer-checked:opacity-100'
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 20 20'
         fill='currentColor'>
@@ -101,15 +101,15 @@ const MutiCheckbox = element => {
 
   return (
     <div className=''>
-      <div className='flex justify-between items-center'>
-        <p className='text-sm font-medium mb-1'>
+      <div className='flex items-center justify-between'>
+        <p className='mb-1 text-sm font-medium'>
           {label}
-          {isRequired && <span className='text-red-500 font-medium text-lg ml-1'>*</span>}
+          {isRequired && <span className='ml-1 text-lg font-medium text-red-500'>*</span>}
         </p>
         <p className='text-xs text-gray-500'>請至少選填一個</p>
       </div>
 
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
+      <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
         {options?.map((attr, index) => {
           let option = React.cloneElement(checkbox, element);
           option = React.cloneElement(option, attr);
@@ -138,9 +138,34 @@ const MutiCheckbox = element => {
         required={isRequired}
         {...formik.getFieldProps(field.name)}
       />
-      {showErrors ? <p className='text-red-500 text-xs mt-1 font-medium'>{error}</p> : null}
+      {showErrors ? <p className='mt-1 text-xs font-medium text-red-500'>{error}</p> : null}
     </div>
   );
 };
 
-export { Checkbox, MutiCheckbox, CheckboxElement };
+const FilterCheckbox = ({ field, form, label, ...rest }) => {
+  const id = useId();
+  const { setFieldValue } = form;
+  const { name, value: formikValue } = field;
+  const handleChange = e => {
+    const { checked } = e.target;
+    setFieldValue(name, checked);
+  };
+  return (
+    <li>
+      <label className='flex items-center text-sm' htmlFor={id}>
+        <input
+          type='checkbox'
+          id={id}
+          className='w-6 h-6 border border-gray-200 rounded-md'
+          checked={formikValue}
+          onChange={handleChange}
+          {...rest}
+        />
+        <span className='ml-3 text-sm'>{label}</span>
+      </label>
+    </li>
+  );
+};
+
+export { Checkbox, MutiCheckbox, CheckboxElement, FilterCheckbox };

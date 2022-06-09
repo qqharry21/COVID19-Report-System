@@ -4,9 +4,9 @@ import React from 'react';
 
 const Success = ({ onFinish, type }) => {
   return (
-    <section className='shadow-2xl rounded-3xl max-w-screen-md w-full'>
+    <section className='w-full shadow-2xl rounded-3xl max-w-screen-md'>
       <div className='p-8 text-center sm:p-12'>
-        <p className='font-semibold tracking-widest text-main uppercase flex space-x-2 justify-center items-center'>
+        <p className='flex items-center justify-center font-semibold tracking-widest uppercase text-main space-x-2'>
           <span className='-scale-x-100'>🎉</span>
           <span className=''>報名成功</span>
           <span className=''>🎉</span>
@@ -18,7 +18,7 @@ const Success = ({ onFinish, type }) => {
         </h5>
 
         <button
-          className='inline-flex justify-center items-center w-full py-4 mt-8 font-bold btn btn--outline outline-r rounded-full shadow-md hover:shadow-xl duration-200 transition-shadow ease-in-out'
+          className='inline-flex items-center justify-center w-full py-4 mt-8 font-bold rounded-full shadow-md btn btn--outline outline-r hover:shadow-xl duration-200 transition-shadow ease-in-out'
           onClick={onFinish}>
           查看其他活動
           <svg

@@ -23,8 +23,6 @@ export default function AddReport({ data }) {
         values.emergency,
     };
 
-    console.log('addValues', addValues);
-
     //提交表單
     toast.promise(
       axios.post(`/submit`, addValues).then(async res => {
@@ -58,10 +56,10 @@ export default function AddReport({ data }) {
             className={`${
               t.visible ? 'animate-enter' : 'animate-leave'
             } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex flex-col ring-1 ring-black ring-opacity-5`}>
-            <div className='w-full p-4 flex justify-center border-b border-gray-200'>
+            <div className='flex justify-center w-full p-4 border-b border-gray-200'>
               <div className='flex items-center'>
                 <p className='text-2xl'>❓</p>
-                <div className='ml-3 flex-1'>
+                <div className='flex-1 ml-3'>
                   <p className='text-base font-medium text-gray-900'>通報表資料有更動</p>
                   <p className='mt-1 text-sm text-gray-500'>
                     是否取代舊有的值(輸入匡內即為舊有值）
@@ -77,7 +75,7 @@ export default function AddReport({ data }) {
                   navigator.clipboard.writeText(text);
                   toast.success('已複製至剪貼簿', { id: confirm, duration: 1000 });
                 }}
-                className='btn btn--outline outline-l w-full border border-transparent rounded-none rounded-l-lg p-4 flex items-center justify-center text-sm font-medium text-main hover:text-white focus:outline-none focus:ring-2 focus:ring-main/50'>
+                className='flex items-center justify-center w-full p-4 text-sm font-medium border border-transparent rounded-none rounded-l-lg btn btn--outline outline-l text-main hover:text-white focus:outline-none focus:ring-2 focus:ring-main/50'>
                 是
               </button>
               <button
@@ -87,7 +85,7 @@ export default function AddReport({ data }) {
                   navigator.clipboard.writeText(currentText);
                   toast.success('已複製到剪貼簿', { id: confirm, duration: 1000 });
                 }}
-                className='btn btn--outline outline-r w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-main hover:text-white focus:outline-none focus:ring-2 focus:ring-main/50'>
+                className='flex items-center justify-center w-full p-4 text-sm font-medium border border-transparent rounded-none rounded-r-lg btn btn--outline outline-r text-main hover:text-white focus:outline-none focus:ring-2 focus:ring-main/50'>
                 否
               </button>
             </div>
@@ -149,7 +147,7 @@ export default function AddReport({ data }) {
                     }}>
                     <p className='sm:text-base'>複製</p>
                     <svg
-                      className='h-5 w-5 ml-2 group-hover:animate-bounce duration-300 ease-in-out transition-all'
+                      className='w-5 h-5 ml-2 transition-all duration-300 ease-in-out group-hover:animate-bounce'
                       fill='none'
                       viewBox='0 0 24 24'
                       stroke='currentColor'>
@@ -163,14 +161,14 @@ export default function AddReport({ data }) {
                   </button>
                   <button
                     type='submit'
-                    className='inline-flex btn sm:w-auto btn--outline outline-r items-center group'
+                    className='inline-flex items-center btn sm:w-auto btn--outline outline-r group'
                     onClick={() => {
                       formik.resetForm();
                       toast.success('已清除表單內容');
                     }}>
                     <p className='sm:text-base'>重設</p>
                     <svg
-                      className='h-5 w-5 ml-2 group-hover:rotate-180 duration-300 ease-in-out transition-all'
+                      className='w-5 h-5 ml-2 transition-all duration-300 ease-in-out group-hover:rotate-180'
                       width='24'
                       height='24'
                       viewBox='0 0 24 24'
@@ -194,7 +192,7 @@ export default function AddReport({ data }) {
                     <p className='sm:text-base'>送出</p>
                     <svg
                       xmlns='http://www.w3.org/2000/svg'
-                      className='w-5 h-5 ml-2 group-hover:translate-x-2 duration-300 ease-in-out transition-all'
+                      className='w-5 h-5 ml-2 transition-all duration-300 ease-in-out group-hover:translate-x-2'
                       fill='none'
                       viewBox='0 0 24 24'
                       stroke='currentColor'>

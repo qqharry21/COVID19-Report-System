@@ -11,7 +11,7 @@ const TableColumns = ({ row }) => {
     <tr>
       <td className='sticky left-0 p-4 bg-white'>
         <Link href={`/report&reportId?=${row.index}`} passHref>
-          <svg className='h-5 w-5 link' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+          <svg className='w-5 h-5 link' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
             <path
               strokeLinecap='round'
               strokeLinejoin='round'
@@ -26,27 +26,27 @@ const TableColumns = ({ row }) => {
           {row.status.name}
         </strong>
       </td>
-      <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row.id}</td>
+      <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row.id}</td>
       <td
         className={`p-4 font-medium ${
           row.date === moment().format('YYYY-MM-DD') ? 'text-main' : 'text-gray-900'
         } whitespace-nowrap text-center`}>
         {row.date}
       </td>
-      <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row.time}</td>
+      <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row.time}</td>
       <td
         className={`p-4 ${
           row.emergency.value ? 'text-red-700' : 'text-gray-700'
         } whitespace-nowrap text-center`}>
         {row.emergency.name}
       </td>
-      <td className='p-4 text-gray-700 text-center'>{row.patient}</td>
-      <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row.method}</td>
-      <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row.category}</td>
-      <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row.car}</td>
-      <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row.member}</td>
-      <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row.remark}</td>
-      <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row.total}</td>
+      <td className='p-4 text-center text-gray-700'>{row.patient}</td>
+      <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row.method}</td>
+      <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row.category}</td>
+      <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row.car}</td>
+      <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row.member}</td>
+      <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row.remark}</td>
+      <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row.total}</td>
     </tr>
   );
 };

@@ -5,24 +5,22 @@ import moment from 'moment';
 import { useState, useEffect, useRef } from 'react';
 import { ReportTable } from '../report';
 import Link from 'next/link';
+import FilterDropdown from '../FilterDropdown';
+import { initialFilter } from '../../utils/data';
 
 const ReportLayout = ({ data }) => {
   const router = useRouter();
   const date = moment().format('MM/DD');
-  const [showLength, setShowLength] = useState(() => {
-    if (data?.length > 10) return 10;
-    else return data?.length;
-  });
+
   const [todayLength, setTodayLength] = useState(0);
   const [yesterdayLength, setYesterdayLength] = useState(0);
   const [reportData, setReportData] = useState([]);
   const [emergencyData, setEmergencyData] = useState([]);
   const [searchString, setSearchString] = useState('');
+  const [filter, setFilter] = useState(initialFilter);
 
-  const handleShowLength = length => {
-    if (data?.length < length) setShowLength(data?.length);
-    else setShowLength(length);
-    let details = document.getElementById('detail_length');
+  const closeDropdown = () => {
+    let details = document.getElementById('filter');
     details.removeAttribute('open');
   };
 
@@ -46,39 +44,117 @@ const ReportLayout = ({ data }) => {
   }, []);
 
   useEffect(() => {
+    console.log('filter', filter);
+
     if (searchString) {
-      const filterData = data.filter(item => {
-        return item?.id === searchString || item?.date.replace(/-/g, '').slice(-4) === searchString;
+      // 全部資料
+      const searchData = data.filter(item => {
+        return (
+          item?.id.includes(searchString) || item?.date.replace(/-/g, '').slice(-4) === searchString
+        );
       });
-      setReportData(filterData.slice(0 - showLength));
+
+      setReportData(searchData);
+    } else if (filter !== initialFilter) {
+      let filterData = data;
+
+      switch (filter.option) {
+        case 'today':
+          const todayData = filterData.filter(item => {
+            let date = moment(item.date).format('YYYYMMDD') + item.time.replace(':', '');
+            let today = moment().format('YYYYMMDD') + '2300';
+            let yesterday = moment().subtract(1, 'days').format('YYYYMMDD') + '2300';
+            return yesterday <= date && date <= today;
+          });
+          console.log('todayData', todayData);
+          filterData = todayData;
+          break;
+        case 'yesterday':
+          const yesterdayData = filterData.filter(item => {
+            let date = moment(item.date).format('YYYYMMDD') + item.time.replace(':', '');
+            let yesterday = moment().subtract(1, 'days').format('YYYYMMDD') + '2300';
+            let lastDay = moment().subtract(2, 'days').format('YYYYMMDD') + '2300';
+            return lastDay <= date && date <= yesterday;
+          });
+          filterData = yesterdayData;
+          break;
+        case 'all':
+          filterData = data;
+          break;
+        case data?.length < parseInt(filter.option):
+          filterData = data;
+          break;
+        default:
+          filterData = data.slice(0, parseInt(filter.option));
+          break;
+      }
+
+      if (
+        filter.method.length > 0 ||
+        filter.category.length > 0 ||
+        filter.emergency.length > 0 ||
+        filter.age.old ||
+        filter.age.young
+      ) {
+        filterData = filterData.filter(item => {
+          return (
+            filter.method.includes(item.method) ||
+            filter.emergency.includes(item.emergency) ||
+            filter.category.includes(item.category) ||
+            item?.patients
+              ?.match(/\d+/g)
+              .some(age => (filter.age.old && age >= 65) || (filter.age.young && age <= 11))
+          );
+        });
+      }
+
+      setReportData(filterData);
     } else {
-      setReportData(data.slice(0 - showLength));
+      setReportData(data);
     }
-  }, [data, searchString, showLength]);
+  }, [searchString, filter]);
+
+  useEffect(() => {
+    setReportData(data);
+  }, [data]);
+
+  useEffect(() => {
+    window.addEventListener('click', e => {
+      if (!document.getElementById('filter').contains(e.target)) {
+        closeDropdown();
+      }
+    });
+
+    return () => {
+      window.removeEventListener('click', e => {
+        if (!document.getElementById('filter').contains(e.target)) {
+          closeDropdown();
+        }
+      });
+    };
+  }, []);
 
   return (
-    <section className='bg-gray-200 w-full flex flex-col justify-center space-y-4 p-4 sm:p-8 '>
-      <div className='w-fit mx-auto'>
-        <div className='bg-white rounded-lg shadow-lg flex flex-col space-y-4 p-4 sm:p-8 '>
+    <section className='flex flex-col justify-center w-full p-4 space-y-4 bg-gray-200 sm:p-8 '>
+      <div className='mx-auto w-fit'>
+        <div className='flex flex-col p-4 space-y-4 bg-white rounded-lg shadow-lg sm:p-8 '>
           <div className='flex items-center justify-center'>
-            <h2 className='justify-center mb-1 font-semibold text-main text-center'>
+            <h2 className='justify-center mb-1 font-semibold text-center text-main'>
               COVID-19&nbsp;
-              <p className='text-center'>
-                {router.pathname === '/report' ? '受理案件' : `今日(${date})受理案件數`}
-              </p>
+              <p className='text-center'>受理案件</p>
             </h2>
           </div>
           <hr className='w-[80%] mx-auto justify-center' />
           {emergencyData && (
             <>
-              <div className='text-center items-center '>
-                今日危急個案數 共&nbsp;
+              <div className='items-center text-center '>
+                今日危急/嚴重個案數 共&nbsp;
                 <span className='text-teal-500'>{emergencyData?.length}</span>&nbsp;筆
               </div>
-              <div className='grid py-2 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2'>
+              <div className='grid grid-cols-2 gap-2 py-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6'>
                 {emergencyData?.map((item, index) => (
                   <Link key={index} href={`/report/${item.id}`} passHref>
-                    <p className='bg-gray-200 cursor-pointer flex justify-center py-2 px-4 hover:scale-95 hover:shadow-sm rounded-full text-teal-500 hover:text-red-500 duration-200 transition-all ease-in-out'>
+                    <p className='flex justify-center px-4 py-2 text-teal-500 transition-all duration-200 ease-in-out bg-gray-200 rounded-full cursor-pointer hover:scale-95 hover:shadow-sm hover:text-red-500'>
                       編號&nbsp;{item.id}
                     </p>
                   </Link>
@@ -88,10 +164,11 @@ const ReportLayout = ({ data }) => {
           )}
         </div>
       </div>
-      <div className='mb-0 flex justify-center items-center'>
+      {/* 查詢框 */}
+      <div className='flex items-center justify-center mb-0'>
         <div className='relative'>
           <input
-            className='h-10 pr-10 text-sm placeholder-gray-300 border-gray-200 rounded-lg focus:z-10 w-64'
+            className='w-64 h-10 pr-10 text-sm placeholder-gray-300 border-gray-200 rounded-lg focus:z-10'
             placeholder='輸入案件編號或日期...'
             type='text'
             name='search'
@@ -115,211 +192,97 @@ const ReportLayout = ({ data }) => {
           </button>
         </div>
       </div>
-      <div className='flex flex-col w-full justify-center space-y-4'>
+      <div className='flex flex-col justify-center w-full space-y-4'>
+        <div className='flex items-center justify-between'>
+          {searchString !== '' ? (
+            <>
+              <h4 className='text-gray-600'>
+                查詢範圍共&nbsp;
+                <span className='font-bold text-main'>{reportData?.length}</span>&nbsp;件
+              </h4>
+              <h4 className='text-gray-600'>查詢範圍 &quot;{searchString}&quot; 的結果</h4>
+            </>
+          ) : (
+            <>
+              {/* 篩選條件 */}
+              <details className='relative group' id='filter'>
+                <summary className='flex items-center justify-between px-4 py-2 text-gray-500 bg-white rounded-lg cursor-pointer hover:bg-gray-100 hover:text-gray-700'>
+                  <svg
+                    className='w-5 h-5 mr-2 opacity-75'
+                    width='24'
+                    height='24'
+                    viewBox='0 0 24 24'
+                    strokeWidth='2'
+                    stroke='currentColor'
+                    fill='none'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'>
+                    <path stroke='none' d='M0 0h24v24H0z' /> <circle cx='14' cy='6' r='2' />
+                    <line x1='4' y1='6' x2='12' y2='6' /> <line x1='16' y1='6' x2='20' y2='6' />
+                    <circle cx='8' cy='12' r='2' /> <line x1='4' y1='12' x2='6' y2='12' />
+                    <line x1='10' y1='12' x2='20' y2='12' /> <circle cx='17' cy='18' r='2' />
+                    <line x1='4' y1='18' x2='15' y2='18' />
+                    <line x1='19' y1='18' x2='20' y2='18' />
+                  </svg>
+                  <span className='flex justify-center flex-1 text-sm font-medium'>篩選條件</span>
+                </summary>
+                <FilterDropdown setFilter={setFilter} close={closeDropdown} />
+              </details>
+            </>
+          )}
+        </div>
         {reportData.length > 0 ? (
           <>
-            <div className='flex justify-between items-center'>
-              {searchString !== '' ? (
-                <>
-                  <h4 className='text-gray-600'>
-                    查詢範圍共&nbsp;
-                    <span className='text-main font-bold'>{reportData?.length}</span>&nbsp;件
-                  </h4>
-                  <h4 className='text-gray-600'>查詢範圍 &quot;{searchString}&quot; 的結果</h4>
-                </>
-              ) : (
-                <>
-                  <details className='group relative'>
-                    <summary className='flex items-center justify-between p-2 bg-white text-gray-500 rounded-lg cursor-pointer hover:bg-gray-100 hover:text-gray-700'>
-                      <svg
-                        className='w-5 h-5 opacity-75'
-                        width='24'
-                        height='24'
-                        viewBox='0 0 24 24'
-                        strokeWidth='2'
-                        stroke='currentColor'
-                        fill='none'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'>
-                        <path stroke='none' d='M0 0h24v24H0z' /> <circle cx='14' cy='6' r='2' />
-                        <line x1='4' y1='6' x2='12' y2='6' /> <line x1='16' y1='6' x2='20' y2='6' />
-                        <circle cx='8' cy='12' r='2' /> <line x1='4' y1='12' x2='6' y2='12' />
-                        <line x1='10' y1='12' x2='20' y2='12' /> <circle cx='17' cy='18' r='2' />
-                        <line x1='4' y1='18' x2='15' y2='18' />
-                        <line x1='19' y1='18' x2='20' y2='18' />
-                      </svg>
-                    </summary>
-
-                    <nav className='mt-1 flex flex-col bg-white shadow-md rounded-lg absolute w-44 z-50'>
-                      <button
-                        onClick={() => {
-                          handleShowLength(data?.length || 0);
-                        }}
-                        className='flex items-center px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700'>
-                        <span className=' text-sm font-medium flex justify-center flex-1'>
-                          全部
-                        </span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          handleShowLength(30);
-                        }}
-                        className='flex items-center px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700'>
-                        <span className='text-sm font-medium flex justify-center flex-1'>
-                          30 筆
-                        </span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          handleShowLength(20);
-                        }}
-                        className='flex items-center px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700'>
-                        <span className='text-sm font-medium flex justify-center flex-1'>
-                          20 筆
-                        </span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          handleShowLength(10);
-                        }}
-                        className='flex items-center px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700'>
-                        <span className='text-sm font-medium flex justify-center flex-1'>
-                          10 筆
-                        </span>
-                      </button>
-                    </nav>
-                  </details>
-                  <details className='group w-44 relative' id='detail_length'>
-                    <summary className='flex items-center justify-between px-4 py-2 bg-white text-gray-500 rounded-lg cursor-pointer hover:bg-gray-100 hover:text-gray-700'>
-                      <svg
-                        className='w-5 h-5 opacity-75'
-                        width='24'
-                        height='24'
-                        viewBox='0 0 24 24'
-                        strokeWidth='2'
-                        stroke='currentColor'
-                        fill='none'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'>
-                        <path stroke='none' d='M0 0h24v24H0z' />
-                        <polyline points='6 21 21 6 18 3 3 18 6 21' />
-                        <line x1='15' y1='6' x2='18' y2='9' />
-                        <path d='M9 3a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2' />
-                        <path d='M19 13a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2' />
-                      </svg>
-
-                      <span className='text-sm font-medium flex justify-center flex-1'>
-                        顯示近 {showLength} 筆
-                      </span>
-
-                      <span className='transition duration-300 shrink-0 group-open:-rotate-180'>
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          className='w-5 h-5'
-                          viewBox='0 0 20 20'
-                          fill='currentColor'>
-                          <path
-                            fillRule='evenodd'
-                            d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'
-                            clipRule='evenodd'
-                          />
-                        </svg>
-                      </span>
-                    </summary>
-
-                    <nav className='mt-1 flex flex-col bg-white shadow-md rounded-lg absolute w-44'>
-                      <button
-                        onClick={() => {
-                          handleShowLength(data?.length || 0);
-                        }}
-                        className='flex items-center px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700'>
-                        <span className=' text-sm font-medium flex justify-center flex-1'>
-                          全部
-                        </span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          handleShowLength(30);
-                        }}
-                        className='flex items-center px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700'>
-                        <span className='text-sm font-medium flex justify-center flex-1'>
-                          30 筆
-                        </span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          handleShowLength(20);
-                        }}
-                        className='flex items-center px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700'>
-                        <span className='text-sm font-medium flex justify-center flex-1'>
-                          20 筆
-                        </span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          handleShowLength(10);
-                        }}
-                        className='flex items-center px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700'>
-                        <span className='text-sm font-medium flex justify-center flex-1'>
-                          10 筆
-                        </span>
-                      </button>
-                    </nav>
-                  </details>
-                </>
-              )}
-            </div>
-
             <ReportTable data={reportData} />
-            <div className='flex justify-between items-start text-gray-600'>
+            <div className='flex items-start justify-between text-gray-600'>
               <div className=''>
-                <h4 className='flex justify-center items-center'>
+                <h4 className='flex items-center justify-center'>
                   總共&nbsp;
-                  <span className='text-main font-bold'>{data?.length}</span>&nbsp;件
+                  <span className='font-bold text-main'>{data?.length}</span>&nbsp;件
                 </h4>
               </div>
               <div className='flex flex-col justify-end'>
-                <h4 className='flex justify-end items-center'>
+                <h4 className='flex items-center justify-end'>
                   今日總共&nbsp;
-                  <span className='text-main font-bold'>{todayLength}</span>&nbsp;件
+                  <span className='font-bold text-main'>{todayLength}</span>&nbsp;件
                 </h4>
-                <h4 className='flex justify-end items-center'>
+                <h4 className='flex items-center justify-end'>
                   昨日總共&nbsp;
-                  <span className='text-main font-bold'>{yesterdayLength}</span>&nbsp;件
+                  <span className='font-bold text-main'>{yesterdayLength}</span>&nbsp;件
                 </h4>
               </div>
             </div>
           </>
         ) : (
           <div className='mx-auto'>
-            <h3 className='text-gray-600'>
-              查無與&nbsp;&quot;{searchString}&quot;&nbsp;相符的資料
-            </h3>
+            <h3 className='text-gray-600'>查無相符的資料</h3>
           </div>
         )}
       </div>
-      <div className='flex justify-center items-center space-x-2'>
-        <Link
-          href={`https://docs.google.com/spreadsheets/d/1g6WrUURvJjMZxmtvPusysen9I2-bfAExnVdq1H63OCY/export`}>
-          <button className='btn btn--outline outline-r inline-flex w-fit group' type='button'>
-            <p className=''>產出Excel</p>
-            <svg
-              className='h-5 w-5 ml-2 group-hover:translate-x-2 duration-300 ease-in-out transition-all'
-              width='24'
-              height='24'
-              viewBox='0 0 24 24'
-              strokeWidth='2'
-              stroke='currentColor'
-              fill='none'
-              strokeLinecap='round'
-              strokeLinejoin='round'>
-              <path stroke='none' d='M0 0h24v24H0z' />
-              <path d='M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2' />
-              <path d='M7 12h14l-3 -3m0 6l3 -3' />
-            </svg>
-          </button>
-        </Link>
-      </div>
+      {reportData.length > 0 && (
+        <div className='flex items-center justify-center space-x-2'>
+          <Link
+            href={`https://docs.google.com/spreadsheets/d/1g6WrUURvJjMZxmtvPusysen9I2-bfAExnVdq1H63OCY/export`}>
+            <button className='inline-flex btn btn--outline outline-r w-fit group' type='button'>
+              <p className=''>產出Excel</p>
+              <svg
+                className='w-5 h-5 ml-2 transition-all duration-300 ease-in-out group-hover:translate-x-2'
+                width='24'
+                height='24'
+                viewBox='0 0 24 24'
+                strokeWidth='2'
+                stroke='currentColor'
+                fill='none'
+                strokeLinecap='round'
+                strokeLinejoin='round'>
+                <path stroke='none' d='M0 0h24v24H0z' />
+                <path d='M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2' />
+                <path d='M7 12h14l-3 -3m0 6l3 -3' />
+              </svg>
+            </button>
+          </Link>
+        </div>
+      )}
     </section>
   );
 };

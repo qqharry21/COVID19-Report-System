@@ -41,7 +41,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
     <div className='flex flex-col space-y-4'>
       {checkPatientAge(formik.values.patients) ||
         (formik.values.emergency && (
-          <p className='justify-center flex items-center bg-red-500 p-2 text-white rounded-lg w-full sm:w-fit text-xs mx-auto'>
+          <p className='flex items-center justify-center w-full p-2 mx-auto text-xs text-white bg-red-500 rounded-lg sm:w-fit'>
             此案件需初報/結報
           </p>
         ))}
@@ -148,7 +148,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
         <FieldArray
           name='patients'
           render={arrayHelpers => (
-            <div className='col-span-1 sm:col-span-2 flex flex-col space-y-4' id='patient'>
+            <div className='flex flex-col col-span-1 sm:col-span-2 space-y-4' id='patient'>
               {formik.values.patients?.map((patient, index) => (
                 <CollapseField
                   key={index}
@@ -214,12 +214,12 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
               ))}
               <button
                 type='button'
-                className='mt-4 col-span-1 sm:col-span-2 btn btn--outline outline-r w-fit flex items-center justify-center mx-auto'
+                className='flex items-center justify-center mx-auto mt-4 col-span-1 sm:col-span-2 btn btn--outline outline-r w-fit'
                 onClick={() => {
                   handleAdd(patientData, patientLength, 'patient', '患者', arrayHelpers, 5);
                 }}>
                 <svg
-                  className='h-5 w-5'
+                  className='w-5 h-5'
                   viewBox='0 0 24 24'
                   fill='none'
                   stroke='currentColor'
@@ -240,7 +240,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
         <FieldArray
           name='accompany'
           render={arrayHelpers => (
-            <div className='col-span-1 sm:col-span-2 flex flex-col space-y-4' id='accompany'>
+            <div className='flex flex-col col-span-1 sm:col-span-2 space-y-4' id='accompany'>
               {formik.values.accompany?.map((person, index) => (
                 <CollapseField
                   key={index}
@@ -302,12 +302,12 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
               ))}
               <button
                 type='button'
-                className='mt-4 col-span-1 sm:col-span-2 btn btn--outline outline-r w-fit flex items-center justify-center mx-auto z-0'
+                className='z-0 flex items-center justify-center mx-auto mt-4 col-span-1 sm:col-span-2 btn btn--outline outline-r w-fit'
                 onClick={() => {
                   handleAdd(accompanyData, accompanyLength, 'accompany', '陪同者', arrayHelpers, 3);
                 }}>
                 <svg
-                  className='h-5 w-5'
+                  className='w-5 h-5'
                   viewBox='0 0 24 24'
                   fill='none'
                   stroke='currentColor'
@@ -411,10 +411,10 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
         </div>
       </div>
 
-      <div className='flex w-full flex-col space-y-4'>
+      <div className='flex flex-col w-full space-y-4'>
         {checkPatientAge(formik.values.patients) ||
           (formik.values.emergency && (
-            <p className='justify-center flex items-center bg-red-500 p-2 text-white rounded-lg w-full sm:w-fit text-xs mx-auto'>
+            <p className='flex items-center justify-center w-full p-2 mx-auto text-xs text-white bg-red-500 rounded-lg sm:w-fit'>
               此案件需初報/結報
             </p>
           ))}
@@ -432,7 +432,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
           }`}>
           {formik.values.status}
         </strong>
-        <p className='text-center font-semibold text-main'>通報表</p>
+        <p className='font-semibold text-center text-main'>通報表</p>
         <textarea
           className='w-full px-3 py-2 text-sm border-gray-200 rounded-lg'
           rows='20'

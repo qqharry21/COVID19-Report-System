@@ -11,7 +11,7 @@ const Select = ({ field, label, options, name, isRequired, formik, valueOption }
     <div>
       <label htmlFor={id} className='block text-sm font-medium text-gray-900 dark:text-gray-400'>
         {label}
-        {isRequired && <span className='text-red-500 font-medium text-base ml-1'>*</span>}
+        {isRequired && <span className='ml-1 text-base font-medium text-red-500'>*</span>}
       </label>
       <select
         id={id}
@@ -31,7 +31,7 @@ const Select = ({ field, label, options, name, isRequired, formik, valueOption }
         })}
         {/* option 的 value 可加或不加 */}
       </select>
-      {showErrors ? <p className='text-red-500 text-xs mt-1 font-medium'>{error}</p> : null}
+      {showErrors ? <p className='mt-1 text-xs font-medium text-red-500'>{error}</p> : null}
     </div>
   );
 };

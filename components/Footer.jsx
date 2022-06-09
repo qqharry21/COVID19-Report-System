@@ -8,7 +8,7 @@ const Footer = () => {
   return (
     <Link href='https://haochen.vercel.app/'>
       <a
-        className='flex flex-col md:flex-row space-x-4 justify-center items-center text-center p-4 link'
+        className='flex flex-col items-center justify-center p-4 text-center md:flex-row space-x-4 link'
         target='_blank'>
         Hao Harry &copy; {moment().format('YYYY')}
       </a>

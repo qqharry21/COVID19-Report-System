@@ -7,8 +7,8 @@ import { getOptionName } from '../../utils/CommonUtils';
 import { statusOptions, table_column } from '../../utils/data';
 const ReportTable = ({ data }) => {
   return (
-    <div className='overflow-x-auto bg-white rounded-lg py-2'>
-      <table className=' min-w-full text-sm divide-y divide-gray-200 table-auto'>
+    <div className='py-2 overflow-x-auto bg-white rounded-lg'>
+      <table className='min-w-full text-sm table-auto  divide-y divide-gray-200'>
         <thead>
           <tr>
             <th className='sticky left-0 p-4 text-left bg-white'></th>
@@ -37,10 +37,10 @@ const ReportTable = ({ data }) => {
             const status = getOptionName(statusOptions, row.status);
             return (
               <tr className='hover:bg-gray-100 duration-200 ease-in group' key={index}>
-                <td className='sticky left-0 p-4 z-10 bg-white group-hover:bg-gray-100 duration-200 ease-in'>
+                <td className='sticky left-0 z-10 p-4 bg-white group-hover:bg-gray-100 duration-200 ease-in'>
                   <Link href={`/report/${row?.id}`} passHref>
                     <svg
-                      className='h-5 w-5 link'
+                      className='w-5 h-5 link'
                       fill='none'
                       viewBox='0 0 24 24'
                       stroke='currentColor'>
@@ -69,14 +69,14 @@ const ReportTable = ({ data }) => {
                     {status}
                   </strong>
                 </td>
-                <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row?.id}</td>
+                <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row?.id}</td>
                 <td
                   className={`p-4 font-medium ${
                     row?.date === moment().format('YYYY-MM-DD') ? 'text-main' : 'text-gray-900'
                   } whitespace-nowrap text-center`}>
                   {row?.date}
                 </td>
-                <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row?.time}</td>
+                <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row?.time}</td>
                 <td
                   className={`p-4 ${
                     row?.emergency === '一般'
@@ -87,7 +87,7 @@ const ReportTable = ({ data }) => {
                   } whitespace-nowrap text-center`}>
                   {row?.emergency}
                 </td>
-                <td className='p-4 text-gray-700 whitespace-nowrap text-center'>
+                <td className='p-4 text-center text-gray-700 whitespace-nowrap'>
                   {row?.emergency_detail}
                 </td>
                 <td className='p-4 text-gray-700 text-center w-[135px] block justify-center'>
@@ -97,12 +97,12 @@ const ReportTable = ({ data }) => {
                     </p>
                   ))}
                 </td>
-                <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row?.method}</td>
-                <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row?.category}</td>
-                <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row?.car}</td>
-                <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row?.member}</td>
-                <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row?.remark}</td>
-                <td className='p-4 text-gray-700 whitespace-nowrap text-center'>{row?.total}</td>
+                <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row?.method}</td>
+                <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row?.category}</td>
+                <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row?.car}</td>
+                <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row?.member}</td>
+                <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row?.remark}</td>
+                <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row?.total}</td>
               </tr>
             );
           })}

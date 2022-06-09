@@ -1,9 +1,14 @@
 /** @format */
 
 import React from 'react';
+import FilterDropdown from '../components/FilterDropdown';
 
 const CansPage = () => {
-  return <div>CansPage</div>;
+  return (
+    <div>
+      <FilterDropdown />
+    </div>
+  );
 };
 
 export default CansPage;
