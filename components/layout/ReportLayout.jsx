@@ -118,22 +118,6 @@ const ReportLayout = ({ data }) => {
     setReportData(data);
   }, [data]);
 
-  useEffect(() => {
-    window.addEventListener('click', e => {
-      if (!document.getElementById('filter').contains(e.target)) {
-        closeDropdown();
-      }
-    });
-
-    return () => {
-      window.removeEventListener('click', e => {
-        if (!document.getElementById('filter').contains(e.target)) {
-          closeDropdown();
-        }
-      });
-    };
-  }, []);
-
   return (
     <section className='flex flex-col justify-center w-full p-4 space-y-4 bg-gray-200 sm:p-8 '>
       <div className='mx-auto w-fit'>
