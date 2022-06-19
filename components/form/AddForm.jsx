@@ -17,9 +17,10 @@ import { CollapseField } from '../';
 const AddForm = ({ formik, copyText, setCopyText, reference }) => {
   const patientLength = formik.values.patients?.length || 0;
   const accompanyLength = formik.values.accompany?.length || 0;
+
   const handleDelete = (index, length, helpers, min) => {
     if (length === min) {
-      toast.error('至少要填寫一筆患者資料', { icon: '🚨' });
+      toast.error('至少要填寫一筆患者資料', { icon: '🚨', id: 'error' });
     } else {
       helpers.remove(index);
     }
@@ -32,7 +33,7 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
         const element = document.getElementById(`${label}-${length + 1}`);
         element.scrollIntoView();
       }, 100);
-    } else toast.error(`最多只能填寫${max}筆${title}資料`, { icon: '🚨' });
+    } else toast.error(`最多只能填寫${max}筆${title}資料`, { icon: '🚨', id: 'error' });
   };
 
   return (
@@ -263,6 +264,7 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
                     name={`accompany[${index}].sex`}
                     options={sexOptions}
                     component={Select}
+                    isRequired
                     formik={formik}
                   />
                   <Field

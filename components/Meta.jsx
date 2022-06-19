@@ -20,7 +20,6 @@ const Meta = ({ keywords, description, image }) => {
 
       <link rel='icon' href='/logo.png' />
       <link rel='preconnect' href='https://fonts.googleapis.com' />
-      <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin />
     </Head>
   );
 };

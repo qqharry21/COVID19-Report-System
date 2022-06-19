@@ -10,38 +10,37 @@ import { initialAddValues } from '../utils/data';
 import { initialSchema } from '../utils/validate';
 import { onKeyDown, sleep, generateCopyText } from '../utils/CommonUtils';
 
-export default function AddReport({ data }) {
+export default function AddReport({ latestId }) {
+  const [reportId, setReportId] = useState(() => {
+    if (latestId) {
+      return latestId + 1;
+    }
+    return 1;
+  });
   const [copyText, setCopyText] = useState('');
   const router = useRouter();
   const textareaRef = useRef();
 
-  function handleSubmit(values, actions) {
-    const addValues = {
-      ...values,
-      emergency:
-        // checkPatientAge(values.patients) ||
-        values.emergency,
-    };
-
-    //提交表單
-    toast.promise(
-      axios.post(`/submit`, addValues).then(async res => {
-        console.log(res.status + ' ' + res.statusText);
-      }),
-      {
-        loading: '新增中...',
-        success: () => {
-          sleep(500);
-          actions.resetForm();
-          router.push('/');
-          return '新增成功';
+  async function handleSubmit(values, actions) {
+    const loadingToast = toast.loading('新增中...');
+    // 提交表單
+    try {
+      const res = await axios.post('/reports', {
+        data: values,
+        headers: {
+          'Content-Type': 'application/json',
         },
-        error: err => {
-          console.error(err.response.data?.message);
-          return '新增失敗，請重整網頁後嘗試';
-        },
+      });
+      if (res.status === 201) {
+        sleep(1000);
+        toast.success(res.data, { id: loadingToast });
+        router.push('/reports');
       }
-    );
+    } catch (error) {
+      console.log('🚨 ~ handleSubmit ~ error', error);
+      toast.error('發生錯誤，稍後再試', { id: loadingToast });
+    }
+
     actions.setSubmitting(false);
   }
 
@@ -50,7 +49,7 @@ export default function AddReport({ data }) {
     const text = generateCopyText(formik.values);
 
     if (currentText !== text && currentText !== '') {
-      const confirm = toast.custom(
+      toast.custom(
         t => (
           <div
             className={`${
@@ -73,7 +72,7 @@ export default function AddReport({ data }) {
                   toast.dismiss(t.id);
                   setCopyText(text);
                   navigator.clipboard.writeText(text);
-                  toast.success('已複製至剪貼簿', { id: confirm, duration: 1000 });
+                  toast.success('已複製至剪貼簿', { id: t.id, duration: 1000 });
                 }}
                 className='flex items-center justify-center w-full p-4 text-sm font-medium border border-transparent rounded-none rounded-l-lg btn btn--outline outline-l text-main hover:text-white focus:outline-none focus:ring-2 focus:ring-main/50'>
                 是
@@ -83,7 +82,7 @@ export default function AddReport({ data }) {
                   toast.dismiss(t.id);
                   setCopyText(currentText);
                   navigator.clipboard.writeText(currentText);
-                  toast.success('已複製到剪貼簿', { id: confirm, duration: 1000 });
+                  toast.success('已複製到剪貼簿', { id: t.id, duration: 1000 });
                 }}
                 className='flex items-center justify-center w-full p-4 text-sm font-medium border border-transparent rounded-none rounded-r-lg btn btn--outline outline-r text-main hover:text-white focus:outline-none focus:ring-2 focus:ring-main/50'>
                 否
@@ -106,7 +105,7 @@ export default function AddReport({ data }) {
         <Formik
           initialValues={{
             ...initialAddValues,
-            reportId: isNaN(data?.max_report_id) ? 1 : parseInt(data?.max_report_id) + 1,
+            reportId: reportId,
           }}
           onSubmit={handleSubmit}
           validationSchema={initialSchema}>
@@ -161,7 +160,7 @@ export default function AddReport({ data }) {
                   </button>
                   <button
                     type='submit'
-                    className='inline-flex items-center btn sm:w-auto btn--outline outline-r group'
+                    className='inline-flex items-center btn sm:w-auto btn--outline outline-m text-main border-main before:bg-main group'
                     onClick={() => {
                       formik.resetForm();
                       toast.success('已清除表單內容');
@@ -215,10 +214,10 @@ export default function AddReport({ data }) {
 }
 
 export const getStaticProps = async () => {
-  const data = await axios.get('/getLatestId').then(res => res.data);
+  const latestId = await axios.get('/reports/latest').then(res => res.data);
   return {
     props: {
-      data,
+      latestId,
     },
   };
 };

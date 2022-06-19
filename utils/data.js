@@ -10,12 +10,14 @@ export const initialFilter = {
   method: [],
   emergency: [],
   category: [],
+  startDate: '',
+  endDate: '',
   age: { old: false, young: false },
   option: 'all',
 };
 
 export const initialAddValues = {
-  reportId: '',
+  reportId: 1,
   method: '',
   category: '',
   date: moment().format('YYYY-MM-DD'),

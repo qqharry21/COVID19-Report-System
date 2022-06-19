@@ -8,7 +8,7 @@ const Error = () => {
   return (
     <Layout title='錯誤'>
       <div className='flex items-center h-screen mx-auto'>
-        <div className='relative flex flex-col px-20 py-8 text-center bg-white border border-gray-200 rounded-lg space-y-6'>
+        <div className='relative flex flex-col px-20 py-8 space-y-6 text-center bg-white border border-gray-200 rounded-lg'>
           <h2 className='flex items-center justify-center font-medium '>
             <span className='mr-4'>
               <svg
@@ -29,7 +29,7 @@ const Error = () => {
           </h2>
 
           <p className='mt-4 text-gray-500'>請新增一筆案件</p>
-          <Link href=''>
+          <Link href='/add'>
             <a className='inline-flex btn btn--outline outline-r'>
               新增
               <svg

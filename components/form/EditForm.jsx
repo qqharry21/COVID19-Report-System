@@ -1,6 +1,6 @@
 /** @format */
 import { Field, FieldArray } from 'formik';
-import { Checkbox, Input, Select } from './field';
+import { Input, Select } from './field';
 import {
   methodOptions,
   sexOptions,
@@ -13,15 +13,21 @@ import {
 } from '../../utils/data';
 import toast from 'react-hot-toast';
 import { CollapseField } from '..';
-import { checkPatientAge, getOptionValue } from '../../utils/CommonUtils';
+import {
+  checkPatientAge,
+  checkStatus,
+  getOptionName,
+  getOptionValue,
+} from '../../utils/CommonUtils';
 
 const EditForm = ({ formik, copyText, setCopyText, reference }) => {
   const patientLength = formik.values.patients?.length || 0;
   const accompanyLength = formik.values.accompany?.length || 0;
-  const status = getOptionValue(statusOptions, formik.values.status);
+  const status = getOptionName(statusOptions, formik.values.status);
+  const toStatus = getOptionValue(statusOptions, checkStatus(status, formik.values));
   const handleDelete = (index, length, helpers, min) => {
     if (length === min) {
-      toast.error('至少要填寫一筆患者資料', { icon: '🚨' });
+      toast.error('至少要填寫一筆患者資料', { icon: '🚨', id: 'error' });
     } else {
       helpers.remove(index);
     }
@@ -34,30 +40,29 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
         const element = document.getElementById(`${label}-${length + 1}`);
         element.scrollIntoView();
       }, 100);
-    } else toast.error(`最多只能填寫${max}筆${title}資料`, { icon: '🚨' });
+    } else toast.error(`最多只能填寫${max}筆${title}資料`, { icon: '🚨', id: 'error' });
   };
 
   return (
     <div className='flex flex-col space-y-4'>
-      {checkPatientAge(formik.values.patients) ||
-        (formik.values.emergency && (
-          <p className='flex items-center justify-center w-full p-2 mx-auto text-xs text-white bg-red-500 rounded-lg sm:w-fit'>
-            此案件需初報/結報
-          </p>
-        ))}
+      {formik.values.emergency !== '一般' && (
+        <p className='flex items-center justify-center w-full p-2 mx-auto text-xs text-white bg-red-500 rounded-lg sm:w-fit'>
+          此案件需初報/結報
+        </p>
+      )}
       <strong
         className={`justify-center flex items-center py-2 px-4 rounded-lg text-lg font-medium w-full sm:w-fit mx-auto ${
-          status === 1
+          formik.values.status === 1
             ? 'bg-[#fce8b2] text-orange-600'
-            : status === 2
+            : formik.values.status === 2
             ? 'bg-[#b7e1cd] text-green-700'
-            : status === 3
+            : formik.values.status === 3
             ? 'bg-[#e5b8ae] text-red-700'
-            : status === 4
+            : formik.values.status === 4
             ? 'bg-[#d9d2e9] text-purple-700'
             : ''
         }`}>
-        {formik.values.status}
+        {status}
       </strong>
       <div className='grid grid-cols-1 gap-6 gap-y-4 sm:grid-cols-2'>
         <div
@@ -114,7 +119,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
           formik={formik}
         />
 
-        <div className='col-span-1 sm:col-span-2 space-y-4'>
+        <div className='col-span-1 space-y-4 sm:col-span-2'>
           <Field
             label='受理方式'
             name='method'
@@ -148,7 +153,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
         <FieldArray
           name='patients'
           render={arrayHelpers => (
-            <div className='flex flex-col col-span-1 sm:col-span-2 space-y-4' id='patient'>
+            <div className='flex flex-col col-span-1 space-y-4 sm:col-span-2' id='patient'>
               {formik.values.patients?.map((patient, index) => (
                 <CollapseField
                   key={index}
@@ -214,7 +219,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
               ))}
               <button
                 type='button'
-                className='flex items-center justify-center mx-auto mt-4 col-span-1 sm:col-span-2 btn btn--outline outline-r w-fit'
+                className='flex items-center justify-center col-span-1 mx-auto mt-4 sm:col-span-2 btn btn--outline outline-r w-fit'
                 onClick={() => {
                   handleAdd(patientData, patientLength, 'patient', '患者', arrayHelpers, 5);
                 }}>
@@ -240,7 +245,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
         <FieldArray
           name='accompany'
           render={arrayHelpers => (
-            <div className='flex flex-col col-span-1 sm:col-span-2 space-y-4' id='accompany'>
+            <div className='flex flex-col col-span-1 space-y-4 sm:col-span-2' id='accompany'>
               {formik.values.accompany?.map((person, index) => (
                 <CollapseField
                   key={index}
@@ -280,6 +285,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
                     name={`accompany[${index}].sex`}
                     options={sexOptions}
                     component={Select}
+                    isRequired
                     formik={formik}
                   />
                   <Field
@@ -302,7 +308,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
               ))}
               <button
                 type='button'
-                className='z-0 flex items-center justify-center mx-auto mt-4 col-span-1 sm:col-span-2 btn btn--outline outline-r w-fit'
+                className='z-0 flex items-center justify-center col-span-1 mx-auto mt-4 sm:col-span-2 btn btn--outline outline-r w-fit'
                 onClick={() => {
                   handleAdd(accompanyData, accompanyLength, 'accompany', '陪同者', arrayHelpers, 3);
                 }}>
@@ -359,7 +365,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
         />
 
         <hr className='col-span-1 sm:col-span-2' />
-        <div className='grid grid-cols-1 sm:grid-cols-3 gap-6 gap-y-4 col-span-1 sm:col-span-2'>
+        <div className='grid grid-cols-1 col-span-1 gap-6 sm:grid-cols-3 gap-y-4 sm:col-span-2'>
           <Field
             label='出勤時間'
             name='time1'
@@ -412,26 +418,54 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
       </div>
 
       <div className='flex flex-col w-full space-y-4'>
-        {checkPatientAge(formik.values.patients) ||
-          (formik.values.emergency && (
-            <p className='flex items-center justify-center w-full p-2 mx-auto text-xs text-white bg-red-500 rounded-lg sm:w-fit'>
-              此案件需初報/結報
-            </p>
-          ))}
-        <strong
-          className={`justify-center flex items-center py-2 px-4 rounded-lg text-lg font-medium w-full sm:w-fit mx-auto ${
-            status === 1
-              ? 'bg-[#fce8b2] text-orange-700'
-              : status === 2
-              ? 'bg-[#b7e1cd] text-green-700'
-              : status === 3
-              ? 'bg-[#e5b8ae] text-red-700'
-              : status === 4
-              ? 'bg-[#d9d2e9] text-purple-700'
-              : ''
-          }`}>
-          {formik.values.status}
-        </strong>
+        {formik.values.emergency !== '一般' && (
+          <p className='flex items-center justify-center w-full p-2 mx-auto text-xs text-white bg-red-500 rounded-lg sm:w-fit'>
+            此案件需初報/結報
+          </p>
+        )}
+        <div className='flex items-center justify-center space-x-2'>
+          <strong
+            className={`justify-center flex items-center py-2 px-4 rounded-lg text-lg font-medium w-fit ${
+              formik.values.status === 1
+                ? 'bg-[#fce8b2] text-orange-600'
+                : formik.values.status === 2
+                ? 'bg-[#b7e1cd] text-green-700'
+                : formik.values.status === 3
+                ? 'bg-[#e5b8ae] text-red-700'
+                : formik.values.status === 4
+                ? 'bg-[#d9d2e9] text-purple-700'
+                : ''
+            }`}>
+            {status}
+          </strong>
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            className='w-5 h-5'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'>
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth='2'
+              d='M14 5l7 7m0 0l-7 7m7-7H3'
+            />
+          </svg>
+          <strong
+            className={`justify-center flex items-center py-2 px-4 rounded-lg text-lg font-medium w-fit ${
+              toStatus === 1
+                ? 'bg-[#fce8b2] text-orange-600'
+                : toStatus === 2
+                ? 'bg-[#b7e1cd] text-green-700'
+                : toStatus === 3
+                ? 'bg-[#e5b8ae] text-red-700'
+                : toStatus === 4
+                ? 'bg-[#d9d2e9] text-purple-700'
+                : ''
+            }`}>
+            {checkStatus(status, formik.values)}
+          </strong>
+        </div>
         <p className='font-semibold text-center text-main'>通報表</p>
         <textarea
           className='w-full px-3 py-2 text-sm border-gray-200 rounded-lg'

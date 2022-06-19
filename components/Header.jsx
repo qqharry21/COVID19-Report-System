@@ -36,12 +36,12 @@ const Header = () => {
       {/* Right */}
       <div className='md:flex'>
         {/* Navbar */}
-        <ul className='items-center hidden font-bold md:flex space-x-4 '>
+        <ul className='items-center hidden space-x-4 font-bold md:flex '>
           <Link href='/cans'>
             <a className='flex items-center py-2 link link--outline group'>
               <p className='text-sm md:text-base'>常用罐頭</p>
               <svg
-                className='w-4 h-4 ml-1 md:h-5 md:w-5  md:ml-2 group-hover:text-teal-500'
+                className='w-4 h-4 ml-1 md:h-5 md:w-5 md:ml-2 group-hover:text-teal-500'
                 width='24'
                 height='24'
                 viewBox='0 0 24 24'
@@ -57,11 +57,11 @@ const Header = () => {
               </svg>
             </a>
           </Link>
-          <Link href='/report'>
+          <Link href='/reports'>
             <a className='flex items-center py-2 link link--outline group'>
               <p className='text-sm md:text-base'>統計資料</p>
               <svg
-                className='w-4 h-4 ml-1 md:h-5 md:w-5  md:ml-2 group-hover:text-teal-500'
+                className='w-4 h-4 ml-1 md:h-5 md:w-5 md:ml-2 group-hover:text-teal-500'
                 width='24'
                 height='24'
                 viewBox='0 0 24 24'
@@ -79,7 +79,7 @@ const Header = () => {
             <a className='flex items-center py-2 link link--outline group'>
               <p className='text-sm md:text-base'>新增案例</p>
               <svg
-                className='w-4 h-4 ml-1 md:h-5 md:w-5  md:ml-2 group-hover:text-teal-500'
+                className='w-4 h-4 ml-1 md:h-5 md:w-5 md:ml-2 group-hover:text-teal-500'
                 viewBox='0 0 24 24'
                 fill='none'
                 stroke='currentColor'
@@ -120,13 +120,13 @@ const Header = () => {
         {/* <Link href='/'>
           <a className='px-6 py-1 btn btn--outline outline-r'>最新消息</a>
         </Link> */}
-        <div className='flex flex-col items-start w-full font-bold lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto lg:items-center  lg:h-auto'>
+        <div className='flex flex-col items-start w-full font-bold lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto lg:items-center lg:h-auto'>
           <Link href='/cans'>
             <a className='flex justify-center w-full px-3 py-2 text-black rounded lg:inline-flex lg:w-auto hover:bg-main hover:text-white '>
               常用罐頭
             </a>
           </Link>
-          <Link href='/report'>
+          <Link href='/reports'>
             <a className='flex justify-center w-full px-3 py-2 text-black rounded lg:inline-flex lg:w-auto hover:bg-main hover:text-white '>
               統計資料
             </a>

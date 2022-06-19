@@ -1,10 +1,10 @@
 /** @format */
 
 import React from 'react';
-import CanCard from '../components/CanCard';
+import CanCard from '../../components/CanCard';
 
-import { Layout } from '../components/layout';
-import { cans } from '../utils/data';
+import { Layout } from '../../components/layout';
+import { cans } from '../../utils/data';
 
 const CansPage = () => {
   return (

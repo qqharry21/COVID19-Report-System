@@ -33,7 +33,9 @@ const CollapseField = ({ children, data, index, label, title, handleDelete }) =>
         }}>
         <button className='flex h-full' type='button'>
           <svg
-            className={`h-full w-full text-main ${isOpen ? '' : 'rotate-180'}`}
+            className={`h-full w-full text-main transition-transform duration-200 ease-out ${
+              isOpen ? '' : 'rotate-180'
+            }`}
             width='24'
             height='24'
             viewBox='0 0 24 24'
@@ -46,11 +48,11 @@ const CollapseField = ({ children, data, index, label, title, handleDelete }) =>
             <polyline points='6 15 12 9 18 15' />
           </svg>
         </button>
-        <h3 className='font-extrabold  text-main'>
+        <h3 className='font-extrabold text-main'>
           {title} {index + 1}
         </h3>
         <button
-          className='z-10  col-span-1 sm:col-span-2 w-fit'
+          className='z-10 col-span-1 sm:col-span-2 w-fit'
           type='button'
           onClick={handleDelete}>
           <svg
@@ -70,7 +72,7 @@ const CollapseField = ({ children, data, index, label, title, handleDelete }) =>
       </div>
       {/* Alert (患者才需要標記) */}
       {label === 'patient' && checkAge(getAge(data.birth)) ? (
-        <div className='col-span-1 sm:col-span-2 space-y-4'>
+        <div className='col-span-1 space-y-4 sm:col-span-2'>
           <p className='flex items-center justify-center w-full p-2 mx-auto text-xs text-white bg-red-500 rounded-lg sm:w-fit'>
             65歲以上/11歲以下
           </p>

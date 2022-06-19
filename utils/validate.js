@@ -24,7 +24,11 @@ export const initialSchema = yup.object().shape({
   address: yup.string().required('地址 不得為空'),
   status: yup.string(),
   emergency: yup.string(),
-  emergency_detail: yup.string(),
+  emergency_detail: yup.string().when('emergency', {
+    is: val => val !== '一般',
+    then: schema => schema.required('症狀 不得為空'),
+    otherwise: schema => schema,
+  }),
   patients: yup
     .array()
     .of(
@@ -46,7 +50,7 @@ export const initialSchema = yup.object().shape({
       name: yup.string().required('陪同者姓名 不得為空'),
       age: yup.string(),
       relation: yup.string().required('關係 不得為空'),
-      sex: yup.string(),
+      sex: yup.string().required('性別 不得為空'),
       birth: yup.string().matches(dateRegExp, '日期格式錯誤'),
       id: yup.string(),
       phone: yup.string(),

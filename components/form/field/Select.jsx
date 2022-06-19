@@ -6,6 +6,7 @@ import { getErrorMessage, getErrors } from '../../../utils/validate';
 const Select = ({ field, label, options, name, isRequired, formik, valueOption }) => {
   const showErrors = getErrors(formik, field) && isRequired;
   const error = getErrorMessage(formik, field);
+
   const id = useId();
   return (
     <div>

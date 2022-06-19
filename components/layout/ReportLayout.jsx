@@ -2,19 +2,17 @@
 
 import { useRouter } from 'next/router';
 import moment from 'moment';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { ReportTable } from '../report';
 import Link from 'next/link';
 import FilterDropdown from '../FilterDropdown';
 import { initialFilter } from '../../utils/data';
+import axios from '../../lib/axios';
 
 const ReportLayout = ({ data }) => {
-  const router = useRouter();
-  const date = moment().format('MM/DD');
-
   const [todayLength, setTodayLength] = useState(0);
   const [yesterdayLength, setYesterdayLength] = useState(0);
-  const [reportData, setReportData] = useState([]);
+  const [reportData, setReportData] = useState(data);
   const [emergencyData, setEmergencyData] = useState([]);
   const [searchString, setSearchString] = useState('');
   const [filter, setFilter] = useState(initialFilter);
@@ -25,101 +23,65 @@ const ReportLayout = ({ data }) => {
   };
 
   useEffect(() => {
-    const todayData = data.filter(item => {
-      let date = moment(item.date).format('YYYYMMDD') + item.time.replace(':', '');
-      let today = moment().format('YYYYMMDD') + '2300';
-      let yesterday = moment().subtract(1, 'days').format('YYYYMMDD') + '2300';
-      return yesterday <= date && date <= today;
-    });
-    const yLength = data.filter(item => {
-      let date = moment(item.date).format('YYYYMMDD') + item.time.replace(':', '');
-      let yesterday = moment().subtract(1, 'days').format('YYYYMMDD') + '2300';
-      let lastDay = moment().subtract(2, 'days').format('YYYYMMDD') + '2300';
-      return lastDay <= date && date <= yesterday;
-    }).length;
-    setTodayLength(todayData.length);
-    setYesterdayLength(yLength);
-    const emergencyData = todayData.filter(item => !item.emergency.includes('一般'));
-    setEmergencyData(emergencyData);
+    async function getTodayData() {
+      const data = await axios
+        .post('/reports/search', {
+          data: {
+            option: 'today',
+          },
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(res => res.data);
+      setTodayLength(data.length);
+      const emergencyData = data.filter(item => !item.emergency.includes('一般'));
+      setEmergencyData(emergencyData);
+    }
+    async function getYesterday() {
+      const data = await axios
+        .post('/reports/search', {
+          data: {
+            option: 'yesterday',
+          },
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(res => res.data);
+      setYesterdayLength(data.length);
+    }
+    getTodayData();
+    getYesterday();
   }, []);
 
   useEffect(() => {
-    console.log('filter', filter);
-
     if (searchString) {
-      // 全部資料
-      const searchData = data.filter(item => {
-        return (
-          item?.id.includes(searchString) || item?.date.replace(/-/g, '').slice(-4) === searchString
-        );
-      });
-
-      setReportData(searchData);
+      getSearchData();
     } else if (filter !== initialFilter) {
-      let filterData = data;
+      getFilterData();
+    } else setReportData(data);
 
-      switch (filter.option) {
-        case 'today':
-          const todayData = filterData.filter(item => {
-            let date = moment(item.date).format('YYYYMMDD') + item.time.replace(':', '');
-            let today = moment().format('YYYYMMDD') + '2300';
-            let yesterday = moment().subtract(1, 'days').format('YYYYMMDD') + '2300';
-            return yesterday <= date && date <= today;
-          });
-          console.log('todayData', todayData);
-          filterData = todayData;
-          break;
-        case 'yesterday':
-          const yesterdayData = filterData.filter(item => {
-            let date = moment(item.date).format('YYYYMMDD') + item.time.replace(':', '');
-            let yesterday = moment().subtract(1, 'days').format('YYYYMMDD') + '2300';
-            let lastDay = moment().subtract(2, 'days').format('YYYYMMDD') + '2300';
-            return lastDay <= date && date <= yesterday;
-          });
-          filterData = yesterdayData;
-          break;
-        case 'all':
-          filterData = data;
-          break;
-        case data?.length < parseInt(filter.option):
-          filterData = data;
-          break;
-        default:
-          filterData = data.slice(0, parseInt(filter.option));
-          break;
-      }
+    async function getFilterData() {
+      const data = await axios
+        .post('/reports/search', {
+          data: filter,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(res => res.data);
+      setReportData(data);
+    }
 
-      if (
-        filter.method.length > 0 ||
-        filter.category.length > 0 ||
-        filter.emergency.length > 0 ||
-        filter.age.old ||
-        filter.age.young
-      ) {
-        filterData = filterData.filter(item => {
-          return (
-            filter.method.includes(item.method) ||
-            filter.emergency.includes(item.emergency) ||
-            filter.category.includes(item.category) ||
-            item?.patients
-              ?.match(/\d+/g)
-              .some(age => (filter.age.old && age >= 65) || (filter.age.young && age <= 11))
-          );
-        });
-      }
-
-      setReportData(filterData);
-    } else {
+    async function getSearchData() {
+      const data = await axios.get(`/reports/search?query=${searchString}`).then(res => res.data);
       setReportData(data);
     }
   }, [searchString, filter]);
 
-  useEffect(() => {
-    setReportData(data);
-  }, [data]);
-
   return (
-    <section className='flex flex-col justify-center w-full p-4 space-y-4 bg-gray-200 sm:p-8 '>
+    <section className='flex flex-col justify-center w-full p-4 space-y-4 bg-gray-200 sm:p-8'>
       <div className='mx-auto w-fit'>
         <div className='flex flex-col p-4 space-y-4 bg-white rounded-lg shadow-lg sm:p-8 '>
           <div className='flex items-center justify-center'>
@@ -137,9 +99,9 @@ const ReportLayout = ({ data }) => {
               </div>
               <div className='grid grid-cols-2 gap-2 py-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6'>
                 {emergencyData?.map((item, index) => (
-                  <Link key={index} href={`/report/${item.id}`} passHref>
+                  <Link key={index} href={`/report/${item.reportId}`} passHref>
                     <p className='flex justify-center px-4 py-2 text-teal-500 transition-all duration-200 ease-in-out bg-gray-200 rounded-full cursor-pointer hover:scale-95 hover:shadow-sm hover:text-red-500'>
-                      編號&nbsp;{item.id}
+                      編號&nbsp;{item.reportId}
                     </p>
                   </Link>
                 ))}
@@ -153,7 +115,7 @@ const ReportLayout = ({ data }) => {
         <div className='relative'>
           <input
             className='w-64 h-10 pr-10 text-sm placeholder-gray-300 border-gray-200 rounded-lg focus:z-10'
-            placeholder='輸入案件編號或日期...'
+            placeholder='輸入案件編號...'
             type='text'
             name='search'
             onChange={e => {
@@ -243,8 +205,8 @@ const ReportLayout = ({ data }) => {
           </div>
         )}
       </div>
-      {reportData.length > 0 && (
-        <div className='flex items-center justify-center space-x-2'>
+      <div className='flex items-center justify-center space-x-2'>
+        {reportData.length > 0 && (
           <Link
             href={`https://docs.google.com/spreadsheets/d/1g6WrUURvJjMZxmtvPusysen9I2-bfAExnVdq1H63OCY/export`}>
             <button className='inline-flex btn btn--outline outline-r w-fit group' type='button'>
@@ -265,8 +227,28 @@ const ReportLayout = ({ data }) => {
               </svg>
             </button>
           </Link>
-        </div>
-      )}
+        )}
+        <Link
+          href={`https://docs.google.com/spreadsheets/d/1g6WrUURvJjMZxmtvPusysen9I2-bfAExnVdq1H63OCY/edit#gid=0`}>
+          <button className='inline-flex btn btn--outline outline-r w-fit group' type='button'>
+            <p className=''>前往雲端查看</p>
+            <svg
+              className='w-5 h-5 ml-2 transition-all duration-300 ease-in-out group-hover:translate-x-2'
+              width='24'
+              height='24'
+              viewBox='0 0 24 24'
+              strokeWidth='2'
+              stroke='currentColor'
+              fill='none'
+              strokeLinecap='round'
+              strokeLinejoin='round'>
+              <path stroke='none' d='M0 0h24v24H0z' />
+              <path d='M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2' />
+              <path d='M7 12h14l-3 -3m0 6l3 -3' />
+            </svg>
+          </button>
+        </Link>
+      </div>
     </section>
   );
 };

@@ -18,19 +18,6 @@ const handler = async (req, res) => {
   }
 
   try {
-    // const latest_response = await fetch(`${server}/api/getLatestId`);
-
-    // const latest_data = await latest_response.json();
-
-    // 取得最新前20筆的google sheet範圍
-    // const { startIndex, endIndex } = latest_data;
-
-    // const sheet_response = await sheets.spreadsheets.values.get({
-    //   spreadsheetId: process.env.GOOGLE_SHEET_ID,
-    //   range: `A${startIndex}:L${endIndex}`,
-    //   valueRenderOption: 'FORMATTED_VALUE',
-    // });
-
     const sheets = google.sheets({ version: 'v4', auth });
     const sheet_response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEET_ID,

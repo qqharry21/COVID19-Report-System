@@ -60,7 +60,7 @@ function isObjectEqual(a, b) {
 function getAge(date) {
   var diff = moment(date).diff(moment(), 'milliseconds');
   var duration = moment.duration(diff);
-  return duration.years().toString().replace('-', '');
+  return parseInt(duration.years().toString().replace('-', ''));
 }
 
 function checkPatientAge(array) {
@@ -212,7 +212,7 @@ function generateCopyText(data) {
 
 function checkStatus(status, data) {
   let newStatus = status;
-  if (data.emergency) {
+  if (data.emergency !== '一般') {
     newStatus = '待初報';
     if (
       data.car &&
@@ -260,15 +260,15 @@ function getPatientAndAccompanyData(mergeArray) {
 
 function generateRemark(time2, time3, time4, time5, hospital) {
   return (
-    (time2 ? time2 : '') +
+    time2 +
     '到場, ' +
-    (time3 ? time3 : '') +
+    time3 +
     '離場送往' +
     hospital +
     ', ' +
-    (time4 ? time4 : '') +
+    time4 +
     (hospital.includes('醫院') ? '到院, ' : '到達, ') +
-    (time5 ? time5 : '') +
+    time5 +
     '離開'
   );
 }

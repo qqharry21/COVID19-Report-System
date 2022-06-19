@@ -1,114 +1,59 @@
 /** @format */
 
 import React, { useRef, useState } from 'react';
-import { server } from '../../lib/config';
 import { FormLayout, Layout } from '../../components/layout';
 import { Form, Formik } from 'formik';
 import { initialSchema } from '../../utils/validate';
-import {
-  checkPatientAge,
-  generateCopyText,
-  getOptionName,
-  onKeyDown,
-  sleep,
-} from '../../utils/CommonUtils';
+import { generateCopyText, onKeyDown, sleep } from '../../utils/CommonUtils';
 import toast from 'react-hot-toast';
 import { EditForm } from '../../components/form';
 import { useRouter } from 'next/router';
-import { statusOptions } from '../../utils/data';
 import axios from '../../lib/axios';
-import useSWR from 'swr';
-import { Error, Loading } from '../../components';
 
 // const fetcher = async (url, id) => {
-
 //   return axios.get(url, { params: { reportId: id } }).then(res => res.data);
 // };
+// const { id } = router.query;
+// const { data, error } = useSWR(id ? [`${server}/api/getReportDetail`, id] : null, fetcher);
 
 const ReportDetailPage = ({ detail }) => {
   const router = useRouter();
-  // const { id } = router.query;
-
-  // const { data, error } = useSWR(id ? [`${server}/api/getReportDetail`, id] : null, fetcher);
-
   const [copyText, setCopyText] = useState('');
   const textareaRef = useRef();
 
-  const accompany = [];
-  const patients = [];
-
-  // if (error) return <Error />;
-  // if (!data) return <Loading />;
-
-  detail[0]?.patients?.forEach(item => {
-    if (item.type === 1) {
-      patients.push({
-        patientId: item.patientId,
-        reportId: item.reportId,
-        name: item?.name,
-        birth: item?.birth,
-        sex: item?.sex,
-        type: item.type,
-        id: item?.id,
-        phone: item?.phone,
-        symptom: item?.symptom,
-      });
-    } else if (item.type === 2) {
-      accompany.push({
-        patientId: item.patientId,
-        reportId: item.reportId,
-        name: item?.name,
-        relation: item?.relation,
-        birth: item?.birth,
-        sex: item?.sex,
-        type: item.type,
-        id: item?.id,
-        phone: item?.phone,
-        symptom: item?.symptom,
-      });
-    }
-  });
-
-  const initialValues = {
-    ...detail[0],
-    patients: [...patients],
-    accompany: [...accompany],
-    status: getOptionName(statusOptions, detail[0]?.status),
-  };
-
   const handleSubmit = async (values, actions) => {
-    const updateValues = {
-      ...values,
-      emergency: checkPatientAge(values.patients) || values.emergency,
-      originPatients: patients.concat(accompany),
-    };
+    const loadingToast = toast.loading('編輯中...');
     //提交表單
-    toast.promise(
-      axios.post(`${server}/api/update`, updateValues).then(async res => {
-        console.log(res.status + ' ' + res.statusText);
-      }),
-      {
-        loading: '更新中...',
-        success: () => {
-          router.push('/report');
-          actions.setSubmitting(false);
-          return '修改成功';
+    try {
+      const res = await axios.put(`/reports?id=${values._id}`, {
+        data: values,
+        headers: {
+          'Content-Type': 'application/json',
         },
-        error: err => {
-          console.log('err', err);
-          actions.setSubmitting(false);
-          return '修改失敗，請重整網頁後嘗試';
-        },
-      }
-    );
+      });
+      console.log('🚨 ~ handleSubmit ~ res', res);
+      if (res.status === 201) {
+        sleep(1000);
+        toast.success(res.data, { id: loadingToast });
+        router.push('/reports');
+      } else if (res.status === 204) {
+        toast.error('查無此資料', { id: loadingToast });
+        router.push('/reports');
+      } else throw new Error(res.data);
+    } catch (error) {
+      console.log('🚨 ~ handleSubmit ~ error', error);
+      toast.error('發生錯誤，稍後再試', { id: loadingToast });
+    }
+
+    actions.setSubmitting(false);
   };
 
-  async function handleCopy(formik) {
+  const handleCopy = async formik => {
     const currentText = textareaRef.current.value;
     const text = generateCopyText(formik.values);
 
     if (currentText !== text && currentText !== '') {
-      const confirm = toast.custom(
+      toast.custom(
         t => (
           <div
             className={`${
@@ -131,7 +76,7 @@ const ReportDetailPage = ({ detail }) => {
                   toast.dismiss(t.id);
                   setCopyText(text);
                   navigator.clipboard.writeText(text);
-                  toast.success('已複製至剪貼簿', { id: confirm, duration: 800 });
+                  toast.success('已複製至剪貼簿', { id: t.id, duration: 800 });
                 }}
                 className='flex items-center justify-center w-full p-4 text-sm font-medium border border-transparent rounded-none rounded-l-lg btn btn--outline outline-l text-main hover:text-white focus:outline-none focus:ring-2 focus:ring-main/50'>
                 是
@@ -141,7 +86,7 @@ const ReportDetailPage = ({ detail }) => {
                   toast.dismiss(t.id);
                   setCopyText(currentText);
                   navigator.clipboard.writeText(currentText);
-                  toast.success('已複製到剪貼簿', { id: confirm, duration: 800 });
+                  toast.success('已複製到剪貼簿', { id: t.id, duration: 800 });
                 }}
                 className='flex items-center justify-center w-full p-4 text-sm font-medium border border-transparent rounded-none rounded-r-lg btn btn--outline outline-r text-main hover:text-white focus:outline-none focus:ring-2 focus:ring-main/50'>
                 否
@@ -156,14 +101,70 @@ const ReportDetailPage = ({ detail }) => {
       navigator.clipboard.writeText(text);
       toast.success('已複製到剪貼簿', { duration: 800 });
     }
-  }
+  };
+
+  const handleDelete = async () => {
+    toast.custom(
+      t => (
+        <div
+          className={`${
+            t.visible ? 'animate-enter' : 'animate-leave'
+          } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex flex-col ring-1 ring-black ring-opacity-5`}>
+          <div className='flex justify-center w-full p-4 border-b border-gray-200'>
+            <div className='flex items-center'>
+              <p className='text-2xl'>⚠️</p>
+              <div className='flex-1 ml-3'>
+                <p className='text-base font-medium text-gray-900'>確定是否刪除該筆案件?</p>
+              </div>
+            </div>
+          </div>
+          <div className='flex'>
+            <button
+              onClick={async () => {
+                toast.dismiss(t.id);
+                const loadingToast = toast.loading('刪除中...');
+                try {
+                  const res = await axios.delete('/reports', {
+                    data: { id: detail._id },
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                  });
+                  if (res.status === 201) {
+                    sleep(1000);
+                    toast.success(res.data, { id: loadingToast });
+                    router.push('/reports');
+                  } else if (res.status === 204) {
+                    toast.error('查無此資料', { id: loadingToast });
+                    router.push('/reports');
+                  } else throw new Error(res.data);
+                } catch (error) {
+                  console.log('🚨 ~ handleDelete ~ error', error);
+                  toast.error('發生錯誤，稍後再試', { id: loadingToast });
+                }
+              }}
+              className='flex items-center justify-center w-full p-4 text-sm font-medium border border-transparent rounded-none rounded-l-lg btn btn--outline outline-l text-main hover:text-white focus:outline-none focus:ring-2 focus:ring-main/50'>
+              確定刪除
+            </button>
+            <button
+              onClick={() => {
+                toast.dismiss(t.id);
+                toast.success('已取消', { id: t.id, duration: 1000, icon: '❌' });
+              }}
+              className='flex items-center justify-center w-full p-4 text-sm font-medium border border-transparent rounded-none rounded-r-lg btn btn--outline outline-r text-main hover:text-white focus:outline-none focus:ring-2 focus:ring-main/50'>
+              取消
+            </button>
+          </div>
+        </div>
+      ),
+      { duration: 10000 }
+    );
+  };
+
   return (
-    <Layout title={`案件${detail[0].reportId}`}>
+    <Layout title={`案件${detail.reportId}`}>
       <FormLayout>
-        <Formik
-          initialValues={initialValues}
-          onSubmit={handleSubmit}
-          validationSchema={initialSchema}>
+        <Formik initialValues={detail} onSubmit={handleSubmit} validationSchema={initialSchema}>
           {formik => {
             return (
               <Form
@@ -183,13 +184,13 @@ const ReportDetailPage = ({ detail }) => {
                   }`}>
                   <button
                     type='button'
-                    className='inline-flex items-center btn sm:w-auto btn--outline outline-r group'
+                    className='inline-flex items-center btn sm:w-auto btn--outline outline-m group text-main border-main before:bg-main'
                     onClick={() => {
                       router.back();
                     }}>
                     <p className='sm:text-base'>回上頁</p>
                     <svg
-                      className='w-5 h-5 ml-2 group-hover:rotate-180 duration-300 ease-in-out transition-all'
+                      className='w-5 h-5 ml-2 transition-all duration-300 ease-in-out group-hover:rotate-180'
                       width='24'
                       height='24'
                       viewBox='0 0 24 24'
@@ -200,6 +201,25 @@ const ReportDetailPage = ({ detail }) => {
                       strokeLinejoin='round'>
                       <path stroke='none' d='M0 0h24v24H0z' />
                       <path d='M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5' />
+                    </svg>
+                  </button>
+                  <button
+                    type='button'
+                    className='inline-flex items-center text-red-500 border-red-500 before:bg-red-500 btn sm:w-auto btn--outline outline-m group'
+                    onClick={handleDelete}>
+                    <p className='sm:text-base'>刪除</p>
+                    <svg
+                      className='w-5 h-5 ml-2 transition-all duration-300 ease-in-out group-hover:rotate-180'
+                      width='24'
+                      height='24'
+                      viewBox='0 0 24 24'
+                      strokeWidth='2'
+                      stroke='currentColor'
+                      fill='none'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'>
+                      <path stroke='none' d='M0 0h24v24H0z' />{' '}
+                      <line x1='18' y1='6' x2='6' y2='18' /> <line x1='6' y1='6' x2='18' y2='18' />
                     </svg>
                   </button>
                   <button
@@ -220,7 +240,7 @@ const ReportDetailPage = ({ detail }) => {
                     }}>
                     <p className='sm:text-base'>複製</p>
                     <svg
-                      className='w-5 h-5 ml-2 group-hover:animate-bounce duration-300 ease-in-out transition-all'
+                      className='w-5 h-5 ml-2 transition-all duration-300 ease-in-out group-hover:animate-bounce'
                       fill='none'
                       viewBox='0 0 24 24'
                       stroke='currentColor'>
@@ -244,7 +264,7 @@ const ReportDetailPage = ({ detail }) => {
                     <p className='sm:text-base'>送出</p>
                     <svg
                       xmlns='http://www.w3.org/2000/svg'
-                      className='w-5 h-5 ml-2 group-hover:translate-x-2 duration-300 ease-in-out transition-all'
+                      className='w-5 h-5 ml-2 transition-all duration-300 ease-in-out group-hover:translate-x-2'
                       fill='none'
                       viewBox='0 0 24 24'
                       stroke='currentColor'>
@@ -268,9 +288,17 @@ const ReportDetailPage = ({ detail }) => {
 
 export default ReportDetailPage;
 
-export const getServerSideProps = async context => {
-  const { id } = context.query;
-  const data = await axios(`/getReportDetail?reportId=${id}`).then(res => res.data);
+export const getServerSideProps = async ({ params }) => {
+  const data = await axios.get(`/reports?reportId=${params.id}`).then(res => res.data);
+
+  if (!data) {
+    return {
+      redirect: {
+        destination: '/reports',
+        permanent: false,
+      },
+    };
+  }
 
   return {
     props: {

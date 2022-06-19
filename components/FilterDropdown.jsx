@@ -5,7 +5,7 @@ import moment from 'moment';
 import React from 'react';
 import { onKeyDown } from '../utils/CommonUtils';
 import { categoryOptions, emergencyOptions, initialFilter, methodOptions } from '../utils/data';
-import { FilterCheckbox } from './form/field';
+import { FilterCheckbox, Input } from './form/field';
 
 export const FilterDropdown = ({ setFilter, close }) => {
   const handleSubmit = (values, actions) => {
@@ -31,13 +31,32 @@ export const FilterDropdown = ({ setFilter, close }) => {
                       <legend className='text-base font-medium text-main'>查詢範圍</legend>
                       <Field name='option' as='select' className='mt-6 select'>
                         <option value='all'>全部</option>
-                        <option value='30'>近30筆</option>
-                        <option value='10'>近10筆</option>
+                        <option value='range'>自選範圍</option>
                         <option value='today'>今天 - {moment().format('YYYY/MM/DD')}</option>
-                        <option value='yesterday'>
+                        {/* <option value='yesterday'>
                           昨天 - {moment().subtract(1, 'days').format('YYYY/MM/DD')}
-                        </option>
+                        </option> */}
                       </Field>
+                      {formik.values.option === 'range' && (
+                        <div className='flex flex-col mt-2 space-y-4'>
+                          <Field
+                            label='開始日期'
+                            name='startDate'
+                            placeholder='ex : 19990101/1999-01-01'
+                            type='text'
+                            component={Input}
+                            formik={formik}
+                          />
+                          <Field
+                            label='結束日期'
+                            name='endDate'
+                            placeholder='ex : 19990101/1999-01-01'
+                            type='text'
+                            component={Input}
+                            formik={formik}
+                          />
+                        </div>
+                      )}
                     </fieldset>
                   </div>
                   {/* 受理方式 */}

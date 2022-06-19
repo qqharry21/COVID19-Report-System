@@ -8,26 +8,13 @@ import { statusOptions, table_column } from '../../utils/data';
 const ReportTable = ({ data }) => {
   return (
     <div className='py-2 overflow-x-auto bg-white rounded-lg'>
-      <table className='min-w-full text-sm table-auto  divide-y divide-gray-200'>
+      <table className='min-w-full text-sm divide-y divide-gray-200 table-auto'>
         <thead>
           <tr>
             <th className='sticky left-0 p-4 text-left bg-white'></th>
             {table_column.map((column, index) => (
               <th className='p-4 font-medium text-left text-gray-900 whitespace-nowrap' key={index}>
-                <div className='flex items-center justify-center'>
-                  {column.title}
-                  {/* <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    className='w-4 h-4 ml-1.5 text-gray-700'
-                    viewBox='0 0 20 20'
-                    fill='currentColor'>
-                    <path
-                      fillRule='evenodd'
-                      d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'
-                      clipRule='evenodd'
-                    />
-                  </svg> */}
-                </div>
+                <div className='flex items-center justify-center'>{column.title}</div>
               </th>
             ))}
           </tr>
@@ -36,9 +23,14 @@ const ReportTable = ({ data }) => {
           {data?.map((row, index) => {
             const status = getOptionName(statusOptions, row.status);
             return (
-              <tr className='hover:bg-gray-100 duration-200 ease-in group' key={index}>
-                <td className='sticky left-0 z-10 p-4 bg-white group-hover:bg-gray-100 duration-200 ease-in'>
-                  <Link href={`/report/${row?.id}`} passHref>
+              <tr className='duration-200 ease-in hover:bg-gray-100 group' key={index}>
+                <td className='sticky left-0 z-10 p-4 duration-200 ease-in bg-white group-hover:bg-gray-100'>
+                  <Link
+                    href={{
+                      pathname: '/reports/[id]',
+                      query: { id: row.reportId },
+                    }}
+                    passHref>
                     <svg
                       className='w-5 h-5 link'
                       fill='none'
@@ -69,12 +61,12 @@ const ReportTable = ({ data }) => {
                     {status}
                   </strong>
                 </td>
-                <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row?.id}</td>
+                <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row?.reportId}</td>
                 <td
                   className={`p-4 font-medium ${
                     row?.date === moment().format('YYYY-MM-DD') ? 'text-main' : 'text-gray-900'
                   } whitespace-nowrap text-center`}>
-                  {row?.date}
+                  {moment(row?.date).format('YYYY-MM-DD')}
                 </td>
                 <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row?.time}</td>
                 <td
@@ -90,10 +82,15 @@ const ReportTable = ({ data }) => {
                 <td className='p-4 text-center text-gray-700 whitespace-nowrap'>
                   {row?.emergency_detail}
                 </td>
-                <td className='p-4 text-gray-700 text-center w-[135px] block justify-center'>
-                  {row?.patients.split('\n').map((patient, index) => (
-                    <p key={index} className='text-sm'>
-                      {patient}
+                <td className='justify-center p-4 text-center text-gray-700'>
+                  {row.patients.map((patient, index) => (
+                    <p key={index} className='text-sm whitespace-nowrap'>
+                      {patient.sex}&nbsp;{patient?.age ? patient.age + '歲' : ''}
+                    </p>
+                  ))}
+                  {row?.accompany.map((person, index) => (
+                    <p key={index} className='text-sm whitespace-nowrap'>
+                      {person.sex}&nbsp;{person?.age ? person.age + '歲(陪同)' : ''}
                     </p>
                   ))}
                 </td>
