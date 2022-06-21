@@ -11,7 +11,7 @@ const FormLayout = ({ children }) => {
         {/* Content */}
         <div className='flex flex-col items-center space-y-4'>
           {/* Form */}
-          <div className='p-8 bg-white rounded-lg shadow-lg h-fit sm:p-12'>
+          <div className='w-full p-8 bg-white rounded-lg shadow-lg h-fit sm:p-12'>
             <div className='pb-4'>
               <div className='flex flex-col items-center justify-center pb-4 space-x-2'>
                 <h3 className='font-semibold text-center text-teal-500'>消防局受理防疫案件通報</h3>

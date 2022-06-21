@@ -10,7 +10,7 @@ import {
   accompanyData,
   statusOptions,
   emergencyOptions,
-} from '../../utils/data';
+} from '../../lib/data';
 import toast from 'react-hot-toast';
 import { CollapseField } from '..';
 import {

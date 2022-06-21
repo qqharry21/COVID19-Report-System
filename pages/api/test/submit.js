@@ -6,8 +6,8 @@ import {
   getPatientAndAccompanyData,
   generateRemark,
 } from '../../utils/CommonUtils';
-import { auth } from '../../lib/google';
-import axios from '../../lib/axios';
+import { auth } from '../../lib/config/google';
+import axios from '../../lib/config/axios';
 
 /**
  * @param {*} req

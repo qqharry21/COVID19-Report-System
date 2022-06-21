@@ -1,39 +1,52 @@
 /** @format */
 
+import React from 'react';
 import Head from 'next/head';
-import PropTypes from 'prop-types';
+import { useRouter } from 'next/router';
+import { NextSeo } from 'next-seo';
 
-const Meta = ({ keywords, description, image }) => {
-  return (
-    <Head>
-      <meta name='viewport' content='width=device-width, initial-scale=1' />
-      <meta charSet='utf-8' />
-      <meta name='keywords' content={keywords} />
-      <meta name='description' content={description} />
-      <meta property='og:title' content='新竹市消防局常用系統' />
-      <meta property='og:type' content='website' />
-      <meta property='og:image' content={image ? image : '/logo.png'} />
-      <meta property='og:description' content={description} />
-      <meta property='og:site_name' content='新竹市消防局常用系統' />
-      <meta property='og:url' content='' />
-      {/* <meta name='fb:app_id' content='' /> */}
-
-      <link rel='icon' href='/logo.png' />
-      <link rel='preconnect' href='https://fonts.googleapis.com' />
-    </Head>
-  );
-};
-
-Meta.defaultProps = {
+const AppConfig = {
+  site_name: 'Fire department System',
   title: '新竹市消防局常用系統',
-  keywords: 'COVID19, Hsinchu, Fire, Firefighter, Firefighting, 消防局, 新竹市消防局常用系統, 確診',
   description: '新竹市消防局常用系統，登記、查詢、更新確診通報資料',
+  locale: 'zh-TW',
+  keywords: 'COVID19, Hsinchu, Fire, Firefighter, Firefighting, 消防局, 新竹市消防局常用系統, 確診',
 };
 
-Meta.propTypes = {
-  title: PropTypes.string,
-  keywords: PropTypes.string,
-  description: PropTypes.string,
+const Meta = props => {
+  const router = useRouter();
+  const title = props.title || '載入中...';
+  return (
+    <>
+      <Head>
+        <meta charSet='UTF-8' key='charset' />
+        <meta name='keywords' content={AppConfig.keywords} />
+        <meta name='viewport' content='width=device-width,initial-scale=1' key='viewport' />
+        <link rel='apple-touch-icon' href='/apple-touch-icon.png' key='apple' />
+        <link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png' key='icon32' />
+        <link rel='icon' type='image/png' sizes='16x16' href='/favicon-16x16.png' key='icon16' />
+        <link rel='icon' href='/favicon.ico' key='favicon' />
+        <meta property='og:title' content='新竹市消防局常用系統' />
+        <meta property='og:type' content='website' />
+        <meta property='og:image' content='/favicon.ico' />
+        <meta property='og:description' content={props.description} />
+        <meta property='og:site_name' content='新竹市消防局常用系統' />
+        <meta property='og:url' content='' />
+      </Head>
+      <NextSeo
+        title={`${title} | ${AppConfig.title}`}
+        description={props.description}
+        canonical={props?.canonical}
+        openGraph={{
+          title: props.title,
+          description: props.description,
+          url: props?.canonical,
+          locale: AppConfig.locale,
+          site_name: AppConfig.site_name,
+        }}
+      />
+    </>
+  );
 };
 
 export default Meta;

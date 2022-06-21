@@ -100,6 +100,10 @@
     @apply float-left w-4 h-4 mr-2 align-top transition duration-200 bg-white bg-center bg-no-repeat bg-contain border border-gray-300 rounded-sm appearance-none cursor-pointer checked:bg-teal-500 checked:border-teal-500 focus:outline-none;
   }
 
+  .active-tab {
+    @apply border-b border-b-teal-500;
+  }
+
   .status-1 {
     @apply bg-[#fce8b2] text-orange-700;
   }

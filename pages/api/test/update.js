@@ -6,9 +6,9 @@ import {
   getAge,
   getPatientAndAccompanyData,
 } from '../../utils/CommonUtils';
-import { auth } from '../../lib/google';
-import { server } from '../../lib/config';
-import axios from '../../lib/axios';
+import { auth } from '../../lib/config/google';
+import { server } from '../../lib/config/config';
+import axios from '../../lib/config/axios';
 
 /**
  * @param {*} req

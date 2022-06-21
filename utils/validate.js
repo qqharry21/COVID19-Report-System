@@ -15,6 +15,28 @@ const dateRegExp =
 
 const timeRegExp = /^(2[0-3]|[01]?[0-9]{2,}):([0-5]?[0-9]{2,})$/;
 
+export const registerSchema = yup.object().shape({
+  username: yup.string().required('必填'),
+  email: yup.string().email('信箱格式錯誤').required('必填'),
+  password: yup.string().min(6, '密碼至少6碼').max(12, '密碼最多12碼').required('必填'),
+});
+
+export const loginSchema = yup.object().shape({
+  username: yup.string().required('必填'),
+  password: yup.string().min(6, '密碼至少6碼').max(12, '密碼最多12碼').required('必填'),
+});
+
+export const changePasswordSchema = yup.object().shape({
+  username: yup.string().required('必填'),
+  password: yup.string().min(6, '密碼至少6碼').max(12, '密碼最多12碼').required('必填'),
+  confirmPassword: yup
+    .string()
+    .test('confirm', '密碼不一致', function (value) {
+      return this.parent.password === value;
+    })
+    .required('必填'),
+});
+
 export const initialSchema = yup.object().shape({
   reportId: yup.string().required('受理編號 不得為空'),
   method: yup.string().required('受理方式 不得為空'),
@@ -72,9 +94,9 @@ export const initialSchema = yup.object().shape({
 export const getErrors = (formik, field) => {
   const error = getIn(formik.errors, field.name);
   const touched = getIn(formik.touched, field.name);
-  //情境：有touched的欄位跟error才跳錯訊
-  // return touched && error;
-  return (touched && error) || error;
+  // 情境：有touched的欄位跟error才跳錯訊
+  return touched && error;
+  // return (touched && error) || error;
 };
 
 export const getErrorMessage = (formik, field) => {

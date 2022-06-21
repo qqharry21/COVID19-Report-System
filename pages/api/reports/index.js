@@ -1,11 +1,11 @@
 /** @format */
 
 import moment from 'moment';
-import axios from '../../../lib/axios';
-import { dbConnect } from '../../../lib/dbConnect';
+import axios from '../../../lib/config/axios';
+import { dbConnect } from '../../../lib/config/dbConnect';
 import Report from '../../../models/Report';
 import { checkStatus, generateRemark, getAge, getOptionValue } from '../../../utils/CommonUtils';
-import { statusOptions } from '../../../utils/data';
+import { statusOptions } from '../../../lib/data';
 
 const reportHandler = async (req, res) => {
   await dbConnect();

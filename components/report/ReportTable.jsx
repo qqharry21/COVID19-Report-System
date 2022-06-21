@@ -4,7 +4,7 @@ import moment from 'moment';
 import Link from 'next/link';
 import React from 'react';
 import { getOptionName } from '../../utils/CommonUtils';
-import { statusOptions, table_column } from '../../utils/data';
+import { statusOptions, table_column } from '../../lib/data';
 const ReportTable = ({ data }) => {
   return (
     <div className='py-2 overflow-x-auto bg-white rounded-lg'>

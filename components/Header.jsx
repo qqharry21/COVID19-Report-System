@@ -4,9 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
+import { useSession, signOut } from 'next-auth/react';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+
   const isBigScreen = useMediaQuery({
     query: '(min-width: 640px)',
   });
@@ -15,8 +17,9 @@ const Header = () => {
       setIsOpen(false);
     }
   }, [isBigScreen]);
+
   return (
-    <div className='relative z-10 flex flex-wrap items-center justify-between p-4 bg-white shadow-lg'>
+    <div className='relative z-10 flex flex-wrap items-center justify-between p-4 bg-white shadow-md'>
       {/* Left */}
       <div className='flex'>
         {/* Logo */}
@@ -92,6 +95,39 @@ const Header = () => {
               </svg>
             </a>
           </Link>
+          <Link href='/admin'>
+            <a className='flex items-center py-2 link link--outline group'>
+              <p className='text-sm md:text-base'>設定</p>
+              <svg
+                className='w-4 h-4 ml-1 md:h-5 md:w-5 md:ml-2 group-hover:text-teal-500'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'>
+                <circle cx='12' cy='12' r='3' />
+                <path d='M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z' />
+              </svg>
+            </a>
+          </Link>
+          <button
+            className='flex items-center py-2 font-medium link link--outline group'
+            onClick={signOut}>
+            <p className='text-sm md:text-base'>登出</p>
+            <svg
+              className='w-4 h-4 ml-1 md:h-5 md:w-5 md:ml-2 group-hover:text-teal-500'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth='2'
+              strokeLinecap='round'
+              strokeLinejoin='round'>
+              <path stroke='none' d='M0 0h24v24H0z' />
+              <path d='M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2' />
+              <path d='M7 12h14l-3 -3m0 6l3 -3' />
+            </svg>
+          </button>
         </ul>
         <button className='flex items-center md:hidden' onClick={() => setIsOpen(prev => !prev)}>
           {isOpen ? (
@@ -129,6 +165,16 @@ const Header = () => {
           <Link href='/reports'>
             <a className='flex justify-center w-full px-3 py-2 text-black rounded lg:inline-flex lg:w-auto hover:bg-main hover:text-white '>
               統計資料
+            </a>
+          </Link>
+          <Link href='/add'>
+            <a className='flex justify-center w-full px-3 py-2 text-black rounded lg:inline-flex lg:w-auto hover:bg-main hover:text-white '>
+              新增案例
+            </a>
+          </Link>
+          <Link href='/add'>
+            <a className='flex justify-center w-full px-3 py-2 text-black rounded lg:inline-flex lg:w-auto hover:bg-main hover:text-white '>
+              新增案例
             </a>
           </Link>
           <Link href='/add'>

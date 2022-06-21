@@ -2,14 +2,16 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Layout } from '../components/layout';
+import { getSession } from 'next-auth/react';
+import { Meta } from '../components';
 
-export default function Home() {
+const Home = () => {
   return (
-    <Layout title='首頁'>
+    <Layout meta={<Meta title='首頁' description='Home page' />}>
       <div className='px-4 py-4 mx-auto max-w-screen-2xl sm:px-6 lg:px-8'>
-        <div className='grid grid-cols-1 lg:grid-cols-2 lg:h-screen'>
+        <div className='grid h-screen grid-cols-1 lg:grid-cols-2'>
           <div className='relative z-10 lg:py-16'>
-            <div className='relative h-64 shadow-lg sm:h-80 lg:h-full'>
+            <div className='relative h-full shadow-lg'>
               <Image
                 className='absolute inset-0 object-cover w-full h-full rounded-t-lg lg:rounded-lg '
                 src='/home.jpg'
@@ -33,7 +35,7 @@ export default function Home() {
                 點選新增案例來新增確診通報，或是點選統計資料查詢已經通報的案例。
               </p>
               <Link href='/add'>
-                <a className='inline-block px-12 py-3 mt-8 text-sm font-medium text-white bg-teal-600 border border-teal-600 rounded active:text-teal-500 hover:bg-transparent hover:text-teal-600 focus:outline-none focus:ring duration-200 transition-all ease-in-out'>
+                <a className='inline-block px-12 py-3 mt-8 text-sm font-medium text-white transition-all duration-200 ease-in-out bg-teal-600 border border-teal-600 rounded active:text-teal-500 hover:bg-transparent hover:text-teal-600 focus:outline-none focus:ring'>
                   開始使用
                 </a>
               </Link>
@@ -43,4 +45,23 @@ export default function Home() {
       </div>
     </Layout>
   );
-}
+};
+
+export const getServerSideProps = async ctx => {
+  const session = await getSession(ctx);
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {
+      session,
+    },
+  };
+};
+
+export default Home;

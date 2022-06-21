@@ -1,13 +1,11 @@
 /** @format */
 
-import { useRouter } from 'next/router';
-import moment from 'moment';
 import { useState, useEffect } from 'react';
 import { ReportTable } from '../report';
 import Link from 'next/link';
-import FilterDropdown from '../FilterDropdown';
-import { initialFilter } from '../../utils/data';
-import axios from '../../lib/axios';
+import { FilterDropdown } from '../report';
+import { initialFilter } from '../../lib/data';
+import axios from '../../lib/config/axios';
 
 const ReportLayout = ({ data }) => {
   const [todayLength, setTodayLength] = useState(0);

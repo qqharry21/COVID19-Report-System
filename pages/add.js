@@ -2,13 +2,14 @@
 import React, { useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
-import axios from '../lib/axios';
+import axios from '../lib/config/axios';
 import { Layout, FormLayout } from '../components/layout';
 import { Form, Formik } from 'formik';
 import { AddForm } from '../components/form';
-import { initialAddValues } from '../utils/data';
+import { initialAddValues } from '../lib/data';
 import { initialSchema } from '../utils/validate';
 import { onKeyDown, sleep, generateCopyText } from '../utils/CommonUtils';
+import { Meta } from '../components';
 
 export default function AddReport({ latestId }) {
   const [reportId, setReportId] = useState(() => {
@@ -100,7 +101,7 @@ export default function AddReport({ latestId }) {
   }
 
   return (
-    <Layout title='新增案例'>
+    <Layout meta={<Meta title='新增案例' description='Add report page' />}>
       <FormLayout>
         <Formik
           initialValues={{

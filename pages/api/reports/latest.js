@@ -1,7 +1,7 @@
 /** @format */
 
 import moment from 'moment';
-import { dbConnect } from '../../../lib/dbConnect';
+import { dbConnect } from '../../../lib/config/dbConnect';
 import Report from '../../../models/Report';
 
 const latestHandler = async (req, res) => {

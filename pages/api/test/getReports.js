@@ -1,9 +1,9 @@
 /** @format */
 import { google } from 'googleapis';
 
-import { auth } from '../../lib/google';
+import { auth } from '../../lib/config/google';
 import { getOptionValue } from '../../utils/CommonUtils';
-import { statusOptions } from '../../utils/data';
+import { statusOptions } from '../../../lib/data';
 
 /**
  * @param {*} req

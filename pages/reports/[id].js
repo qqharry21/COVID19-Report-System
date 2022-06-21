@@ -8,7 +8,8 @@ import { generateCopyText, onKeyDown, sleep } from '../../utils/CommonUtils';
 import toast from 'react-hot-toast';
 import { EditForm } from '../../components/form';
 import { useRouter } from 'next/router';
-import axios from '../../lib/axios';
+import axios from '../../lib/config/axios';
+import { Meta } from '../../components';
 
 // const fetcher = async (url, id) => {
 //   return axios.get(url, { params: { reportId: id } }).then(res => res.data);
@@ -162,7 +163,10 @@ const ReportDetailPage = ({ detail }) => {
   };
 
   return (
-    <Layout title={`案件${detail.reportId}`}>
+    <Layout
+      meta={
+        <Meta title={`案件${detail.reportId}`} description={`Report ${detail.reportId} details`} />
+      }>
       <FormLayout>
         <Formik initialValues={detail} onSubmit={handleSubmit} validationSchema={initialSchema}>
           {formik => {
@@ -288,8 +292,9 @@ const ReportDetailPage = ({ detail }) => {
 
 export default ReportDetailPage;
 
-export const getServerSideProps = async ({ params }) => {
-  const data = await axios.get(`/reports?reportId=${params.id}`).then(res => res.data);
+export const getServerSideProps = async ctx => {
+  const { id } = ctx.params;
+  const data = await axios.get(`/reports?reportId=${id}`).then(res => res.data);
 
   if (!data) {
     return {

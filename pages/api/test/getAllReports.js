@@ -1,7 +1,7 @@
 /** @format */
 import { google } from 'googleapis';
 import moment from 'moment';
-import { auth } from '../../../lib/google';
+import { auth } from '../../../lib/config/google';
 
 /**
  * @param {*} req

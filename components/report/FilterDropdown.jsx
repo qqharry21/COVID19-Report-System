@@ -3,9 +3,9 @@
 import { Field, FieldArray, Form, Formik } from 'formik';
 import moment from 'moment';
 import React from 'react';
-import { onKeyDown } from '../utils/CommonUtils';
-import { categoryOptions, emergencyOptions, initialFilter, methodOptions } from '../utils/data';
-import { FilterCheckbox, Input } from './form/field';
+import { onKeyDown } from '../../utils/CommonUtils';
+import { categoryOptions, emergencyOptions, initialFilter, methodOptions } from '../../lib/data';
+import { FilterCheckbox, Input } from '../form/field';
 
 export const FilterDropdown = ({ setFilter, close }) => {
   const handleSubmit = (values, actions) => {

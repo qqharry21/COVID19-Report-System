@@ -2,7 +2,7 @@
 
 import { parse, isDate } from 'date-fns';
 import moment from 'moment';
-import { statusOptions } from './data';
+import { statusOptions } from '../lib/data';
 
 function getOptionValue(object, target) {
   return object[Object.keys(object).find(key => object[key].name === target)]?.value;

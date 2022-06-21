@@ -3,10 +3,11 @@
 import Link from 'next/link';
 import React from 'react';
 import { Layout } from './layout';
+import Meta from './Meta';
 
 const Error = () => {
   return (
-    <Layout title='錯誤'>
+    <Layout meta={<Meta title='錯誤' description='Error' />}>
       <div className='flex items-center h-screen mx-auto'>
         <div className='relative flex flex-col px-20 py-8 space-y-6 text-center bg-white border border-gray-200 rounded-lg'>
           <h2 className='flex items-center justify-center font-medium '>

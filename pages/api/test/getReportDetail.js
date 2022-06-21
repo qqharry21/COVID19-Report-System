@@ -2,8 +2,8 @@
 
 import { getOptionValue } from '../../utils/CommonUtils';
 
-import { statusOptions } from '../../utils/data';
-import axios from '../../lib/axios';
+import { statusOptions } from '../../../lib/data';
+import axios from '../../lib/config/axios';
 import moment from 'moment';
 
 /**

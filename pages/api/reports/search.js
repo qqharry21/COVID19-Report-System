@@ -2,7 +2,7 @@
 
 import { id } from 'date-fns/locale';
 import moment from 'moment';
-import { dbConnect } from '../../../lib/dbConnect';
+import { dbConnect } from '../../../lib/config/dbConnect';
 import Report from '../../../models/Report';
 
 const searchHandler = async (req, res) => {
