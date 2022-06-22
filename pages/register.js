@@ -8,6 +8,8 @@ import { Input } from '../components/form/field';
 import axios from '../lib/config/axios';
 import { onKeyDown, sleep } from '../utils/CommonUtils';
 import { registerSchema } from '../utils/validate';
+import { isAdmin } from '../utils/verifyRoles';
+import { getSession } from 'next-auth/react';
 
 const Register = () => {
   const handleSubmit = async (values, actions) => {
@@ -106,4 +108,29 @@ const Register = () => {
 
 export default Register;
 
-export const getServerSideProps = async ctx => {};
+export const getServerSideProps = async ctx => {
+  const session = await getSession(ctx);
+
+  if (session) {
+    if (!isAdmin(session.user.roles)) {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      };
+    }
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      session,
+    },
+  };
+};
