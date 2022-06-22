@@ -19,11 +19,11 @@ export default NextAuth({
         password: { label: 'Password', type: 'password', placeholder: '輸入8位數密碼' },
       },
       async authorize(credentials) {
+        console.log('🚨 ~ authorize ~ credentials', credentials);
         const response = await axios.post('/login', {
           data: credentials,
         });
         const data = response.data;
-        console.log('🚨 ~ authorize ~ data', data);
         // If no error and we have user data, return it
         // Returning token to set in session
         if (response.status !== 200) throw new Error(data.message);

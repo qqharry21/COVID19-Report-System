@@ -14,7 +14,7 @@ const handleNewUser = async (req, res) => {
 
   // Check if the roles are allowed
   const result = verifyRoles(roles);
-  if (!result) return res.status(401).json({ message: '未授權' });
+  // if (!result) return res.status(401).json({ message: '未授權' });
 
   // Check if the username, password and email aren't empty
   if (!username || !password || !email) return res.status(400).json({ message: '請填寫正確欄位' }); // 400 Bad Request
