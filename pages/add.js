@@ -214,7 +214,7 @@ export default function AddReport({ latestId }) {
   );
 }
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   const latestId = await axios.get('/reports/latest').then(res => res.data);
   return {
     props: {
