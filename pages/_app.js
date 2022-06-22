@@ -5,7 +5,6 @@ import { Meta } from '../components';
 import { Progress } from '../components/progress';
 import { Toaster } from 'react-hot-toast';
 import { SessionProvider } from 'next-auth/react';
-import axios from '../lib/config/axios';
 import { useProgressStore } from '../hooks/useProgressStore';
 import '../styles/globals.css';
 import 'animate.css';

@@ -8,7 +8,8 @@ export default NextAuth({
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. "Sign in with...")
-      name: 'COVID-Report-System',
+      // id: 'Fire-department login',
+      name: 'Fire Department Account',
       // The credentials is used to generate a suitable form on the sign in page.
       // You can specify whatever fields you are expecting to be submitted.
       // e.g. domain, username, password, 2FA token, etc.
@@ -20,11 +21,9 @@ export default NextAuth({
       async authorize(credentials) {
         const response = await axios.post('/login', {
           data: credentials,
-          headers: {
-            'Content-Type': 'application/json',
-          },
         });
         const data = response.data;
+        console.log('🚨 ~ authorize ~ data', data);
         // If no error and we have user data, return it
         // Returning token to set in session
         if (response.status !== 200) throw new Error(data.message);
@@ -40,6 +39,7 @@ export default NextAuth({
   },
   callbacks: {
     jwt: async ({ token, user, account }) => {
+      console.log('🚨 ~ jwt: ~ user', user);
       if (account && user) {
         return {
           ...token,
@@ -49,6 +49,13 @@ export default NextAuth({
         };
       }
       return token;
+    },
+    async redirect({ url, baseUrl }) {
+      // Allows relative callback URLs
+      if (url.startsWith('/')) return `${baseUrl}${url}`;
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     },
     session: async ({ session, token }) => {
       session.user = token.user;

@@ -3,14 +3,13 @@
 import { Field, Form, Formik } from 'formik';
 import toast from 'react-hot-toast';
 import { Input } from '../components/form/field';
-import { getSession, useSession, signIn, signOut } from 'next-auth/react';
+import { getSession, signIn } from 'next-auth/react';
 import { onKeyDown } from '../utils/CommonUtils';
 import { loginSchema } from '../utils/validate';
 import { useRouter } from 'next/router';
 import { Meta } from '../components';
 
 const Login = () => {
-  const { data: session } = useSession();
   const router = useRouter();
   const handleSubmit = async (values, actions) => {
     const loadingToast = toast.loading('登入中...');
@@ -18,6 +17,7 @@ const Login = () => {
     const options = { redirect: false, username, password };
     try {
       const response = await signIn('credentials', options);
+
       if (!response.error) {
         toast.success('登入成功', { id: loadingToast });
         router.push('/');
@@ -91,7 +91,6 @@ const Login = () => {
 
 export const getServerSideProps = async ctx => {
   const session = await getSession(ctx);
-  console.log('🚨 ~ getServerSideProps ~ session', session);
   if (session) {
     return {
       redirect: {
