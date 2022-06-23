@@ -18,17 +18,12 @@ export default NextAuth({
         username: { label: 'Username', type: 'text', placeholder: '輸入使用者代號' },
         password: { label: 'Password', type: 'password', placeholder: '輸入8位數密碼' },
       },
-      async authorize(credentials) {
-        console.log('🚨 ~ authorize ~ credentials', credentials);
-        const response = await axios.post('/login', {
-          data: credentials,
-        });
-        const data = response.data;
-        // If no error and we have user data, return it
-        // Returning token to set in session
-        if (response.status !== 200) throw new Error(data.message);
-        else if (response.status === 200 && data) return data;
-        else return null;
+      async authorize(credentials, req) {
+        const res = await axios.post('/login', credentials, { withCredentials: true });
+
+        if (res.status !== 200) throw new Error(res.response.data.message);
+        if (res.status === 200 && res?.data) return res.data;
+        return null;
       },
     }),
   ],
@@ -39,7 +34,6 @@ export default NextAuth({
   },
   callbacks: {
     jwt: async ({ token, user, account }) => {
-      console.log('🚨 ~ jwt: ~ user', user);
       if (account && user) {
         return {
           ...token,
@@ -50,7 +44,7 @@ export default NextAuth({
       }
       return token;
     },
-    async redirect({ url, baseUrl }) {
+    redirect: async ({ url, baseUrl }) => {
       // Allows relative callback URLs
       if (url.startsWith('/')) return `${baseUrl}${url}`;
       // Allows callback URLs on the same origin

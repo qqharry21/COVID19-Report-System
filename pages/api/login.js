@@ -7,9 +7,9 @@ import jwt from 'jsonwebtoken';
 
 const handleLogin = async (req, res) => {
   if (req.method !== 'POST') {
-    res.status(405).json({ message: 'Method Not Allowed' });
+    return res.status(405).json({ message: 'Method Not Allowed' });
   }
-  const { username, password } = req.body.data;
+  const { username, password } = req.body;
 
   await dbConnect();
 

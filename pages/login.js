@@ -3,28 +3,25 @@
 import { Field, Form, Formik } from 'formik';
 import toast from 'react-hot-toast';
 import { Input } from '../components/form/field';
-import { getSession, signIn } from 'next-auth/react';
+import { getSession, signIn, getProviders } from 'next-auth/react';
 import { onKeyDown } from '../utils/CommonUtils';
 import { loginSchema } from '../utils/validate';
 import { useRouter } from 'next/router';
 import { Meta } from '../components';
 
-const Login = () => {
+const Login = ({ providers }) => {
   const router = useRouter();
+
   const handleSubmit = async (values, actions) => {
     const loadingToast = toast.loading('登入中...');
     const { username, password } = values;
-    const options = { redirect: false, username, password };
-    try {
-      const response = await signIn('credentials', options);
-
-      if (!response.error) {
-        toast.success('登入成功', { id: loadingToast });
-        router.push('/');
-      }
-    } catch (error) {
-      console.log('🚨 ~ handleSubmit ~ error', error);
-      toast.error(error.response.data?.message, { id: loadingToast });
+    const options = { redirect: false, username, password, callbackUrl: '/' };
+    const response = await signIn(providers?.credentials.id, options);
+    if (!response?.error) {
+      toast.success('登入成功', { id: loadingToast });
+      if (response.url) router.push(response.url);
+    } else {
+      toast.error('登入失敗', { id: loadingToast });
     }
 
     actions.setSubmitting(false);
@@ -91,6 +88,7 @@ const Login = () => {
 
 export const getServerSideProps = async ctx => {
   const session = await getSession(ctx);
+  const providers = await getProviders(ctx);
   if (session) {
     return {
       redirect: {
@@ -99,11 +97,7 @@ export const getServerSideProps = async ctx => {
       },
     };
   }
-  return {
-    props: {
-      session,
-    },
-  };
+  return { props: { providers: providers } };
 };
 
 export default Login;
