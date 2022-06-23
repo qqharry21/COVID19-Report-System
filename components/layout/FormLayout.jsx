@@ -6,7 +6,7 @@ import React from 'react';
 const FormLayout = ({ children }) => {
   const router = useRouter();
   return (
-    <section className='items-center justify-center w-full'>
+    <section className='items-center justify-center w-full max-w-4xl mx-auto'>
       <div className='px-4 py-10 sm:px-6 lg:px-8'>
         {/* Content */}
         <div className='flex flex-col items-center space-y-4'>

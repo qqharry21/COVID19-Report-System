@@ -18,3 +18,13 @@ const Loading = () => {
 };
 
 export default Loading;
+
+export const LoadingImage = () => {
+  return (
+    <div className='flex items-center justify-center'>
+      <div className='relative w-40 h-40'>
+        <Image src='/loader.gif' alt='loading' layout='fill' objectFit='contain' priority />
+      </div>
+    </div>
+  );
+};

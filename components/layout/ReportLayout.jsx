@@ -27,9 +27,6 @@ const ReportLayout = ({ data }) => {
           data: {
             option: 'today',
           },
-          headers: {
-            'Content-Type': 'application/json',
-          },
         })
         .then(res => res.data);
       setTodayLength(data.length);
@@ -41,9 +38,6 @@ const ReportLayout = ({ data }) => {
         .post('/reports/search', {
           data: {
             option: 'yesterday',
-          },
-          headers: {
-            'Content-Type': 'application/json',
           },
         })
         .then(res => res.data);
@@ -64,9 +58,6 @@ const ReportLayout = ({ data }) => {
       const data = await axios
         .post('/reports/search', {
           data: filter,
-          headers: {
-            'Content-Type': 'application/json',
-          },
         })
         .then(res => res.data);
       setReportData(data);

@@ -17,13 +17,13 @@ const reportHandler = async (req, res) => {
         else await getReport();
         break;
       case 'POST':
-        await createReport(req.body.data);
+        await createReport(req.body);
         break;
       case 'PUT':
-        await updateReport(req.query.id, req.body.data);
+        await updateReport(req.query.id, req.body);
         break;
       case 'DELETE':
-        await deleteReport(req.body.id);
+        await deleteReport(req.query.id);
         break;
       default:
         return res.status(405).json({ message: 'Only for GET, POST, PUT, DELETE requests' });
@@ -61,7 +61,7 @@ const reportHandler = async (req, res) => {
       if (data.emergency !== '一般') report.status = 3;
       else report.status = 1;
 
-      const response = await report.save();
+      await report.save();
       return res.status(201).send('新增成功！');
     } catch (error) {
       console.log('🚀 ~ createReport ~ Error', error.message);
@@ -72,6 +72,7 @@ const reportHandler = async (req, res) => {
   async function getReport() {
     try {
       const response = await Report.find();
+      console.log('🚨 ~ getReport ~ response', response);
       return res.status(200).send(response);
     } catch (error) {
       console.log('🚨 ~ getReport ~ error', error);
@@ -145,7 +146,7 @@ const reportHandler = async (req, res) => {
 
   async function deleteReport(id) {
     try {
-      const report = await Report.findById({ _id: id });
+      const report = await Report.findById(id);
       if (!report) return res.status(204).end();
       await Report.findByIdAndDelete(id);
       return res.status(201).send('刪除成功！');

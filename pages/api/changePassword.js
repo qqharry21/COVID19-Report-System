@@ -23,7 +23,7 @@ const handleChangePassword = async (req, res) => {
     foundUser.refreshToken = '';
     await foundUser.save();
 
-    return res.status(200).json({ message: '密碼已更改' });
+    return res.status(200).json({ message: '密碼已更改，請重新登入' });
   } catch (error) {
     console.log('🚨 ~ handler ~ error', error);
     return res.status(500).json({ message: 'Something went wrong' });

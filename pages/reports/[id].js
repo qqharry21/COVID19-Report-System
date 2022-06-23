@@ -26,12 +26,7 @@ const ReportDetailPage = ({ detail }) => {
     const loadingToast = toast.loading('編輯中...');
     //提交表單
     try {
-      const res = await axios.put(`/reports?id=${values._id}`, {
-        data: values,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const res = await axios.put(`/reports?id=${values._id}`, values);
       console.log('🚨 ~ handleSubmit ~ res', res);
       if (res.status === 201) {
         sleep(1000);
@@ -125,12 +120,7 @@ const ReportDetailPage = ({ detail }) => {
                 toast.dismiss(t.id);
                 const loadingToast = toast.loading('刪除中...');
                 try {
-                  const res = await axios.delete('/reports', {
-                    data: { id: detail._id },
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                  });
+                  const res = await axios.delete(`/reports?id=${detail._id}`);
                   if (res.status === 201) {
                     sleep(1000);
                     toast.success(res.data, { id: loadingToast });
@@ -138,7 +128,7 @@ const ReportDetailPage = ({ detail }) => {
                   } else if (res.status === 204) {
                     toast.error('查無此資料', { id: loadingToast });
                     router.push('/reports');
-                  } else throw new Error(res.data);
+                  }
                 } catch (error) {
                   console.log('🚨 ~ handleDelete ~ error', error);
                   toast.error('發生錯誤，稍後再試', { id: loadingToast });

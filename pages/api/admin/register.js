@@ -1,15 +1,15 @@
 /** @format */
 
-import User from '../../models/User';
+import User from '../../../models/User';
 import bcrypt from 'bcrypt';
-import { dbConnect } from '../../lib/config/dbConnect';
-import verifyRoles from '../../utils/verifyRoles';
+import { dbConnect } from '../../../lib/config/dbConnect';
+import verifyRoles from '../../../utils/verifyRoles';
 
 const handleNewUser = async (req, res) => {
   if (req.method !== 'POST') {
     res.status(405).json({ message: 'Method Not Allowed' });
   }
-  const { username, password, email, roles } = req.body.data;
+  const { username, password, email, roles } = req.body;
   await dbConnect();
 
   // Check if the roles are allowed

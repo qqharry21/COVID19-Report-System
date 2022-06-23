@@ -6,12 +6,7 @@ import { Layout } from '../components/layout';
 import { Meta } from '../components';
 import { useLeavePageConfirm } from '../hooks/useLeavePageConfirm';
 import { isAdmin } from '../utils/verifyRoles';
-import {
-  Dashboard,
-  PasswordPanel,
-  PermissionPanel,
-  RemoveUserPanel,
-} from '../components/dashboard';
+import { Dashboard, DetailPanel, PermissionPanel } from '../components/dashboard';
 
 const Admin = () => {
   const { data: session } = useSession();
@@ -28,7 +23,7 @@ const Admin = () => {
   // useLeavePageConfirm();
   return (
     <Layout meta={<Meta title='設定' description='Setting page' />}>
-      <section className='items-center justify-center w-full'>
+      <section className='items-center justify-center w-full mx-auto max-w-7xl'>
         <div className='px-4 py-10 sm:px-6 lg:px-8'>
           {/* Content */}
           <div className='flex flex-col items-center space-y-4'>
@@ -52,7 +47,9 @@ const Admin = () => {
                       }}>
                       <div className='relative block p-4 cursor-pointer tab active-tab '>
                         <div className='flex items-center justify-center'>
+                          {' '}
                           <svg
+                            xmlns='http://www.w3.org/2000/svg'
                             className='flex-shrink-0 w-5 h-5 text-gray-500'
                             fill='none'
                             viewBox='0 0 24 24'
@@ -61,15 +58,14 @@ const Admin = () => {
                               strokeLinecap='round'
                               strokeLinejoin='round'
                               strokeWidth='2'
-                              d='M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z'
+                              d='M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4'
                             />
                           </svg>
-
-                          <span className='ml-3 text-sm font-medium text-gray-900'> 更改密碼 </span>
+                          <span className='ml-3 text-sm font-medium text-gray-900'> 更改資料 </span>
                         </div>
                       </div>
                     </li>
-                    {!isAdmin(session?.user.roles) && (
+                    {isAdmin(session?.user.roles) && (
                       <>
                         <li
                           className='w-full whitespace-nowrap '
@@ -79,7 +75,6 @@ const Admin = () => {
                           <div className='relative block p-4 cursor-pointer tab '>
                             <div className='flex items-center justify-center'>
                               <svg
-                                xmlns='http://www.w3.org/2000/svg'
                                 className='flex-shrink-0 w-5 h-5 text-gray-500'
                                 fill='none'
                                 viewBox='0 0 24 24'
@@ -88,50 +83,20 @@ const Admin = () => {
                                   strokeLinecap='round'
                                   strokeLinejoin='round'
                                   strokeWidth='2'
-                                  d='M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4'
+                                  d='M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z'
                                 />
                               </svg>
 
                               <span className='ml-3 text-sm font-medium text-gray-900'>
-                                {' '}
-                                調整權限{' '}
+                                權限調整
                               </span>
                             </div>
                           </div>
                         </li>
-                        <li
+                        {/* <li
                           className='w-full whitespace-nowrap '
                           onClick={() => {
                             toggleTab(2);
-                          }}>
-                          <div className='relative block p-4 cursor-pointer tab '>
-                            <div className='flex items-center justify-center'>
-                              <svg
-                                className='flex-shrink-0 w-5 h-5 text-gray-500'
-                                width='24'
-                                height='24'
-                                viewBox='0 0 24 24'
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth='2'
-                                stroke='currentColor'
-                                fill='none'>
-                                <path stroke='none' d='M0 0h24v24H0z' />{' '}
-                                <circle cx='9' cy='7' r='4' />
-                                <path d='M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2' />
-                                <path d='M17 9l4 4m0 -4l-4 4' />
-                              </svg>
-                              <span className='ml-3 text-sm font-medium text-gray-900'>
-                                {' '}
-                                刪除用戶{' '}
-                              </span>
-                            </div>
-                          </div>
-                        </li>
-                        <li
-                          className='w-full whitespace-nowrap '
-                          onClick={() => {
-                            toggleTab(3);
                           }}>
                           <div className='relative block p-4 cursor-pointer tab'>
                             <div className='flex items-center justify-center'>
@@ -150,21 +115,19 @@ const Admin = () => {
                               </svg>
 
                               <span className='ml-3 text-sm font-medium text-gray-900'>
-                                {' '}
-                                通知設定{' '}
+                                通知設定
                               </span>
                             </div>
                           </div>
-                        </li>
+                        </li> */}
                       </>
                     )}
                   </ul>
 
                   {/* Panel */}
                   <Dashboard step={step} user={session?.user}>
-                    <PasswordPanel />
+                    <DetailPanel />
                     <PermissionPanel />
-                    <RemoveUserPanel />
                   </Dashboard>
                 </div>
               </div>

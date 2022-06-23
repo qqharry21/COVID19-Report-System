@@ -27,14 +27,12 @@ export const loginSchema = yup.object().shape({
 });
 
 export const changePasswordSchema = yup.object().shape({
-  username: yup.string().required('必填'),
-  password: yup.string().min(6, '密碼至少6碼').max(12, '密碼最多12碼').required('必填'),
-  confirmPassword: yup
-    .string()
-    .test('confirm', '密碼不一致', function (value) {
-      return this.parent.password === value;
-    })
-    .required('必填'),
+  username: yup.string(),
+  email: yup.string().email('信箱格式錯誤'),
+  password: yup.string().min(6, '密碼至少6碼').max(12, '密碼最多12碼'),
+  confirmPassword: yup.string().test('confirm', '密碼不一致', function (value) {
+    return this.parent.password === value;
+  }),
 });
 
 export const initialSchema = yup.object().shape({

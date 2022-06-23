@@ -38,7 +38,7 @@ const Login = ({ providers }) => {
         <p className='max-w-md mx-auto mt-4 text-center text-gray-500'>需登入後才可使用</p>
 
         <Formik
-          initialValues={{ username: 'Test', password: '00000' }}
+          initialValues={{ username: 'Hao', password: '00000' }}
           onSubmit={handleSubmit}
           validationSchema={loginSchema}>
           {formik => {

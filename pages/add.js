@@ -26,12 +26,7 @@ export default function AddReport({ latestId }) {
     const loadingToast = toast.loading('新增中...');
     // 提交表單
     try {
-      const res = await axios.post('/reports', {
-        data: values,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const res = await axios.post('/reports', values);
       if (res.status === 201) {
         sleep(1000);
         toast.success(res.data, { id: loadingToast });

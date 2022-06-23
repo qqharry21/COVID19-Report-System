@@ -10,21 +10,22 @@ import { onKeyDown, sleep } from '../utils/CommonUtils';
 import { registerSchema } from '../utils/validate';
 import { isAdmin } from '../utils/verifyRoles';
 import { getSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const Register = () => {
+  const router = useRouter();
   const handleSubmit = async (values, actions) => {
     const loadingToast = toast.loading('註冊中...');
 
     try {
-      const response = await axios.post('/register', {
-        data: { ...values, roles: { User: 2001, Editor: 1984, Admin: 5150 } },
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await axios.post('/admin/register', {
+        ...values,
+        roles: { User: 2001, Editor: 1984, Admin: 5150 },
       });
       if (response.status === 200) {
         sleep(1000);
         toast.success(response.data.message, { id: loadingToast });
+        router.push('/login');
       }
     } catch (error) {
       toast.error(error.response.data?.message, { id: loadingToast });
@@ -112,20 +113,20 @@ export const getServerSideProps = async ctx => {
   const session = await getSession(ctx);
 
   if (session) {
-    if (!isAdmin(session.user.roles)) {
-      return {
-        redirect: {
-          destination: '/',
-          permanent: false,
-        },
-      };
-    }
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
+    // if (!isAdmin(session.user.roles)) {
+    //   return {
+    //     redirect: {
+    //       destination: '/',
+    //       permanent: false,
+    //     },
+    //   };
+    // }
+    // return {
+    //   redirect: {
+    //     destination: '/login',
+    //     permanent: false,
+    //   },
+    // };
   }
 
   return {
