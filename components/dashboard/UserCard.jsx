@@ -85,14 +85,14 @@ const UserCard = ({ user }) => {
           <div className='flex flex-col max-w-lg px-6 py-4 mx-auto space-y-2'>
             <h5 className='text-2xl font-bold text-center text-main'>{user.username}</h5>
             <Field as='select' name='role' className='select'>
-              <option value='User'>User</option>
-              <option value='Editor'>Editor</option>
-              <option value='Admin'>Admin</option>
+              <option value='User'>檢視者（查閱資料）</option>
+              <option value='Editor'>編輯者（增改資料）</option>
+              <option value='Admin'>管理者（刪改資料）</option>
             </Field>
             <div className='grid grid-cols-2 gap-2'>
               <button
                 type='button'
-                className='w-full col-span-2 px-4 py-1 mt-2 text-red-500 border-red-500 whitespace-nowrap sm:col-span-1 before:bg-red-500 btn btn--outline outline-r '
+                className='w-full col-span-2 px-4 py-1 mt-2 text-red-500 border-red-500 whitespace-nowrap sm:col-span-1 before:bg-red-500 btn btn--outline outline-l '
                 onClick={handleDelete}>
                 刪除用戶
               </button>
