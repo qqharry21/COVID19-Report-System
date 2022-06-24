@@ -3,7 +3,7 @@
 import React, { useId } from 'react';
 import { getErrorMessage, getErrors } from '../../../utils/validate';
 
-const Select = ({ field, label, options, name, isRequired, formik, valueOption }) => {
+const Select = ({ field, label, options, name, isRequired, formik, valueOption, disabled }) => {
   const showErrors = getErrors(formik, field) && isRequired;
   const error = getErrorMessage(formik, field);
 
@@ -19,6 +19,7 @@ const Select = ({ field, label, options, name, isRequired, formik, valueOption }
         name={name}
         className={`${showErrors ? 'border-red-500 border-2' : ''} select`}
         required={isRequired}
+        disabled={disabled}
         {...formik.getFieldProps(field.name)}>
         <option value='' disabled>
           請選擇{label}

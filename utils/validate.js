@@ -93,8 +93,8 @@ export const getErrors = (formik, field) => {
   const error = getIn(formik.errors, field.name);
   const touched = getIn(formik.touched, field.name);
   // 情境：有touched的欄位跟error才跳錯訊
-  return touched && error;
-  // return (touched && error) || error;
+  // return touched && error;
+  return (touched && error) || error;
 };
 
 export const getErrorMessage = (formik, field) => {

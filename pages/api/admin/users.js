@@ -48,7 +48,6 @@ const handleUser = async (req, res) => {
 
   // PUT /api/admin/users
   async function updateUserRoleById(data) {
-    console.log('🚨 ~ updateUserRoleById ~ data', data);
     const { id, role } = data;
     try {
       const foundUser = await User.findById(id).exec();

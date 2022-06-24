@@ -35,7 +35,6 @@ const DetailPanel = ({ user }) => {
       validationSchema={changePasswordSchema}
       onSubmit={handleSubmit}>
       {formik => {
-        console.log('🚨 ~ DetailPanel ~ formik', formik);
         return (
           <Form className='grid w-full max-w-2xl grid-cols-2 gap-6 mx-auto'>
             <div className=''>

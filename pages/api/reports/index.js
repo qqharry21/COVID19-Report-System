@@ -72,7 +72,6 @@ const reportHandler = async (req, res) => {
   async function getReport() {
     try {
       const response = await Report.find();
-      console.log('🚨 ~ getReport ~ response', response);
       return res.status(200).send(response);
     } catch (error) {
       console.log('🚨 ~ getReport ~ error', error);

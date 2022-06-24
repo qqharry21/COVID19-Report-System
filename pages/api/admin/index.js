@@ -24,9 +24,8 @@ const handleAdminChange = async (req, res) => {
       foundUser.refreshToken = '';
     }
     if (email) {
-      if (foundUser.email === email) return res.status(401).json({ message: '信箱與舊信箱相同' });
-
-      const isExist = await User.findOne({ email }).exec();
+      const userList = await User.find({ email }).exec();
+      const isExist = userList.filter(user => user.username !== username).length > 0;
       if (isExist) return res.status(401).json({ message: '此信箱已被使用' });
 
       foundUser.email = email;

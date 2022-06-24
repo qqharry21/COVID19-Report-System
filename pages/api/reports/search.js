@@ -11,8 +11,7 @@ const searchHandler = async (req, res) => {
   try {
     switch (req.method) {
       case 'POST':
-        const { data } = req.body;
-        await getFilterReport(data);
+        await getFilterReport(req.body);
         break;
       case 'GET':
         const { query } = req.query;

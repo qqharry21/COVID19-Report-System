@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { FilterDropdown } from '../report';
 import { initialFilter } from '../../lib/data';
 import axios from '../../lib/config/axios';
+import toast from 'react-hot-toast';
 
 const ReportLayout = ({ data }) => {
   const [todayLength, setTodayLength] = useState(0);
@@ -24,9 +25,7 @@ const ReportLayout = ({ data }) => {
     async function getTodayData() {
       const data = await axios
         .post('/reports/search', {
-          data: {
-            option: 'today',
-          },
+          option: 'today',
         })
         .then(res => res.data);
       setTodayLength(data.length);
@@ -36,9 +35,7 @@ const ReportLayout = ({ data }) => {
     async function getYesterday() {
       const data = await axios
         .post('/reports/search', {
-          data: {
-            option: 'yesterday',
-          },
+          option: 'yesterday',
         })
         .then(res => res.data);
       setYesterdayLength(data.length);
@@ -55,11 +52,7 @@ const ReportLayout = ({ data }) => {
     } else setReportData(data);
 
     async function getFilterData() {
-      const data = await axios
-        .post('/reports/search', {
-          data: filter,
-        })
-        .then(res => res.data);
+      const data = await axios.post('/reports/search', filter).then(res => res.data);
       setReportData(data);
     }
 
@@ -68,6 +61,26 @@ const ReportLayout = ({ data }) => {
       setReportData(data);
     }
   }, [searchString, filter]);
+
+  const handleExport = async () => {
+    await axios
+      .post('/reports/export', reportData, { responseType: 'blob' })
+      .then(async res => {
+        if (res.status === 200) {
+          const url = window.URL.createObjectURL(new Blob([res.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', '防疫確診統計總表.csv');
+          document.body.appendChild(link);
+          link.click();
+          link.parentNode.removeChild(link);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        toast.error('匯出失敗');
+      });
+  };
 
   return (
     <section className='flex flex-col justify-center w-full p-4 space-y-4 bg-gray-200 sm:p-8'>
@@ -88,7 +101,7 @@ const ReportLayout = ({ data }) => {
               </div>
               <div className='grid grid-cols-2 gap-2 py-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6'>
                 {emergencyData?.map((item, index) => (
-                  <Link key={index} href={`/report/${item.reportId}`} passHref>
+                  <Link key={index} href={`/reports/${item.reportId}`} passHref>
                     <p className='flex justify-center px-4 py-2 text-teal-500 transition-all duration-200 ease-in-out bg-gray-200 rounded-full cursor-pointer hover:scale-95 hover:shadow-sm hover:text-red-500'>
                       編號&nbsp;{item.reportId}
                     </p>
@@ -196,31 +209,11 @@ const ReportLayout = ({ data }) => {
       </div>
       <div className='flex items-center justify-center space-x-2'>
         {reportData.length > 0 && (
-          <Link
-            href={`https://docs.google.com/spreadsheets/d/1g6WrUURvJjMZxmtvPusysen9I2-bfAExnVdq1H63OCY/export`}>
-            <button className='inline-flex btn btn--outline outline-r w-fit group' type='button'>
-              <p className=''>產出Excel</p>
-              <svg
-                className='w-5 h-5 ml-2 transition-all duration-300 ease-in-out group-hover:translate-x-2'
-                width='24'
-                height='24'
-                viewBox='0 0 24 24'
-                strokeWidth='2'
-                stroke='currentColor'
-                fill='none'
-                strokeLinecap='round'
-                strokeLinejoin='round'>
-                <path stroke='none' d='M0 0h24v24H0z' />
-                <path d='M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2' />
-                <path d='M7 12h14l-3 -3m0 6l3 -3' />
-              </svg>
-            </button>
-          </Link>
-        )}
-        <Link
-          href={`https://docs.google.com/spreadsheets/d/1g6WrUURvJjMZxmtvPusysen9I2-bfAExnVdq1H63OCY/edit#gid=0`}>
-          <button className='inline-flex btn btn--outline outline-r w-fit group' type='button'>
-            <p className=''>前往雲端查看</p>
+          <button
+            className='inline-flex btn btn--outline outline-r w-fit group'
+            type='button'
+            onClick={handleExport}>
+            <p className=''>產出Excel</p>
             <svg
               className='w-5 h-5 ml-2 transition-all duration-300 ease-in-out group-hover:translate-x-2'
               width='24'
@@ -236,7 +229,7 @@ const ReportLayout = ({ data }) => {
               <path d='M7 12h14l-3 -3m0 6l3 -3' />
             </svg>
           </button>
-        </Link>
+        )}
       </div>
     </section>
   );

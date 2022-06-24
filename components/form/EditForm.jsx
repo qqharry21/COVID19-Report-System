@@ -13,14 +13,10 @@ import {
 } from '../../lib/data';
 import toast from 'react-hot-toast';
 import { CollapseField } from '..';
-import {
-  checkPatientAge,
-  checkStatus,
-  getOptionName,
-  getOptionValue,
-} from '../../utils/CommonUtils';
+import { checkStatus, getOptionName, getOptionValue } from '../../utils/CommonUtils';
+import { isEditor } from '../../utils/verifyRoles';
 
-const EditForm = ({ formik, copyText, setCopyText, reference }) => {
+const EditForm = ({ formik, copyText, setCopyText, reference, roles }) => {
   const patientLength = formik.values.patients?.length || 0;
   const accompanyLength = formik.values.accompany?.length || 0;
   const status = getOptionName(statusOptions, formik.values.status);
@@ -76,6 +72,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
             formik={formik}
             options={emergencyOptions}
             component={Select}
+            disabled={!isEditor(roles)}
             valueOption
           />
           {formik.values.emergency !== '一般' && (
@@ -85,6 +82,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
               placeholder='請填寫'
               type='text'
               component={Input}
+              disabled={!isEditor(roles)}
               isRequired
               formik={formik}
             />
@@ -106,6 +104,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
           placeholder='填入日期'
           type='text'
           component={Input}
+          disabled={!isEditor(roles)}
           isRequired
           formik={formik}
         />
@@ -115,6 +114,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
           placeholder='填入時間'
           type='text'
           component={Input}
+          disabled={!isEditor(roles)}
           isRequired
           formik={formik}
         />
@@ -133,6 +133,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
             options={categoryOptions}
             name='category'
             component={Select}
+            disabled={!isEditor(roles)}
             isRequired
             valueOption
             formik={formik}
@@ -143,6 +144,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
             placeholder='輸入地址'
             type='text'
             component={Input}
+            disabled={!isEditor(roles)}
             isRequired
             formik={formik}
           />
@@ -161,6 +163,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
                   data={patient}
                   label='patient'
                   title='患者'
+                  isEditor={isEditor(roles)}
                   handleDelete={() => handleDelete(index, patientLength, arrayHelpers, 1)}>
                   <Field
                     label='患者姓名'
@@ -168,6 +171,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
                     placeholder='輸入姓名'
                     type='text'
                     component={Input}
+                    disabled={!isEditor(roles)}
                     isRequired
                     formik={formik}
                   />
@@ -176,6 +180,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
                     name={`patients[${index}].sex`}
                     options={sexOptions}
                     component={Select}
+                    disabled={!isEditor(roles)}
                     isRequired
                     formik={formik}
                   />
@@ -185,6 +190,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
                     placeholder='ex : 1999-01-01'
                     type='text'
                     component={Input}
+                    disabled={!isEditor(roles)}
                     index={index}
                     isRequired
                     formik={formik}
@@ -195,6 +201,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
                     placeholder='輸入身分證字號'
                     type='text'
                     component={Input}
+                    disabled={!isEditor(roles)}
                     isRequired
                     formik={formik}
                   />
@@ -204,6 +211,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
                     placeholder='輸入聯絡電話'
                     type='text'
                     component={Input}
+                    disabled={!isEditor(roles)}
                     formik={formik}
                   />
                   <Field
@@ -212,30 +220,33 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
                     placeholder='輸入症狀'
                     type='text'
                     component={Input}
+                    disabled={!isEditor(roles)}
                     isRequired
                     formik={formik}
                   />
                 </CollapseField>
               ))}
-              <button
-                type='button'
-                className='flex items-center justify-center col-span-1 mx-auto mt-4 sm:col-span-2 btn btn--outline outline-r w-fit'
-                onClick={() => {
-                  handleAdd(patientData, patientLength, 'patient', '患者', arrayHelpers, 5);
-                }}>
-                <svg
-                  className='w-5 h-5'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'>
-                  <path stroke='none' d='M0 0h24v24H0z' /> <line x1='12' y1='5' x2='12' y2='19' />
-                  <line x1='5' y1='12' x2='19' y2='12' />
-                </svg>
-                新增患者
-              </button>
+              {isEditor(roles) && (
+                <button
+                  type='button'
+                  className='flex items-center justify-center col-span-1 mx-auto mt-4 sm:col-span-2 btn btn--outline outline-r w-fit'
+                  onClick={() => {
+                    handleAdd(patientData, patientLength, 'patient', '患者', arrayHelpers, 5);
+                  }}>
+                  <svg
+                    className='w-5 h-5'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'>
+                    <path stroke='none' d='M0 0h24v24H0z' /> <line x1='12' y1='5' x2='12' y2='19' />
+                    <line x1='5' y1='12' x2='19' y2='12' />
+                  </svg>
+                  新增患者
+                </button>
+              )}
 
               <hr className='' />
             </div>
@@ -253,6 +264,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
                   data={person}
                   label='accompany'
                   title='陪同者'
+                  isEditor={isEditor(roles)}
                   handleDelete={() => handleDelete(index, accompanyLength, arrayHelpers, 0)}>
                   <Field
                     label='陪同者姓名'
@@ -260,6 +272,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
                     placeholder='輸入姓名'
                     type='text'
                     component={Input}
+                    disabled={!isEditor(roles)}
                     isRequired
                     formik={formik}
                   />
@@ -269,6 +282,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
                     placeholder='ex : 兒子'
                     type='text'
                     component={Input}
+                    disabled={!isEditor(roles)}
                     isRequired
                     formik={formik}
                   />
@@ -278,6 +292,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
                     placeholder='ex : 1999-01-01'
                     type='text'
                     component={Input}
+                    disabled={!isEditor(roles)}
                     formik={formik}
                   />
                   <Field
@@ -285,6 +300,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
                     name={`accompany[${index}].sex`}
                     options={sexOptions}
                     component={Select}
+                    disabled={!isEditor(roles)}
                     isRequired
                     formik={formik}
                   />
@@ -294,6 +310,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
                     placeholder='輸入身分證字號'
                     type='text'
                     component={Input}
+                    disabled={!isEditor(roles)}
                     formik={formik}
                   />
                   <Field
@@ -302,30 +319,39 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
                     placeholder='輸入聯絡電話'
                     type='text'
                     component={Input}
+                    disabled={!isEditor(roles)}
                     formik={formik}
                   />
                 </CollapseField>
               ))}
-              <button
-                type='button'
-                className='z-0 flex items-center justify-center col-span-1 mx-auto mt-4 sm:col-span-2 btn btn--outline outline-r w-fit'
-                onClick={() => {
-                  handleAdd(accompanyData, accompanyLength, 'accompany', '陪同者', arrayHelpers, 3);
-                }}>
-                <svg
-                  className='w-5 h-5'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'>
-                  <path stroke='none' d='M0 0h24v24H0z' /> <line x1='12' y1='5' x2='12' y2='19' />
-                  <line x1='5' y1='12' x2='19' y2='12' />
-                </svg>
-                新增陪同者
-              </button>
-              <hr className='' />
+              {isEditor(roles) && (
+                <button
+                  type='button'
+                  className='z-0 flex items-center justify-center col-span-1 mx-auto mt-4 sm:col-span-2 btn btn--outline outline-r w-fit'
+                  onClick={() => {
+                    handleAdd(
+                      accompanyData,
+                      accompanyLength,
+                      'accompany',
+                      '陪同者',
+                      arrayHelpers,
+                      3
+                    );
+                  }}>
+                  <svg
+                    className='w-5 h-5'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'>
+                    <path stroke='none' d='M0 0h24v24H0z' /> <line x1='12' y1='5' x2='12' y2='19' />
+                    <line x1='5' y1='12' x2='19' y2='12' />
+                  </svg>
+                  新增陪同者
+                </button>
+              )}
             </div>
           )}
         />
@@ -336,6 +362,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
           placeholder='ex: 光復92'
           type='text'
           component={Input}
+          disabled={!isEditor(roles)}
           formik={formik}
         />
         <Field
@@ -344,6 +371,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
           placeholder='ex: 台大醫院'
           type='text'
           component={Input}
+          disabled={!isEditor(roles)}
           isRequired
           formik={formik}
         />
@@ -353,6 +381,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
           placeholder='填入傷亡清冊的出勤名單'
           type='text'
           component={Input}
+          disabled={!isEditor(roles)}
           formik={formik}
         />
         <Field
@@ -361,6 +390,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
           options={captionOptions}
           valueOption
           component={Select}
+          disabled={!isEditor(roles)}
           formik={formik}
         />
 
@@ -372,6 +402,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
             placeholder='填入4碼數字'
             type='text'
             component={Input}
+            disabled={!isEditor(roles)}
             formik={formik}
           />
           <Field
@@ -380,6 +411,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
             placeholder='填入4碼數字'
             type='text'
             component={Input}
+            disabled={!isEditor(roles)}
             formik={formik}
           />
           <Field
@@ -388,6 +420,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
             placeholder='填入4碼數字'
             type='text'
             component={Input}
+            disabled={!isEditor(roles)}
             formik={formik}
           />
           <Field
@@ -396,6 +429,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
             placeholder='填入4碼數字'
             type='text'
             component={Input}
+            disabled={!isEditor(roles)}
             formik={formik}
           />
           <Field
@@ -404,6 +438,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
             placeholder='填入4碼數字'
             type='text'
             component={Input}
+            disabled={!isEditor(roles)}
             formik={formik}
           />
           <Field
@@ -412,70 +447,72 @@ const EditForm = ({ formik, copyText, setCopyText, reference }) => {
             placeholder='填入4碼數字'
             type='text'
             component={Input}
+            disabled={!isEditor(roles)}
             formik={formik}
           />
         </div>
       </div>
-
-      <div className='flex flex-col w-full space-y-4'>
-        {formik.values.emergency !== '一般' && (
-          <p className='flex items-center justify-center w-full p-2 mx-auto text-xs text-white bg-red-500 rounded-lg sm:w-fit'>
-            此案件需初報/結報
-          </p>
-        )}
-        <div className='flex items-center justify-center space-x-2'>
-          <strong
-            className={`justify-center flex items-center py-2 px-4 rounded-lg text-lg font-medium w-fit ${
-              formik.values.status === 1
-                ? 'bg-[#fce8b2] text-orange-600'
-                : formik.values.status === 2
-                ? 'bg-[#b7e1cd] text-green-700'
-                : formik.values.status === 3
-                ? 'bg-[#e5b8ae] text-red-700'
-                : formik.values.status === 4
-                ? 'bg-[#d9d2e9] text-purple-700'
-                : ''
-            }`}>
-            {status}
-          </strong>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            className='w-5 h-5'
-            fill='none'
-            viewBox='0 0 24 24'
-            stroke='currentColor'>
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              d='M14 5l7 7m0 0l-7 7m7-7H3'
-            />
-          </svg>
-          <strong
-            className={`justify-center flex items-center py-2 px-4 rounded-lg text-lg font-medium w-fit ${
-              toStatus === 1
-                ? 'bg-[#fce8b2] text-orange-600'
-                : toStatus === 2
-                ? 'bg-[#b7e1cd] text-green-700'
-                : toStatus === 3
-                ? 'bg-[#e5b8ae] text-red-700'
-                : toStatus === 4
-                ? 'bg-[#d9d2e9] text-purple-700'
-                : ''
-            }`}>
-            {checkStatus(status, formik.values)}
-          </strong>
+      {isEditor(roles) && (
+        <div className='flex flex-col w-full space-y-4'>
+          {formik.values.emergency !== '一般' && (
+            <p className='flex items-center justify-center w-full p-2 mx-auto text-xs text-white bg-red-500 rounded-lg sm:w-fit'>
+              此案件需初報/結報
+            </p>
+          )}
+          <div className='flex items-center justify-center space-x-2'>
+            <strong
+              className={`justify-center flex items-center py-2 px-4 rounded-lg text-lg font-medium w-fit ${
+                formik.values.status === 1
+                  ? 'bg-[#fce8b2] text-orange-600'
+                  : formik.values.status === 2
+                  ? 'bg-[#b7e1cd] text-green-700'
+                  : formik.values.status === 3
+                  ? 'bg-[#e5b8ae] text-red-700'
+                  : formik.values.status === 4
+                  ? 'bg-[#d9d2e9] text-purple-700'
+                  : ''
+              }`}>
+              {status}
+            </strong>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              className='w-5 h-5'
+              fill='none'
+              viewBox='0 0 24 24'
+              stroke='currentColor'>
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth='2'
+                d='M14 5l7 7m0 0l-7 7m7-7H3'
+              />
+            </svg>
+            <strong
+              className={`justify-center flex items-center py-2 px-4 rounded-lg text-lg font-medium w-fit ${
+                toStatus === 1
+                  ? 'bg-[#fce8b2] text-orange-600'
+                  : toStatus === 2
+                  ? 'bg-[#b7e1cd] text-green-700'
+                  : toStatus === 3
+                  ? 'bg-[#e5b8ae] text-red-700'
+                  : toStatus === 4
+                  ? 'bg-[#d9d2e9] text-purple-700'
+                  : ''
+              }`}>
+              {checkStatus(status, formik.values)}
+            </strong>
+          </div>
+          <p className='font-semibold text-center text-main'>通報表</p>
+          <textarea
+            className='w-full px-3 py-2 text-sm border-gray-200 rounded-lg'
+            rows='20'
+            ref={reference}
+            value={copyText}
+            onChange={e => {
+              setCopyText(e.target.value);
+            }}></textarea>
         </div>
-        <p className='font-semibold text-center text-main'>通報表</p>
-        <textarea
-          className='w-full px-3 py-2 text-sm border-gray-200 rounded-lg'
-          rows='20'
-          ref={reference}
-          value={copyText}
-          onChange={e => {
-            setCopyText(e.target.value);
-          }}></textarea>
-      </div>
+      )}
     </div>
   );
 };

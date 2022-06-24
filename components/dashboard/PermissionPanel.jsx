@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
+import { useLeavePageConfirm } from '../../hooks/useLeavePageConfirm';
 import axios from '../../lib/config/axios';
 import { LoadingImage } from '../Loading';
 import UserCard from './UserCard';
 
 const PermissionPanel = ({ user }) => {
   const [users, setUsers] = useState([]);
+  useLeavePageConfirm();
   useEffect(() => {
     async function getUsers() {
       const res = await axios.get('/admin/users');
@@ -21,6 +23,7 @@ const PermissionPanel = ({ user }) => {
     getUsers();
   }, []);
   if (!users.length) return <LoadingImage />;
+
   return (
     <div>
       <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 '>

@@ -46,8 +46,7 @@ const Login = ({ providers }) => {
               <Form
                 className='p-8 mt-6 mb-0 space-y-4 rounded-lg shadow-2xl'
                 autoComplete='off'
-                noValidate
-                onKeyDown={onKeyDown}>
+                noValidate>
                 <p className='text-xl font-medium text-center text-main'>登入</p>
                 <Field
                   label='使用者代號'

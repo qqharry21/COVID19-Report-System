@@ -6,7 +6,6 @@ import toast from 'react-hot-toast';
 import axios from '../../lib/config/axios';
 
 const UserCard = ({ user }) => {
-  console.log('🚨 ~ UserCard ~ user', user);
   const handleSubmit = async (values, actions) => {
     const loadingToast = toast.loading('更改中...');
     await axios

@@ -4,9 +4,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { useSession, signOut } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
+import { isEditor } from '../utils/verifyRoles';
 
-const Header = () => {
+const Header = ({ session }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const isBigScreen = useMediaQuery({
@@ -29,37 +30,34 @@ const Header = () => {
               <Image src='/logo.gif' alt='logo' layout='fill' objectFit='contain' />
             </div>
           </Link>
-          {/* <Link href='/' passHref>
-              <h1 className='hidden ml-1 text-2xl font-semibold md:text-3xl link md:flex'>
-              新竹市消防局常用系統
-              </h1>
-           </Link> */}
         </div>
       </div>
       {/* Right */}
       <div className='md:flex'>
         {/* Navbar */}
         <ul className='items-center hidden space-x-4 font-bold md:flex '>
-          <Link href='/cans'>
-            <a className='flex items-center py-2 link link--outline group'>
-              <p className='text-sm md:text-base'>常用罐頭</p>
-              <svg
-                className='w-4 h-4 ml-1 md:h-5 md:w-5 md:ml-2 group-hover:text-teal-500'
-                width='24'
-                height='24'
-                viewBox='0 0 24 24'
-                strokeWidth='2'
-                stroke='currentColor'
-                fill='none'
-                strokeLinecap='round'
-                strokeLinejoin='round'>
-                <path stroke='none' d='M0 0h24v24H0z' />
-                <polyline points='12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3' />
-                <line x1='12' y1='12' x2='20' y2='7.5' /> <line x1='12' y1='12' x2='12' y2='21' />
-                <line x1='12' y1='12' x2='4' y2='7.5' />
-              </svg>
-            </a>
-          </Link>
+          {isEditor(session.user.roles) && (
+            <Link href='/cans'>
+              <a className='flex items-center py-2 link link--outline group'>
+                <p className='text-sm md:text-base'>常用罐頭</p>
+                <svg
+                  className='w-4 h-4 ml-1 md:h-5 md:w-5 md:ml-2 group-hover:text-teal-500'
+                  width='24'
+                  height='24'
+                  viewBox='0 0 24 24'
+                  strokeWidth='2'
+                  stroke='currentColor'
+                  fill='none'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'>
+                  <path stroke='none' d='M0 0h24v24H0z' />
+                  <polyline points='12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3' />
+                  <line x1='12' y1='12' x2='20' y2='7.5' /> <line x1='12' y1='12' x2='12' y2='21' />
+                  <line x1='12' y1='12' x2='4' y2='7.5' />
+                </svg>
+              </a>
+            </Link>
+          )}
           <Link href='/reports'>
             <a className='flex items-center py-2 link link--outline group'>
               <p className='text-sm md:text-base'>統計資料</p>
@@ -78,23 +76,25 @@ const Header = () => {
               </svg>
             </a>
           </Link>
-          <Link href='/add'>
-            <a className='flex items-center py-2 link link--outline group'>
-              <p className='text-sm md:text-base'>新增案例</p>
-              <svg
-                className='w-4 h-4 ml-1 md:h-5 md:w-5 md:ml-2 group-hover:text-teal-500'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'>
-                <path d='M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2' />
-                <circle cx='8.5' cy='7' r='4' /> <line x1='20' y1='8' x2='20' y2='14' />
-                <line x1='23' y1='11' x2='17' y2='11' />
-              </svg>
-            </a>
-          </Link>
+          {isEditor(session.user.roles) && (
+            <Link href='/add'>
+              <a className='flex items-center py-2 link link--outline group'>
+                <p className='text-sm md:text-base'>新增案例</p>
+                <svg
+                  className='w-4 h-4 ml-1 md:h-5 md:w-5 md:ml-2 group-hover:text-teal-500'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'>
+                  <path d='M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2' />
+                  <circle cx='8.5' cy='7' r='4' /> <line x1='20' y1='8' x2='20' y2='14' />
+                  <line x1='23' y1='11' x2='17' y2='11' />
+                </svg>
+              </a>
+            </Link>
+          )}
           <Link href='/admin'>
             <a className='flex items-center py-2 link link--outline group'>
               <p className='text-sm md:text-base'>設定</p>

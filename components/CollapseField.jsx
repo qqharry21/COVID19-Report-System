@@ -6,7 +6,7 @@ import { useSpring, animated } from 'react-spring';
 import useMeasure from 'react-use-measure';
 import * as easings from 'd3-ease';
 
-const CollapseField = ({ children, data, index, label, title, handleDelete }) => {
+const CollapseField = ({ children, data, index, label, title, handleDelete, isEditor }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [ref, { height: viewHeight }] = useMeasure();
   const { height, display, y } = useSpring({
@@ -52,8 +52,9 @@ const CollapseField = ({ children, data, index, label, title, handleDelete }) =>
           {title} {index + 1}
         </h3>
         <button
-          className='z-10 col-span-1 sm:col-span-2 w-fit'
+          className={`z-10 col-span-1 sm:col-span-2 w-fit ${isEditor ? '' : 'cursor-not-allowed'}`}
           type='button'
+          disabled={!isEditor}
           onClick={handleDelete}>
           <svg
             className='w-5 h-5 text-main hover:text-teal-500'

@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { getSession, useSession } from 'next-auth/react';
 import { Layout } from '../components/layout';
 import { Meta } from '../components';
-import { useLeavePageConfirm } from '../hooks/useLeavePageConfirm';
 import { isAdmin } from '../utils/verifyRoles';
 import { Dashboard, DetailPanel, PermissionPanel } from '../components/dashboard';
 
@@ -20,7 +19,6 @@ const Admin = () => {
     setStep(index);
   };
 
-  // useLeavePageConfirm();
   return (
     <Layout meta={<Meta title='設定' description='Setting page' />}>
       <section className='items-center justify-center w-full mx-auto max-w-7xl'>
@@ -47,7 +45,6 @@ const Admin = () => {
                       }}>
                       <div className='relative block p-4 cursor-pointer tab active-tab '>
                         <div className='flex items-center justify-center'>
-                          {' '}
                           <svg
                             xmlns='http://www.w3.org/2000/svg'
                             className='flex-shrink-0 w-5 h-5 text-gray-500'

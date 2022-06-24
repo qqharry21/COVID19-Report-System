@@ -10,6 +10,8 @@ import { initialAddValues } from '../lib/data';
 import { initialSchema } from '../utils/validate';
 import { onKeyDown, sleep, generateCopyText } from '../utils/CommonUtils';
 import { Meta } from '../components';
+import { useLeavePageConfirm } from '../hooks/useLeavePageConfirm';
+import { getSession } from 'next-auth/react';
 
 export default function AddReport({ latestId }) {
   const [reportId, setReportId] = useState(() => {
@@ -21,6 +23,7 @@ export default function AddReport({ latestId }) {
   const [copyText, setCopyText] = useState('');
   const router = useRouter();
   const textareaRef = useRef();
+  const formRef = useRef();
 
   async function handleSubmit(values, actions) {
     const loadingToast = toast.loading('新增中...');
@@ -28,7 +31,7 @@ export default function AddReport({ latestId }) {
     try {
       const res = await axios.post('/reports', values);
       if (res.status === 201) {
-        sleep(1000);
+        await sleep(1000);
         toast.success(res.data, { id: loadingToast });
         router.push('/reports');
       }
@@ -95,6 +98,8 @@ export default function AddReport({ latestId }) {
     }
   }
 
+  useLeavePageConfirm();
+
   return (
     <Layout meta={<Meta title='新增案例' description='Add report page' />}>
       <FormLayout>
@@ -111,6 +116,7 @@ export default function AddReport({ latestId }) {
                 autoComplete='off'
                 className='flex flex-col justify-between h-full'
                 noValidate
+                ref={formRef}
                 onKeyDown={onKeyDown}>
                 <AddForm
                   formik={formik}
@@ -126,16 +132,14 @@ export default function AddReport({ latestId }) {
                     type='button'
                     className='inline-flex btn sm:w-auto btn--outline outline-l group'
                     onClick={() => {
-                      // handleCopy(formik);
-                      if (!(formik.dirty && formik.isValid)) {
+                      if (!formik.dirty) {
                         toast.error('請先填寫通報表', { icon: '‼️' });
-                        setTimeout(() => {}, []);
                       } else {
                         formik.validateForm().then(res => {
                           if (Object.keys(res).length === 0) {
                             handleCopy(formik);
                           } else {
-                            toast.error('請更正表單內容', { icon: '‼️' });
+                            toast.error('請正確填寫通報表內容', { icon: '‼️' });
                           }
                         });
                       }
@@ -179,11 +183,20 @@ export default function AddReport({ latestId }) {
                   <button
                     type='submit'
                     className={`inline-flex btn sm:w-auto btn--outline outline-r items-center group ${
-                      !(formik.dirty && formik.isValid) || formik.isSubmitting
-                        ? 'cursor-not-allowed'
-                        : 'cursor-pointer'
+                      !formik.dirty || formik.isSubmitting ? 'cursor-not-allowed' : 'cursor-pointer'
                     }`}
-                    disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}>
+                    disabled={!formik.dirty || formik.isSubmitting}
+                    onClick={() => {
+                      formik.validateForm().then(res => {
+                        if (Object.keys(res).length !== 0) {
+                          const error = Object.keys(res).pop();
+                          const errorElement = document.querySelector(`[name="${error}"]`);
+                          errorElement.scrollIntoView();
+                          errorElement.focus();
+                          toast.error('欄位有誤', { icon: '‼️' });
+                        }
+                      });
+                    }}>
                     <p className='sm:text-base'>送出</p>
                     <svg
                       xmlns='http://www.w3.org/2000/svg'
@@ -209,8 +222,17 @@ export default function AddReport({ latestId }) {
   );
 }
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async ctx => {
+  const session = await getSession(ctx);
   const latestId = await axios.get('/reports/latest').then(res => res.data);
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
   return {
     props: {
       latestId,
