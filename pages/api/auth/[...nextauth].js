@@ -27,7 +27,11 @@ export default NextAuth({
       },
     }),
   ],
-  session: { strategy: 'jwt' },
+  session: {
+    strategy: 'jwt', // Seconds - How long until an idle session expires and is no longer valid.
+    maxAge: 60 * 24 * 60 * 60, // 60 days
+    updateAge: 24 * 60 * 60, // 24 hours
+  },
   database: process.env.MONGODB_URI,
   jwt: {
     secret: process.env.ACCESS_TOKEN_SECRET,
@@ -36,7 +40,7 @@ export default NextAuth({
     jwt: async ({ token, user, account }) => {
       if (account && user) {
         return {
-          ...token,
+          // ...token,
           user: user.user,
           accessToken: user.token,
           refreshToken: user.refreshToken,

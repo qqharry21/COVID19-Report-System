@@ -14,7 +14,6 @@ import { useRouter } from 'next/router';
 
 const Register = () => {
   const router = useRouter();
-  console.log('🚨 ~ Register ~ router', router);
   const handleSubmit = async (values, actions) => {
     const loadingToast = toast.loading('註冊中...');
 

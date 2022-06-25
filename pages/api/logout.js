@@ -16,7 +16,7 @@ const handleLogout = async (req, res) => {
   // const result = await foundUser.save();
   // console.log('Refresh token deleted: ', result);
 
-  res.sendStatus(204); // No Content
+  res.status(204).send(); // No Content
 };
 
 export default handleLogout;
