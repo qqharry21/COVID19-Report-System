@@ -26,7 +26,6 @@ const generateExcel = async (req, res) => {
       }) || [];
     this[index].patients = patient1.concat(patient2).join('\n');
   }, reports);
-  console.log('🚨 ~ reports', reports);
 
   const fields = [
     { label: '案件編號', value: 'reportId', position: 'center' },
