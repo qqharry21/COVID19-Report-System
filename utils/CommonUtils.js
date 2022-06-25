@@ -206,7 +206,7 @@ function generateCopyText(data) {
     '本案編號：' +
     reportId +
     '\n' +
-    '以下網址為本局協助衛生局疑似武漢肺炎病毒轉院之患者清單\nhttps://tinyurl.com/bdd8fnct	'
+    '以下網址為本局協助衛生局疑似武漢肺炎病毒轉院之患者清單\nhttps://covid-19-report-system.vercel.app/reports'
   );
 }
 
