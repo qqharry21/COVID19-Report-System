@@ -172,16 +172,17 @@ const Header = ({ session }) => {
               新增案例
             </a>
           </Link>
-          <Link href='/add'>
+          <Link href='/admin'>
             <a className='flex justify-center w-full px-3 py-2 text-black rounded lg:inline-flex lg:w-auto hover:bg-main hover:text-white '>
-              新增案例
+              設定
             </a>
           </Link>
-          <Link href='/add'>
-            <a className='flex justify-center w-full px-3 py-2 text-black rounded lg:inline-flex lg:w-auto hover:bg-main hover:text-white '>
-              新增案例
-            </a>
-          </Link>
+
+          <button
+            className='flex justify-center w-full px-3 py-2 text-black rounded lg:inline-flex lg:w-auto hover:bg-main hover:text-white '
+            onClick={signOut}>
+            登出
+          </button>
         </div>
       </div>
     </div>
