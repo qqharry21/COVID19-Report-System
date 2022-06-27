@@ -95,6 +95,97 @@ function getStatusColor(status) {
   }
 }
 
+function generateCopyCaptionText(data) {
+  const {
+    reportId,
+    method,
+    category,
+    date,
+    time,
+    address,
+    patients,
+    accompany,
+    emergency_detail,
+    car,
+    hospital,
+    emergency,
+    member,
+    caption,
+    time1,
+    time2,
+    time3,
+    time4,
+    time5,
+    time6,
+  } = data;
+  const text =
+    `消防局受理防疫案件通報\n` +
+    '受理日期：' +
+    date +
+    ' ' +
+    time +
+    '\n' +
+    '受理方式：' +
+    method +
+    '\n' +
+    '個案類別：' +
+    category +
+    '\n' +
+    '地址：' +
+    address +
+    '\n' +
+    '----------------\n' +
+    patients
+      ?.map(
+        patient =>
+          '患者姓名：' +
+          patient?.name +
+          '\n' +
+          '出生日期：' +
+          patient?.birth +
+          '\n' +
+          '性別：' +
+          patient?.sex +
+          '\n' +
+          '年齡：' +
+          getAge(patient?.birth) +
+          '歲' +
+          '\n' +
+          '出現症狀：' +
+          patient?.symptom +
+          '\n' +
+          '身分證字號：' +
+          patient?.id +
+          '\n' +
+          '電話：' +
+          patient?.phone +
+          '\n'
+      )
+      .join('\n') +
+    `${
+      accompany?.length > 0
+        ? accompany
+            ?.map(
+              person =>
+                '\n陪同者姓名：' +
+                person?.name +
+                `(${person?.relation})` +
+                '\n' +
+                `${person.birth ? '出生日期：' + person.birth + '\n' : ''}` +
+                `${person.sex ? '性別：' + person.sex + '\n' : ''}` +
+                `${person.birth ? '年齡：' + getAge(person.birth) + '歲\n' : ''}` +
+                `${person.id ? '身分證字號：' + person.id + '\n' : ''}` +
+                `${person.phone ? '電話：' + person.phone + '\n' : ''}`
+            )
+            .join('\n')
+        : ''
+    }` +
+    '----------------\n\n' +
+    '送往' +
+    hospital;
+  return text;
+}
+
 function generateCopyText(data) {
   const {
     reportId,
@@ -118,7 +209,7 @@ function generateCopyText(data) {
     time5,
     time6,
   } = data;
-  return (
+  const text =
     '報告局長：\n\n' +
     `【${emergency}個案】:${emergency_detail}\n\n` +
     `消防局受理防疫案件通報${
@@ -206,8 +297,9 @@ function generateCopyText(data) {
     '本案編號：' +
     reportId +
     '\n' +
-    '以下網址為本局協助衛生局疑似武漢肺炎病毒轉院之患者清單\nhttps://covid-19-report-system.vercel.app/reports'
-  );
+    '以下網址為本局協助衛生局疑似武漢肺炎病毒轉院之患者清單\nhttps://covid-19-report-system.vercel.app/reports';
+
+  return text;
 }
 
 function checkStatus(status, data) {
@@ -285,6 +377,7 @@ export {
   getAge,
   onKeyDown,
   getStatusColor,
+  generateCopyCaptionText,
   generateCopyText,
   checkStatus,
   getPatientAndAccompanyData,
