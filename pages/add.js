@@ -6,15 +6,9 @@ import axios from '../lib/config/axios';
 import { Layout, FormLayout } from '../components/layout';
 import { Form, Formik } from 'formik';
 import { AddForm } from '../components/form';
-import { initialAddValues } from '../lib/data';
+import { initialAddValues } from '../lib/Form.config';
 import { initialSchema } from '../utils/validate';
-import {
-  onKeyDown,
-  sleep,
-  generateCopyText,
-  checkStatus,
-  generateCopyCaptionText,
-} from '../utils/CommonUtils';
+import { onKeyDown, sleep, generateCopyText } from '../utils/CommonUtils';
 import { Meta } from '../components';
 import { getSession } from 'next-auth/react';
 
@@ -31,7 +25,7 @@ export default function AddReport({ latestId }) {
   const formRef = useRef();
 
   async function handleSubmit(values, actions) {
-    const loadingToast = toast.loading('新增中...');
+    const loadingToast = toast.loading('新增中...', { id: 'addToast' });
     // 提交表單
     try {
       const res = await axios.post('/reports', values);
@@ -50,7 +44,7 @@ export default function AddReport({ latestId }) {
 
   async function handleCopy(values) {
     const currentText = textareaRef.current.value;
-    const text = generateCopyText(values);
+    const text = generateCopyText('未結案', values);
 
     if (currentText !== text && currentText !== '') {
       toast.custom(
@@ -94,28 +88,14 @@ export default function AddReport({ latestId }) {
             </div>
           </div>
         ),
-        { duration: 10000 }
+        { duration: 10000, id: 'addToast' }
       );
     } else {
       setCopyText(text);
       navigator.clipboard.writeText(text);
-      toast.success('已複製到剪貼簿', { duration: 1000 });
+      toast.success('已複製到剪貼簿', { duration: 1000, id: 'addToast' });
     }
   }
-
-  const handleCopyToCaption = async values => {
-    let text = '';
-    if (
-      values.method === '消防局自行受理' &&
-      ['未結案', '待初報'].includes(checkStatus('未結案', values))
-    ) {
-      // 只有消防局自行受理才需要複製
-      text = generateCopyCaptionText(values);
-    } else text = generateCopyText(values);
-    setCopyText(text);
-    navigator.clipboard.writeText(text);
-    toast.success('已複製到剪貼簿', { duration: 1000 });
-  };
 
   return (
     <Layout meta={<Meta title='新增案例' description='Add report page' />}>
@@ -145,50 +125,18 @@ export default function AddReport({ latestId }) {
                   className={`mt-10 flex space-y-4 sm:space-y-0 space-x-0 sm:space-x-4 flex-col sm:flex-row ${
                     1 ? 'justify-center' : 'justify-end'
                   }`}>
-                  {formik.values.method === '消防局自行受理' && (
-                    <button
-                      type='button'
-                      className='inline-flex btn sm:w-auto btn--outline outline-l group'
-                      onClick={() => {
-                        if (!formik.dirty) {
-                          toast.error('請先填寫通報表', { icon: '‼️' });
-                        } else {
-                          formik.validateForm().then(res => {
-                            if (Object.keys(res).length === 0) {
-                              handleCopyToCaption(formik.values);
-                            } else {
-                              toast.error('請正確填寫通報表內容', { icon: '‼️' });
-                            }
-                          });
-                        }
-                      }}>
-                      <p className='sm:text-base'>至送醫群組</p>
-                      <svg
-                        className='w-5 h-5 ml-2 transition-all duration-300 ease-in-out group-hover:animate-bounce'
-                        fill='none'
-                        viewBox='0 0 24 24'
-                        stroke='currentColor'>
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          strokeWidth='2'
-                          d='M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2'
-                        />
-                      </svg>
-                    </button>
-                  )}
                   <button
                     type='button'
                     className='inline-flex btn sm:w-auto btn--outline outline-m group before:bg-main border-main text-main'
                     onClick={() => {
                       if (!formik.dirty) {
-                        toast.error('請先填寫通報表', { icon: '‼️' });
+                        toast.error('請先填寫通報表', { icon: '‼️', id: 'addToast' });
                       } else {
                         formik.validateForm().then(res => {
                           if (Object.keys(res).length === 0) {
                             handleCopy(formik.values);
                           } else {
-                            toast.error('請正確填寫通報表內容', { icon: '‼️' });
+                            toast.error('請正確填寫通報表內容', { icon: '‼️', id: 'addToast' });
                           }
                         });
                       }
@@ -212,7 +160,7 @@ export default function AddReport({ latestId }) {
                     className='inline-flex items-center btn sm:w-auto btn--outline outline-m text-main border-main before:bg-main group'
                     onClick={() => {
                       formik.resetForm();
-                      toast.success('已清除表單內容');
+                      toast.success('已清除表單內容', { id: 'addToast' });
                     }}>
                     <p className='sm:text-base'>重設</p>
                     <svg
@@ -242,7 +190,7 @@ export default function AddReport({ latestId }) {
                           const errorElement = document.querySelector(`[name="${error}"]`);
                           errorElement.scrollIntoView();
                           errorElement.focus();
-                          toast.error('欄位有誤', { icon: '‼️' });
+                          toast.error('欄位有誤', { icon: '‼️', id: 'addToast' });
                         }
                       });
                     }}>

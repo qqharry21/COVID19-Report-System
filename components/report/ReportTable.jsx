@@ -4,7 +4,7 @@ import moment from 'moment';
 import Link from 'next/link';
 import React from 'react';
 import { getOptionName } from '../../utils/CommonUtils';
-import { statusOptions, table_column } from '../../lib/data';
+import { statusOptions, table_column } from '../../lib/Form.config';
 
 const ReportTable = ({ data }) => {
   return (
@@ -65,9 +65,9 @@ const ReportTable = ({ data }) => {
                 <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row?.reportId}</td>
                 <td
                   className={`p-4 font-medium ${
-                    row?.date === moment().format('YYYY-MM-DD') ? 'text-main' : 'text-gray-900'
+                    row?.date === moment().format('YYYY/MM/DD') ? 'text-main' : 'text-gray-900'
                   } whitespace-nowrap text-center`}>
-                  {moment(row?.date).format('YYYY-MM-DD')}
+                  {moment(row?.date).format('YYYY/MM/DD')}
                 </td>
                 <td className='p-4 text-center text-gray-700 whitespace-nowrap'>{row?.time}</td>
                 <td

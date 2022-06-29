@@ -36,8 +36,8 @@ const searchHandler = async (req, res) => {
     if (data?.option === 'range')
       options.push({
         date: {
-          $gte: moment(data.startDate).format('YYYY-MM-DD'),
-          $lte: moment(data.endDate).format('YYYY-MM-DD'),
+          $gte: moment(data.startDate).format('YYYY/MM/DD'),
+          $lte: moment(data.endDate).format('YYYY/MM/DD'),
         },
       });
 

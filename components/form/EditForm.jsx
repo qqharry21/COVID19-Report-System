@@ -10,7 +10,7 @@ import {
   accompanyData,
   statusOptions,
   emergencyOptions,
-} from '../../lib/data';
+} from '../../lib/Form.config';
 import toast from 'react-hot-toast';
 import { CollapseField } from '..';
 import { checkStatus, getOptionName, getOptionValue } from '../../utils/CommonUtils';
@@ -187,7 +187,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference, roles }) => {
                   <Field
                     label='出生日期'
                     name={`patients[${index}].birth`}
-                    placeholder='ex : 1999-01-01'
+                    placeholder='ex : 1999/01/01'
                     type='text'
                     component={Input}
                     disabled={!isEditor(roles)}
@@ -289,7 +289,7 @@ const EditForm = ({ formik, copyText, setCopyText, reference, roles }) => {
                   <Field
                     label='出生日期'
                     name={`accompany[${index}].birth`}
-                    placeholder='ex : 1999-01-01'
+                    placeholder='ex : 1999/01/01'
                     type='text'
                     component={Input}
                     disabled={!isEditor(roles)}

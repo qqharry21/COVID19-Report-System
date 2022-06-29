@@ -4,7 +4,12 @@ import { Field, FieldArray, Form, Formik } from 'formik';
 import moment from 'moment';
 import React from 'react';
 import { onKeyDown } from '../../utils/CommonUtils';
-import { categoryOptions, emergencyOptions, initialFilter, methodOptions } from '../../lib/data';
+import {
+  categoryOptions,
+  emergencyOptions,
+  initialFilter,
+  methodOptions,
+} from '../../lib/Form.config';
 import { FilterCheckbox, Input } from '../form/field';
 
 export const FilterDropdown = ({ setFilter, close }) => {
@@ -42,7 +47,7 @@ export const FilterDropdown = ({ setFilter, close }) => {
                           <Field
                             label='開始日期'
                             name='startDate'
-                            placeholder='ex : 19990101/1999-01-01'
+                            placeholder='ex : 19990101/1999/01/01'
                             type='text'
                             component={Input}
                             formik={formik}
@@ -50,7 +55,7 @@ export const FilterDropdown = ({ setFilter, close }) => {
                           <Field
                             label='結束日期'
                             name='endDate'
-                            placeholder='ex : 19990101/1999-01-01'
+                            placeholder='ex : 19990101/1999/01/01'
                             type='text'
                             component={Input}
                             formik={formik}

@@ -9,7 +9,7 @@ import {
   patientData,
   accompanyData,
   emergencyOptions,
-} from '../../lib/data';
+} from '../../lib/Form.config';
 import toast from 'react-hot-toast';
 
 import { CollapseField } from '../';
@@ -161,7 +161,7 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
                   <Field
                     label='出生日期'
                     name={`patients[${index}].birth`}
-                    placeholder='ex : 1999-01-01'
+                    placeholder='ex : 1999/01/01'
                     type='text'
                     component={Input}
                     index={index}
@@ -254,7 +254,7 @@ const AddForm = ({ formik, copyText, setCopyText, reference }) => {
                   <Field
                     label='出生日期'
                     name={`accompany[${index}].birth`}
-                    placeholder='ex : 1999-01-01'
+                    placeholder='ex : 1999/01/01'
                     type='text'
                     component={Input}
                     formik={formik}

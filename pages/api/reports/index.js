@@ -1,11 +1,10 @@
 /** @format */
 
-import moment from 'moment';
 import axios from '../../../lib/config/axios';
 import { dbConnect } from '../../../lib/config/dbConnect';
 import Report from '../../../models/Report';
 import { checkStatus, generateRemark, getAge, getOptionValue } from '../../../utils/CommonUtils';
-import { statusOptions } from '../../../lib/data';
+import { statusOptions } from '../../../lib/Form.config';
 
 const reportHandler = async (req, res) => {
   await dbConnect();
@@ -48,8 +47,8 @@ const reportHandler = async (req, res) => {
         data.accompany.map(accompany => {
           return {
             ...accompany,
-            age: getAge(accompany?.birth || '1999-01-01'),
-            birth: accompany?.birth || '1999-01-01',
+            age: getAge(accompany?.birth || '1999/01/01'),
+            birth: accompany?.birth || '1999/01/01',
           };
         }) || [];
       const latestId = await axios.get('/reports/latest').then(res => res.data);
@@ -58,8 +57,8 @@ const reportHandler = async (req, res) => {
       report.patients = patients;
       report.accompany = accompanies;
       report.total = patients.length + accompanies.length;
-      if (data.emergency !== '一般') report.status = 3;
-      else report.status = 1;
+
+      report.status = getOptionValue(statusOptions, checkStatus('未結案', data));
 
       await report.save();
       return res.status(201).send('新增成功！');
@@ -104,8 +103,8 @@ const reportHandler = async (req, res) => {
         data.accompany.map(accompany => {
           return {
             ...accompany,
-            age: getAge(accompany?.birth || '1999-01-01'),
-            birth: accompany?.birth || '1999-01-01',
+            age: getAge(accompany?.birth || '1999/01/01'),
+            birth: accompany?.birth || '1999/01/01',
           };
         }) || [];
 

@@ -4,7 +4,7 @@ import React from 'react';
 import CanCard from '../../components/CanCard';
 
 import { Layout } from '../../components/layout';
-import { cans } from '../../lib/data';
+import { cans } from '../../lib/Can.config';
 import { getSession } from 'next-auth/react';
 import { Meta } from '../../components';
 
